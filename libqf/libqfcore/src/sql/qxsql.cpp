@@ -1,5 +1,7 @@
 #include "qxsql.h"
 
+#include <qf/core/exception.h>
+
 #include <QSqlQuery>
 #include <QSqlError>
 #include <QSqlRecord>
@@ -25,14 +27,14 @@ qint64 QxSqlApi::createRecord(const QString &table, const Record &record)
 	QueryResult result = query(qs, record);
 
 	if (result.rows.isEmpty() || result.rows[0].isEmpty()) {
-		throw std::runtime_error("Insert should return an ID");
+		throw qf::core::Exception("Insert should return an ID");
 	}
 
 	bool ok = false;
 	qint64 id = result.rows[0][0].toLongLong(&ok);
 
 	if (!ok) {
-		throw std::runtime_error("Insert should return an integer ID");
+		throw qf::core::Exception("Insert should return an integer ID");
 	}
 
 	return id;
@@ -118,7 +120,7 @@ QueryResult QxSql::query(const QString &query, const QVariantMap &params)
 		q.bindValue(QStringLiteral(":%1").arg(key), val);
 	}
 	if (!q.exec()) {
-		throw std::runtime_error(q.lastError().text().toStdString());
+		throw qf::core::Exception(q.lastError().text());
 	}
 	QueryResult result;
 	for (int i = 0; i < q.record().count(); ++i) {
@@ -142,7 +144,7 @@ ExecResult QxSql::exec(const QString &query, const QVariantMap &params)
 		q.bindValue(QStringLiteral(":%1").arg(key), val);
 	}
 	if (!q.exec()) {
-		throw std::runtime_error(q.lastError().text().toStdString());
+		throw qf::core::Exception(q.lastError().text());
 	}
 	ExecResult result;
 	result.rowsAffected = q.numRowsAffected();

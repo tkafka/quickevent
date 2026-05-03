@@ -100,12 +100,17 @@ bool CompetitorDocument::saveData()
 			competitor_id = dataId().toInt();
 			if(siid_dirty) {
 				qfDebug() << "updating SIID in run tables";
-				int competitor_id = dataId().toInt();
-				qf::core::sql::Query q(sqlModel()->connectionName());
-				q.prepare("UPDATE runs SET siId=:siId WHERE competitorId=:competitorId", qf::core::Exception::Throw);
-				q.bindValue(":competitorId", competitor_id);
-				q.bindValue(":siId", siid());
-				q.exec(qf::core::Exception::Throw);
+				auto *app = qf::gui::framework::Application::instance();
+				QVariantMap rec { {"siId", siid()}, };
+				for (const auto &[run_id, _] : old_records.asKeyValueRange()) {
+					app->updateDbRecord("runs", run_id, rec);
+				}
+				// int competitor_id = dataId().toInt();
+				// qf::core::sql::Query q(sqlModel()->connectionName());
+				// q.prepare("UPDATE runs SET siId=:siId WHERE competitorId=:competitorId", qf::core::Exception::Throw);
+				// q.bindValue(":competitorId", competitor_id);
+				// q.bindValue(":siId", siid());
+				// q.exec(qf::core::Exception::Throw);
 			}
 			if(m_isEmitDbEventsOnSave) {
 				if(class_dirty) {
@@ -116,10 +121,6 @@ bool CompetitorDocument::saveData()
 					auto diff = qf::core::sql::recordDiff(old_record, record);
 					if (!diff.isEmpty()) {
 						getPlugin<EventPlugin>()->emitDbEvent(Event::EventPlugin::DBEVENT_RUN_CHANGED, QVariantList {run_id, diff});
-
-						// new update API
-						auto *app = qf::gui::framework::Application::instance();
-						app->emitDbRecUpdated( "runs", run_id, diff);
 					}
 				}
 			}

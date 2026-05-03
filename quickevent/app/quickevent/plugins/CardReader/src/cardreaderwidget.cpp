@@ -797,19 +797,38 @@ void CardReaderWidget::assignRunnerToSelectedCard()
 								   "is currently flagged \"not running\" for this stage (race).\n"
 								   "If you continue, this flag will be removed"),
 								QMessageBox::Ok | QMessageBox::Cancel);
-				if (ret == QMessageBox::Cancel)
+				if (ret == QMessageBox::Cancel) {
 					return;
-				QString qs = "UPDATE runs SET isRunning=true WHERE competitorId=" QF_IARG(competitor_id) " AND stageId=" QF_IARG(stage_id);
-				q.execThrow(qs);
+				}
+				auto *app = qf::gui::framework::Application::instance();
+				QVariantMap rec {
+					{"isRunning", true},
+				};
+				app->updateDbRecord("runs", run_id, rec);
+				// QString qs = "UPDATE runs SET isRunning=true WHERE competitorId=" QF_IARG(competitor_id) " AND stageId=" QF_IARG(stage_id);
+				// q.execThrow(qs);
 			}
 		}
 		{
 			getPlugin<CardReaderPlugin>()->assignCardToRun(card_id, run_id);
-			QString qs = "UPDATE runs SET siId=" QF_IARG(si_id) " WHERE competitorId=" QF_IARG(competitor_id) " AND stageId=" QF_IARG(stage_id);
-			if(values.value(Runs::FindRunnerWidget::UseSIInNextStages).toBool()) {
-				qs = "UPDATE runs SET siId=" QF_IARG(si_id) " WHERE competitorId=" QF_IARG(competitor_id) " AND stageId>=" QF_IARG(stage_id);
+			q.execThrow("SELECT id FROM runs WHERE competitorId=" QF_IARG(competitor_id)
+						" AND stageId>=" QF_IARG(stage_id)
+						" ORDER BY stageId");
+			int n = 0;
+			auto *app = qf::gui::framework::Application::instance();
+			bool use_si_in_next_stages = values.value(Runs::FindRunnerWidget::UseSIInNextStages).toBool();
+			while (q.next()) {
+				QVariantMap rec { {"siId", si_id}, };
+				auto run_id = q.value(0).toInt();
+				if (n++ == 0 || use_si_in_next_stages) {
+					app->updateDbRecord("runs", run_id, rec);
+				}
 			}
-			q.execThrow(qs);
+			// QString qs = "UPDATE runs SET siId=" QF_IARG(si_id) " WHERE competitorId=" QF_IARG(competitor_id) " AND stageId=" QF_IARG(stage_id);
+			// if(values.value(Runs::FindRunnerWidget::UseSIInNextStages).toBool()) {
+			// 	qs = "UPDATE runs SET siId=" QF_IARG(si_id) " WHERE competitorId=" QF_IARG(competitor_id) " AND stageId>=" QF_IARG(stage_id);
+			// }
+			// q.execThrow(qs);
 		}
 
 		this->ui->tblCards->reloadRow();
