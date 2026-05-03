@@ -3,6 +3,8 @@
 
 #include "../guiglobal.h"
 
+#include <qf/core/sql/recchng.h>
+
 #include <QApplication>
 #include <QJsonDocument>
 #include <QQmlError>
@@ -23,7 +25,16 @@ private:
 	typedef QApplication Super;
 public:
 	explicit Application(int & argc, char ** argv);
-	~Application() override;
+	~Application() override = default;
+
+	Q_SIGNAL void dbRecChng(const qf::core::sql::RecChng &recchng);
+	qint64 createDbRecord(const QString &table, const QVariantMap &record) const;
+	std::optional<QVariantMap> readDbRecord(const QString &table, qint64 id, const std::optional<QStringList> &fields = std::nullopt) const;
+	bool updateDbRecord(const QString &table, qint64 id, const QVariantMap &record) const;
+	bool deleteDbRecord(const QString &table, qint64 id) const;
+	void emitDbRecInserted(const QString &table, qint64 id, const QVariantMap &record, const QString &issuer = {});
+	void emitDbRecUpdated(const QString &table, qint64 id, const QVariantMap &record, const QString &issuer = {});
+	void emitDbRecDeleted(const QString &table, qint64 id, const QString &issuer = {});
 
 	Q_INVOKABLE QString versionString() const;
 public:

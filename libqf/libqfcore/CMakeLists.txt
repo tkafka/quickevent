@@ -13,6 +13,8 @@ add_library(libqfcore SHARED
     src/sql/query.cpp
     src/sql/querybuilder.cpp
     src/sql/transaction.cpp
+	src/sql/recchng.h src/sql/recchng.cpp
+	src/sql/qxsql.h src/sql/qxsql.cpp
 
     src/utils/clioptions.cpp
     src/utils/crypt.cpp

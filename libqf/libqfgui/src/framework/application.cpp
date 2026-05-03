@@ -3,6 +3,7 @@
 #include <qf/core/log.h>
 #include <qf/core/assert.h>
 #include <qf/core/utils/fileutils.h>
+#include <qf/core/sql/qxsql.h>
 
 #include <QQmlEngine>
 #include <QQmlContext>
@@ -17,19 +18,80 @@ Application::Application(int &argc, char **argv) :
 {
 }
 
+qint64 Application::createDbRecord(const QString &table, const QVariantMap &record) const
+{
+	using namespace qf::core::sql;
+	QxSql sql;
+	connect(&sql, &QxSql::dbRecChng, this, &Application::dbRecChng);
+	return sql.createRecord(table, record);
+}
+
+std::optional<QVariantMap> Application::readDbRecord(const QString &table, qint64 id, const std::optional<QStringList> &fields) const
+{
+	using namespace qf::core::sql;
+	QxSql sql;
+	return sql.readRecord(table, id, fields);
+}
+
+bool Application::updateDbRecord(const QString &table, qint64 id, const QVariantMap &record) const
+{
+	using namespace qf::core::sql;
+	QxSql sql;
+	connect(&sql, &QxSql::dbRecChng, this, &Application::dbRecChng);
+	return sql.updateRecord(table, id, record);
+}
+
+bool Application::deleteDbRecord(const QString &table, qint64 id) const
+{
+	using namespace qf::core::sql;
+	QxSql sql;
+	connect(&sql, &QxSql::dbRecChng, this, &Application::dbRecChng);
+	return sql.deleteRecord(table, id);
+}
+
 QString Application::versionString() const
 {
 	return QCoreApplication::applicationVersion();
 }
 
-Application::~Application()
-= default;
+void Application::emitDbRecInserted(const QString &table, qint64 id, const QVariantMap &record, const QString &issuer)
+{
+	emit dbRecChng(qf::core::sql::RecChng{
+		.table = table,
+		.id = id,
+		.record = record,
+		.op = qf::core::sql::RecOp::Insert,
+		.issuer = issuer
+	});
+}
+
+void Application::emitDbRecUpdated(const QString &table, qint64 id, const QVariantMap &record, const QString &issuer)
+{
+	emit dbRecChng(qf::core::sql::RecChng{
+		.table = table,
+		.id = id,
+		.record = record,
+		.op = qf::core::sql::RecOp::Update,
+		.issuer = issuer
+	});
+}
+
+void Application::emitDbRecDeleted(const QString &table, qint64 id, const QString &issuer)
+{
+	emit dbRecChng(qf::core::sql::RecChng{
+		.table = table,
+		.id = id,
+		.record = {},
+		.op = qf::core::sql::RecOp::Delete,
+		.issuer = issuer
+	});
+}
 
 Application *Application::instance(bool must_exist)
 {
 	auto *ret = qobject_cast<Application*>(Super::instance());
 	if(!ret && must_exist) {
-		qfFatal("qf::gui::framework::Application instance MUST exist.");
+		throw std::runtime_error("qf::gui::framework::Application instance MUST exist.");
 	}
 	return ret;
 }

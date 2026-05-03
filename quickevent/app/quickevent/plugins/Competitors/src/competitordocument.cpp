@@ -5,6 +5,7 @@
 
 #include <qf/gui/framework/mainwindow.h>
 #include <qf/gui/framework/plugin.h>
+#include <qf/gui/framework/application.h>
 
 #include <qf/core/sql/connection.h>
 #include <qf/core/sql/query.h>
@@ -81,13 +82,17 @@ bool CompetitorDocument::saveData()
 				if(siid_dirty)
 					q.bindValue(":siId", siid());
 				q.exec(qf::core::Exception::Throw);
-				m_runsIds << q.lastInsertId().toInt();
+				auto run_id = q.lastInsertId().toInt();
+				m_runsIds << run_id;
 			}
 			if(m_isEmitDbEventsOnSave) {
 				getPlugin<EventPlugin>()->emitDbEvent(Event::EventPlugin::DBEVENT_COMPETITOR_COUNTS_CHANGED);
 				for (auto run_id : m_runsIds) {
 					auto rec = runs_plugin->runsRecord(run_id);
 					getPlugin<EventPlugin>()->emitDbEvent(Event::EventPlugin::DBEVENT_RUN_CHANGED, QVariantList {run_id, rec});
+					// new update API
+					auto *app = qf::gui::framework::Application::instance();
+					app->emitDbRecInserted( "runs", run_id, rec);
 				}
 			}
 		}
@@ -111,6 +116,10 @@ bool CompetitorDocument::saveData()
 					auto diff = qf::core::sql::recordDiff(old_record, record);
 					if (!diff.isEmpty()) {
 						getPlugin<EventPlugin>()->emitDbEvent(Event::EventPlugin::DBEVENT_RUN_CHANGED, QVariantList {run_id, diff});
+
+						// new update API
+						auto *app = qf::gui::framework::Application::instance();
+						app->emitDbRecUpdated( "runs", run_id, diff);
 					}
 				}
 			}
@@ -123,11 +132,11 @@ bool CompetitorDocument::saveData()
 		if (m_isEmitDbEventsOnSave)
 		{
 			if (old_mode == DataDocument::ModeInsert)
-			{				
+			{
 				getPlugin<EventPlugin>()->emitDbEvent(Event::EventPlugin::DBEVENT_COMPETITOR_ADDED, competitor_id);
 			}
 			else if (old_mode == DataDocument::ModeEdit)
-			{				
+			{
 				getPlugin<EventPlugin>()->emitDbEvent(Event::EventPlugin::DBEVENT_COMPETITOR_EDITED, competitor_id);
 			}
 		}
@@ -159,6 +168,9 @@ bool CompetitorDocument::dropData()
 			getPlugin<EventPlugin>()->emitDbEvent(Event::EventPlugin::DBEVENT_COMPETITOR_COUNTS_CHANGED);
 			for (auto run_id : run_ids) {
 				getPlugin<EventPlugin>()->emitDbEvent(Event::EventPlugin::DBEVENT_RUN_CHANGED, QVariantList {run_id, {}});
+				// new update API
+				auto *app = qf::gui::framework::Application::instance();
+				app->emitDbRecDeleted("runs", run_id);
 			}
 		}
 	}
