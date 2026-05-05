@@ -18,7 +18,10 @@ mkdir -p "$FRAMEWORKS"
 
 fix_binary() {
     local binary="$1"
+    local binname; binname=$(basename "$binary")
     otool -L "$binary" 2>/dev/null | tail -n +2 | awk '{print $1}' | while read -r dep; do
+        # skip own install name (always appears as first otool -L entry for dylibs)
+        [[ "$(basename "$dep")" == "$binname" ]] && continue
         case "$dep" in
             @*|/usr/lib/*|/System/*) ;;
             */Qt*.framework/*/Qt*)
