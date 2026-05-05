@@ -21,7 +21,7 @@ fix_binary() {
     local binname; binname=$(basename "$binary")
 
     # otool -L is the macOS equivalent of ldd; tail -n +2 skips the header line.
-    otool -L "$binary" 2>/dev/null | tail -n +2 | awk '{print $1}' | while read -r dep; do
+    otool -L "$binary" 2>/dev/null | tail -n +2 | awk '{print $1}' | sort -u | while read -r dep; do
 
         # Unlike ldd, otool -L lists the library's own install name (SONAME
         # equivalent) as the first entry — skip it to avoid self-bundling.
