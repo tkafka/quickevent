@@ -183,7 +183,7 @@ void OFeedClient::init()
 
 void OFeedClient::onExportTimerTimeOut()
 {
-	// exportStartListIofXml3();
+	exportStartListIofXml3();
 	if(runChangesProcessing()){
 		getChangesByOrigin();
 	}
@@ -242,6 +242,36 @@ void OFeedClient::onDbEventNotify(const QString &domain, int connection_id, cons
 		int run_id = data.toInt();
 		qfInfo() << serviceName().toStdString() + "DB event competitor DELETED, run id: " << run_id;
 		sendCompetitorDeleted(run_id);
+	}
+
+	// Handle direct run table edits (Runs UI, RunFlagsDialog, start time assignment, etc.)
+	if (domain == QLatin1String(Event::EventPlugin::DBEVENT_RUN_CHANGED))
+	{
+		auto lst = data.toList();
+		int run_id = lst.value(0).toInt();
+		auto dirty_vals = lst.value(1).toMap();
+		if (!dirty_vals.isEmpty()) {
+			static const QSet<QString> relevant_fields = {
+				QStringLiteral("startTimeMs"), QStringLiteral("finishTimeMs"), QStringLiteral("timeMs"),
+				QStringLiteral("siId"), QStringLiteral("disqualified"), QStringLiteral("disqualifiedByOrganizer"),
+				QStringLiteral("misPunch"), QStringLiteral("badCheck"),
+				QStringLiteral("notStart"), QStringLiteral("notFinish"), QStringLiteral("notCompeting"),
+			};
+			bool has_relevant = false;
+			for (const auto &key : dirty_vals.keys()) {
+				if (relevant_fields.contains(key.section('.', -1))) {
+					has_relevant = true;
+					break;
+				}
+			}
+			if (has_relevant) {
+				int competitor_id = getPlugin<RunsPlugin>()->competitorForRun(run_id);
+				if (competitor_id > 0) {
+					qfInfo() << serviceName().toStdString() + "DB event RUN CHANGED, run id: " << run_id << ", competitor id: " << competitor_id;
+					onCompetitorEdited(competitor_id);
+				}
+			}
+		}
 	}
 }
 
