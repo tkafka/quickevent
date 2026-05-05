@@ -18,6 +18,10 @@ fix_binary() {
             /opt/homebrew/*|/usr/local/*)
                 local lib; lib=$(basename "$dep")
                 if [[ ! -f "$FRAMEWORKS/$lib" ]]; then
+                    if [[ ! -f "$dep" ]]; then
+                        echo "  WARNING: $lib not found at $dep, skipping"
+                        continue
+                    fi
                     echo "  Bundling $lib"
                     cp "$dep" "$FRAMEWORKS/$lib"
                     chmod 755 "$FRAMEWORKS/$lib"
