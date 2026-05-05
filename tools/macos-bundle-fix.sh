@@ -7,6 +7,12 @@
 set -euo pipefail
 
 BUNDLE="${1:-install/quickevent.app}"
+
+if [[ ! -d "$BUNDLE" ]]; then
+    echo "ERROR: bundle not found: $BUNDLE"
+    exit 1
+fi
+
 FRAMEWORKS="$BUNDLE/Contents/Frameworks"
 mkdir -p "$FRAMEWORKS"
 
@@ -15,15 +21,25 @@ fix_binary() {
     otool -L "$binary" 2>/dev/null | tail -n +2 | awk '{print $1}' | while read -r dep; do
         case "$dep" in
             @*|/usr/lib/*|/System/*) ;;
-            /opt/homebrew/*|/usr/local/*)
+            */Qt*.framework/*/Qt*)
+                local fw; fw=$(basename "$dep")
+                install_name_tool -change "$dep" \
+                    "@executable_path/../Frameworks/$fw.framework/Versions/A/$fw" \
+                    "$binary"
+                ;;
+            /*)
                 local lib; lib=$(basename "$dep")
-                if [[ ! -f "$FRAMEWORKS/$lib" ]]; then
-                    if [[ ! -f "$dep" ]]; then
-                        echo "  WARNING: $lib not found at $dep, skipping"
+                local src="$dep"
+                if [[ ! -f "$src" ]]; then
+                    src=$(find /opt/homebrew /usr/local \( -type f -o -type l \) -name "$lib" 2>/dev/null | head -1)
+                    if [[ -z "$src" ]]; then
+                        echo "  WARNING: $lib not found, skipping"
                         continue
                     fi
+                fi
+                if [[ ! -f "$FRAMEWORKS/$lib" ]]; then
                     echo "  Bundling $lib"
-                    cp "$dep" "$FRAMEWORKS/$lib"
+                    cp "$src" "$FRAMEWORKS/$lib"
                     chmod 755 "$FRAMEWORKS/$lib"
                     install_name_tool -id "@executable_path/../Frameworks/$lib" \
                         "$FRAMEWORKS/$lib"
@@ -31,12 +47,6 @@ fix_binary() {
                 fi
                 install_name_tool -change "$dep" \
                     "@executable_path/../Frameworks/$lib" "$binary"
-                ;;
-            */Qt*.framework/*/Qt*)
-                local fw; fw=$(basename "$dep")
-                install_name_tool -change "$dep" \
-                    "@executable_path/../Frameworks/$fw.framework/Versions/A/$fw" \
-                    "$binary"
                 ;;
         esac
     done
