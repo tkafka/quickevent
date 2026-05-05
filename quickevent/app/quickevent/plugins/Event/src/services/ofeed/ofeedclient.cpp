@@ -207,7 +207,7 @@ void OFeedClient::onDbEventNotify(const QString &domain, int connection_id, cons
 	{
 		auto checked_card = quickevent::core::si::CheckedCard(data.toMap());
 		int competitor_id = getPlugin<RunsPlugin>()->competitorForRun(checked_card.runId());
-		qfInfo() << serviceName().toStdString() + "DB event competitor READ-OUT, competitor id: " << competitor_id << ", runs.id: " << checked_card.runId();
+		qfInfo() << serviceName().toStdString() + " DB event competitor READ-OUT, competitor id: " << competitor_id << ", runs.id: " << checked_card.runId();
 		onCompetitorReadOut(competitor_id);
 	}
 
@@ -215,7 +215,7 @@ void OFeedClient::onDbEventNotify(const QString &domain, int connection_id, cons
 	if (domain == QLatin1String(Event::EventPlugin::DBEVENT_COMPETITOR_EDITED))
 	{
 		int competitor_id = data.toInt();
-		qfInfo() << serviceName().toStdString() + "DB event competitor EDITED, competitor id: " << competitor_id;
+		qfInfo() << serviceName().toStdString() + " DB event competitor EDITED, competitor id: " << competitor_id;
 		onCompetitorEdited(competitor_id);
 	}
 
@@ -240,7 +240,7 @@ void OFeedClient::onDbEventNotify(const QString &domain, int connection_id, cons
 	if (domain == QLatin1String(Event::EventPlugin::DBEVENT_COMPETITOR_DELETED))
 	{
 		int run_id = data.toInt();
-		qfInfo() << serviceName().toStdString() + "DB event competitor DELETED, run id: " << run_id;
+		qfInfo() << serviceName().toStdString() + " DB event competitor DELETED, run id: " << run_id;
 		sendCompetitorDeleted(run_id);
 	}
 
@@ -252,10 +252,10 @@ void OFeedClient::onDbEventNotify(const QString &domain, int connection_id, cons
 		auto dirty_vals = lst.value(1).toMap();
 		if (!dirty_vals.isEmpty()) {
 			static const QSet<QString> relevant_fields = {
-				QStringLiteral("startTimeMs"), QStringLiteral("finishTimeMs"), QStringLiteral("timeMs"),
-				QStringLiteral("siId"), QStringLiteral("disqualified"), QStringLiteral("disqualifiedByOrganizer"),
-				QStringLiteral("misPunch"), QStringLiteral("badCheck"),
-				QStringLiteral("notStart"), QStringLiteral("notFinish"), QStringLiteral("notCompeting"),
+				QStringLiteral("starttimems"), QStringLiteral("finishtimems"), QStringLiteral("timems"),
+				QStringLiteral("siid"), QStringLiteral("disqualified"), QStringLiteral("disqualifiedbyorganizer"),
+				QStringLiteral("mispunch"), QStringLiteral("badcheck"),
+				QStringLiteral("notstart"), QStringLiteral("notfinish"), QStringLiteral("notcompeting"),
 			};
 			bool has_relevant = false;
 			for (const auto &key : dirty_vals.keys()) {
@@ -267,7 +267,7 @@ void OFeedClient::onDbEventNotify(const QString &domain, int connection_id, cons
 			if (has_relevant) {
 				int competitor_id = getPlugin<RunsPlugin>()->competitorForRun(run_id);
 				if (competitor_id > 0) {
-					qfInfo() << serviceName().toStdString() + "DB event RUN CHANGED, run id: " << run_id << ", competitor id: " << competitor_id;
+					qfInfo() << serviceName().toStdString() + " DB event RUN CHANGED, run id: " << run_id << ", competitor id: " << competitor_id;
 					onCompetitorEdited(competitor_id);
 				}
 			}
