@@ -250,6 +250,7 @@ void OFeedClient::onDbEventNotify(const QString &domain, int connection_id, cons
 		auto lst = data.toList();
 		int run_id = lst.value(0).toInt();
 		auto dirty_vals = lst.value(1).toMap();
+		qfInfo() << serviceName().toStdString() + " DB event RUN CHANGED received, run_id: " << run_id << ", dirty keys: " << dirty_vals.keys().join(", ");
 		if (!dirty_vals.isEmpty()) {
 			static const QSet<QString> relevant_fields = {
 				QStringLiteral("starttimems"), QStringLiteral("finishtimems"), QStringLiteral("timems"),
@@ -1412,11 +1413,6 @@ QString getIofResultStatus(
 	bool is_did_not_finish,
 	bool is_not_competing)
 {
-	// Handle time initial value
-	if (time == -1)
-	{
-		return "Inactive";
-	}
 	// IOF xml 3.0 statuses:
 	// OK (finished and validated)
 	// Finished (finished but not yet validated.)
@@ -1429,19 +1425,20 @@ QString getIofResultStatus(
 	// SportingWithdrawal
 	// NotCompeting
 	// DidNotStart
+	// Status flags take priority over time checks
 	if (is_not_competing)
 		return "NotCompeting";
+	if (is_did_not_start)
+		return "DidNotStart";
 	if (is_miss_punch)
 		return "MissingPunch";
 	if (is_did_not_finish)
 		return "DidNotFinish";
-	if (is_did_not_start)
-		return "DidNotStart";
 	if (is_bad_check || is_disq_by_organizer || is_disq)
 		return "Disqualified";
-	if (time)
-		return "OK";   // OK
-	return "Inactive"; // Inactive as default status
+	if (time > 0)
+		return "OK";
+	return "Inactive";
 }
 
 QString datetime_to_string(const QDateTime &dt)
