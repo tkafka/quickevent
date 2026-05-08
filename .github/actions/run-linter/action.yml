@@ -50,7 +50,7 @@ runs:
         echo "Changed files:"
         printf '%s\n' "${CHANGED_FILES[@]}"
         # Filter out any empty strings that may have been added to the array
-        CHANGED_FILES=("${CHANGED_FILES[@]}" | grep -v '^$')
+        readarray -t CHANGED_FILES < <(printf '%s\n' "${CHANGED_FILES[@]}" | grep -v '^$')
         if [[ "${#CHANGED_FILES[@]}" -eq 0 ]]; then
           echo "No changed cpp files after filtering."
           exit 0
