@@ -1592,7 +1592,7 @@ void OFeedClient::onCompetitorAdded(int competitor_id)
 		//  Competitor's time
 		if (running_time != INT_INITIAL_VALUE)
 		{
-			json_payload << R"("time":)" << running_time << ",";
+			json_payload << R"("time":)" << running_time / 1000 << ",";
 		}
 
 		// Get the final JSON string
@@ -1762,7 +1762,7 @@ void OFeedClient::onCompetitorEdited(int competitor_id)
 		//  Competitor's time
 		if (running_time != INT_INITIAL_VALUE)
 		{
-			json_payload << R"("time":)" << running_time << ",";
+			json_payload << R"("time":)" << running_time / 1000 << ",";
 		}
 
 		// Get the final JSON string
