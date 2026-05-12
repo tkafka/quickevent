@@ -184,10 +184,12 @@ void OFeedClient::init()
 void OFeedClient::onExportTimerTimeOut()
 {
 	exportStartListIofXml3();
-	if(runChangesProcessing()){
-		getChangesByOrigin();
+	if (runChangesProcessing()) {
+		getChangesByOrigin([this]() { exportResultsIofXml3(); });
 	}
-	exportResultsIofXml3();
+	else {
+		exportResultsIofXml3();
+	}
 }
 
 void OFeedClient::loadSettings()
@@ -1035,7 +1037,7 @@ void OFeedClient::sendGraphQLRequest(const QString &query,
 	});
 }
 
-void OFeedClient::getChangesByOrigin()
+void OFeedClient::getChangesByOrigin(std::function<void()> on_done)
 {
 	try
 	{
@@ -1090,7 +1092,7 @@ void OFeedClient::getChangesByOrigin()
 			variables["since"] = last_changelog_call_value.toString(Qt::ISODate);
 		}
 
-		sendGraphQLRequest(graphQLquery, variables, [this](QJsonObject data)
+		sendGraphQLRequest(graphQLquery, variables, [this, on_done](QJsonObject data)
 						   {
 			if (!data.isEmpty())
 			{
@@ -1100,22 +1102,26 @@ void OFeedClient::getChangesByOrigin()
 
 					if (changelog_array.isEmpty()) {
 						qfInfo() << "No changes from origin: " << changelogOrigin();
-						return;
 					}
+					else {
+						// Process the data
+						processCompetitorsChanges(changelog_array);
 
-					// Process the data
-					processCompetitorsChanges(changelog_array);
-
-					// Update last changelog call with the adjusted execution time
-					QDateTime request_execution_time = QDateTime::currentDateTimeUtc();
-					setLastChangelogCall(request_execution_time);
+						// Update last changelog call with the adjusted execution time
+						QDateTime request_execution_time = QDateTime::currentDateTimeUtc();
+						setLastChangelogCall(request_execution_time);
+					}
 				}
-
-			} }, true);
+			}
+			if (on_done)
+				on_done();
+		}, true);
 	}
 	catch (const std::exception &e)
 	{
 		qCritical() << tr("Exception occurred while getting changes by origin: ") << e.what();
+		if (on_done)
+			on_done();
 	}
 }
 
