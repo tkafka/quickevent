@@ -211,14 +211,6 @@ void OFeedClient::onDbEventNotify(const QString &domain, int connection_id, cons
 		onCompetitorReadOut(competitor_id);
 	}
 
-	// Handle edit competitor
-	if (domain == QLatin1String(Event::EventPlugin::DBEVENT_COMPETITOR_EDITED))
-	{
-		int competitor_id = data.toInt();
-		qfInfo() << serviceName().toStdString() + " DB event competitor EDITED, competitor id: " << competitor_id;
-		onCompetitorEdited(competitor_id);
-	}
-
 	// Handle add competitor
 	if (domain == QLatin1String(Event::EventPlugin::DBEVENT_COMPETITOR_ADDED))
 	{
@@ -253,24 +245,24 @@ void OFeedClient::onDbEventNotify(const QString &domain, int connection_id, cons
 		qfInfo() << serviceName().toStdString() + " DB event RUN CHANGED received, run_id: " << run_id << ", dirty keys: " << dirty_vals.keys().join(", ");
 		if (!dirty_vals.isEmpty()) {
 			static const QSet<QString> relevant_fields = {
-				QStringLiteral("starttimems"), QStringLiteral("finishtimems"), QStringLiteral("timems"),
+				// Run fields (finishTimeMs and timeMs are covered by DBEVENT_CARD_PROCESSED_AND_ASSIGNED)
+				QStringLiteral("starttimems"),
 				QStringLiteral("siid"), QStringLiteral("disqualified"), QStringLiteral("disqualifiedbyorganizer"),
 				QStringLiteral("mispunch"), QStringLiteral("badcheck"),
 				QStringLiteral("notstart"), QStringLiteral("notfinish"), QStringLiteral("notcompeting"),
+				// Competitor fields visible in runsRecord JOIN
+				QStringLiteral("competitorname"), QStringLiteral("registration"), QStringLiteral("note"),
 			};
 			bool has_relevant = false;
 			for (const auto &key : dirty_vals.keys()) {
-				if (relevant_fields.contains(key.section('.', -1))) {
+				if (relevant_fields.contains(key.section('.', -1).toLower())) {
 					has_relevant = true;
 					break;
 				}
 			}
 			if (has_relevant) {
-				int competitor_id = getPlugin<RunsPlugin>()->competitorForRun(run_id);
-				if (competitor_id > 0) {
-					qfInfo() << serviceName().toStdString() + " DB event RUN CHANGED, run id: " << run_id << ", competitor id: " << competitor_id;
-					onCompetitorEdited(competitor_id);
-				}
+				qfInfo() << serviceName().toStdString() + " DB event RUN CHANGED, run id: " << run_id;
+				onRunChanged(run_id, dirty_vals);
 			}
 		}
 	}
@@ -827,6 +819,10 @@ void OFeedClient::sendFile(QString name, QString request_path, QString file, std
 /// @param using_external_id indicator which id is used - competitor (internal OFeed) or external (QE id from runs table)
 void OFeedClient::sendCompetitorUpdate(QString json_body, int competitor_or_external_id, bool using_external_id = true)
 {
+	qfInfo() << serviceName().toStdString() + " [sendCompetitorUpdate] id:" << competitor_or_external_id
+			 << "useExternalId:" << using_external_id
+			 << "body:" << json_body;
+
 	// Prepare the Authorization header base64 username:password
 	QString combined = eventId() + ":" + eventPassword();
 	QByteArray base_64_auth = combined.toUtf8().toBase64();
@@ -1606,184 +1602,151 @@ void OFeedClient::onCompetitorAdded(int competitor_id)
 
 		json_str += "}";
 
-		// Output the JSON for debugging
-		// qDebug() << serviceName().toStdString() + " - competitor added - json: " << json_str;
-
 		// Convert std::string to QString
 		QString json_qstr = QString::fromStdString(json_str);
 
-		// Send
+		qfInfo() << serviceName().toStdString() + " [onCompetitorAdded] sending body:" << json_qstr;
 		sendCompetitorAdded(json_qstr);
 	}
 }
 
-void OFeedClient::onCompetitorEdited(int competitor_id)
+void OFeedClient::onRunChanged(int run_id, const QVariantMap &dirty_vals)
 {
-	if (competitor_id == 0)
-	{
-		return;
-	}
-
-	int INT_INITIAL_VALUE = -1;
-
 	int stage_id = getPlugin<EventPlugin>()->currentStageId();
 	QDateTime stage_start_date_time = getPlugin<EventPlugin>()->stageStartDateTime(stage_id);
-	qf::core::sql::Query q;
-	q.exec("SELECT competitors.registration, "
-		   "competitors.startNumber, "
-		   "competitors.firstName, "
-		   "competitors.lastName, "
-		   "competitors.note, "
-		   "clubs.name AS organisationName, "
-		   "clubs.abbr AS organisationAbbr, "
-		   "classes.id AS classId, "
-		   "runs.id AS runId, "
-		   "runs.siId, "
-		   "runs.disqualified, "
-		   "runs.disqualifiedByOrganizer, "
-		   "runs.misPunch, "
-		   "runs.badCheck, "
-		   "runs.notStart, "
-		   "runs.notFinish, "
-		   "runs.notCompeting, "
-		   "runs.startTimeMs, "
-		   "runs.finishTimeMs, "
-		   "runs.timeMs "
-		   "FROM runs "
-		   "INNER JOIN competitors ON competitors.id = runs.competitorId "
-		   "LEFT JOIN relays ON relays.id = runs.relayId  "
-		   "LEFT JOIN clubs ON substr(competitors.registration, 1, 3) = clubs.abbr "
-		   "INNER JOIN classes ON classes.id = competitors.classId OR classes.id = relays.classId  "
-		   "WHERE competitors.id=" QF_IARG(competitor_id) " AND runs.stageId=" QF_IARG(stage_id),
-		   qf::core::Exception::Throw);
-	if (q.next())
-	{
-		int run_id = q.value("runId").toInt();
-		QString registration = q.value(QStringLiteral("registration")).toString();
-		QString first_name = q.value(QStringLiteral("firstName")).toString();
-		QString last_name = q.value(QStringLiteral("lastName")).toString();
-		int card_number = q.value(QStringLiteral("siId")).toInt();
-		QString organisation_name = q.value(QStringLiteral("organisationName")).toString();
-		QString organisation_abbr = q.value(QStringLiteral("organisationAbbr")).toString();
-		QString organisation = !organisation_abbr.isEmpty() ? organisation_name : registration.left(3);
-		int class_id = q.value(QStringLiteral("classId")).toInt();
-		QString nationality = "";
-		QString origin = "IT";
-		QString note = q.value(QStringLiteral("note")).toString();
 
-		// Start bib
-		int start_bib = INT_INITIAL_VALUE;
-		QVariant start_bib_variant = q.value(QStringLiteral("startNumber"));
-		if (!start_bib_variant.isNull())
-		{
-			start_bib = start_bib_variant.toInt();
+	// Strip optional "runs." table prefix and normalise to lowercase
+	auto field_value = [&](const QString &field_lower) -> QVariant {
+		for (auto it = dirty_vals.constBegin(); it != dirty_vals.constEnd(); ++it) {
+			if (it.key().section('.', -1).toLower() == field_lower)
+				return it.value();
 		}
+		return QVariant();
+	};
+	auto has_field = [&](const QString &field_lower) -> bool {
+		return field_value(field_lower).isValid();
+	};
 
-		// Start time
-		int start_time = INT_INITIAL_VALUE;
-		QVariant start_time_variant = q.value(QStringLiteral("startTimeMs"));
-		if (!start_time_variant.isNull())
-		{
-			start_time = start_time_variant.toInt();
+	std::stringstream json_payload;
+	json_payload << "{"
+				 << R"("origin":"IT",)"
+				 << R"("useExternalId":true,)";
+
+	bool has_fields = false;
+
+	// Card (siId)
+	if (has_field("siid")) {
+		int card = field_value("siid").toInt();
+		if (card != 0) {
+			json_payload << R"("card":)" << card << ",";
+			has_fields = true;
 		}
+	}
 
-		// Finish time
-		int finish_time = INT_INITIAL_VALUE;
-		QVariant finish_time_variant = q.value(QStringLiteral("finishTimeMs"));
-		if (!finish_time_variant.isNull())
-		{
-			finish_time = finish_time_variant.toInt();
+	// Start time
+	if (has_field("starttimems")) {
+		int ms = field_value("starttimems").toInt();
+		if (ms > 0) {
+			json_payload << R"("startTime":")" << datetime_to_string(stage_start_date_time.addMSecs(ms)).toStdString() << R"(",)";
+			has_fields = true;
 		}
+	}
 
-		// Time
-		int running_time = INT_INITIAL_VALUE;
-		QVariant running_time_variant = q.value(QStringLiteral("timeMs"));
-		if (!running_time_variant.isNull())
-		{
-			running_time = running_time_variant.toInt();
+	// Status — any flag change requires a DB read to compute the final value
+	static const QSet<QString> status_flag_fields = {
+		"disqualified", "disqualifiedbyorganizer", "mispunch", "badcheck",
+		"notstart", "notfinish", "notcompeting"
+	};
+	bool has_status_change = false;
+	for (auto it = dirty_vals.constBegin(); it != dirty_vals.constEnd(); ++it) {
+		if (status_flag_fields.contains(it.key().section('.', -1).toLower())) {
+			has_status_change = true;
+			break;
 		}
-
-		// Status
-		bool is_disq = q.value(QStringLiteral("disqualified")).toBool();
-		bool is_disq_by_organizer = q.value(QStringLiteral("disqualifiedByOrganizer")).toBool();
-		bool is_miss_punch = q.value(QStringLiteral("misPunch")).toBool();
-		bool is_bad_check = q.value(QStringLiteral("badCheck")).toBool();
-		bool is_did_not_start = q.value(QStringLiteral("notStart")).toBool();
-		bool is_did_not_finish = q.value(QStringLiteral("notFinish")).toBool();
-		bool is_not_competing = q.value(QStringLiteral("notCompeting")).toBool();
-		QString status = getIofResultStatus(running_time, is_disq, is_disq_by_organizer, is_miss_punch, is_bad_check, is_did_not_start, is_did_not_finish, is_not_competing);
-
-		// Use std::stringstream to build the JSON string
-		std::stringstream json_payload;
-
-		// Setup common values
-		json_payload << "{"
-					 << R"("origin":")" << origin.toStdString() << R"(",)"
-					 << R"("firstname":")" << first_name.toStdString() << R"(",)"
-					 << R"("lastname":")" << last_name.toStdString() << R"(",)"
-					 << R"("registration":")" << registration.toStdString() << R"(",)"
-					 << R"("organisation":")" << organisation.toStdString() << R"(",)"
-					 << R"("status":")" << status.toStdString() << R"(",)"
-					 << R"("note":")" << note.toStdString() << R"(",)";
-
-		if (nationality != "")
-		{
-			json_payload << R"("nationality":")" << nationality.toStdString() << R"(",)";
+	}
+	if (has_status_change) {
+		qf::core::sql::Query q;
+		q.exec("SELECT disqualified, disqualifiedByOrganizer, misPunch, badCheck, "
+			   "notStart, notFinish, notCompeting, timeMs "
+			   "FROM runs WHERE id=" QF_IARG(run_id), qf::core::Exception::Throw);
+		if (q.next()) {
+			QString status = getIofResultStatus(
+				q.value("timeMs").toInt(),
+				q.value("disqualified").toBool(),
+				q.value("disqualifiedByOrganizer").toBool(),
+				q.value("misPunch").toBool(),
+				q.value("badCheck").toBool(),
+				q.value("notStart").toBool(),
+				q.value("notFinish").toBool(),
+				q.value("notCompeting").toBool());
+			json_payload << R"("status":")" << status.toStdString() << R"(",)";
+			has_fields = true;
 		}
+	}
 
-		// External ids
-		json_payload << R"("useExternalId":true,)"
-						 << R"("classExternalId":")" << class_id << R"(",)";
-
-		// Card number - QE saves 0 for empty si card
-		if (card_number != 0)
-		{
-			json_payload << R"("card":)" << card_number << ",";
-		}
-
-		// Finish time
-		if (finish_time != INT_INITIAL_VALUE)
-		{
-			json_payload << R"("finishTime":")" << datetime_to_string(stage_start_date_time.addMSecs(finish_time)).toStdString() << R"(",)";
-		}
-
-		// Star time
-		if (start_time != INT_INITIAL_VALUE)
-		{
-			json_payload << R"("startTime":")" << datetime_to_string(stage_start_date_time.addMSecs(start_time)).toStdString() << R"(",)";
-		}
-
-		// Start bib
-		if (start_bib != INT_INITIAL_VALUE)
-		{
-			json_payload << R"("bibNumber":)" << start_bib << ",";
-		}
-
-		//  Competitor's time
-		if (running_time != INT_INITIAL_VALUE)
-		{
-			json_payload << R"("time":)" << running_time / 1000 << ",";
-		}
-
-		// Get the final JSON string
+	if (has_fields) {
 		std::string json_str = json_payload.str();
-
-		// Remove the trailing comma if necessary
 		if (json_str.back() == ',')
-		{
 			json_str.pop_back();
-		}
-
 		json_str += "}";
+		qfInfo() << serviceName().toStdString() + " [onRunChanged/run] run_id:" << run_id;
+		sendCompetitorUpdate(QString::fromStdString(json_str), run_id);
+	}
 
-		// Output the JSON for debugging
-		// qDebug() << serviceName().toStdString() + " - competitor edited - json: " << json_str;
+	// Competitor fields visible in runsRecord JOIN (competitorName, registration, note)
+	static const QSet<QString> competitor_dirty_fields = {
+		"competitorname", "registration", "note"
+	};
+	bool has_competitor_change = false;
+	for (auto it = dirty_vals.constBegin(); it != dirty_vals.constEnd(); ++it) {
+		if (competitor_dirty_fields.contains(it.key().section('.', -1).toLower())) {
+			has_competitor_change = true;
+			break;
+		}
+	}
+	if (has_competitor_change) {
+		bool name_changed = has_field("competitorname");
+		bool registration_changed = has_field("registration");
+		bool note_changed = has_field("note");
 
-		// Convert std::string to QString
-		QString json_qstr = QString::fromStdString(json_str);
+		qf::core::sql::Query cq;
+		cq.exec("SELECT competitors.firstName, competitors.lastName, competitors.registration, competitors.note, "
+				"clubs.name AS organisationName, clubs.abbr AS organisationAbbr "
+				"FROM runs "
+				"INNER JOIN competitors ON competitors.id = runs.competitorId "
+				"LEFT JOIN clubs ON substr(competitors.registration, 1, 3) = clubs.abbr "
+				"WHERE runs.id=" QF_IARG(run_id), qf::core::Exception::Throw);
+		if (cq.next()) {
+			std::stringstream cpayload;
+			cpayload << R"({"origin":"IT","useExternalId":true,)";
+			bool has_cfields = false;
 
-		// Send
-		sendCompetitorUpdate(json_qstr, run_id);
+			if (name_changed) {
+				cpayload << R"("firstname":")" << cq.value("firstName").toString().toStdString() << R"(",)"
+						 << R"("lastname":")" << cq.value("lastName").toString().toStdString() << R"(",)";
+				has_cfields = true;
+			}
+			if (registration_changed) {
+				const QString reg = cq.value("registration").toString();
+				const QString org_abbr = cq.value("organisationAbbr").toString();
+				const QString org = !org_abbr.isEmpty() ? cq.value("organisationName").toString() : reg.left(3);
+				cpayload << R"("registration":")" << reg.toStdString() << R"(",)"
+						 << R"("organisation":")" << org.toStdString() << R"(",)";
+				has_cfields = true;
+			}
+			if (note_changed) {
+				cpayload << R"("note":")" << cq.value("note").toString().toStdString() << R"(",)";
+				has_cfields = true;
+			}
+
+			if (has_cfields) {
+				std::string cs = cpayload.str();
+				if (cs.back() == ',') cs.pop_back();
+				cs += "}";
+				qfInfo() << serviceName().toStdString() + " [onRunChanged/competitor] run_id:" << run_id;
+				sendCompetitorUpdate(QString::fromStdString(cs), run_id);
+			}
+		}
 	}
 }
 
@@ -1848,6 +1811,7 @@ void OFeedClient::onCompetitorReadOut(int competitor_id)
 		// Convert std::string to QString
 		QString json_qstr = QString::fromStdString(json_str);
 
+		qfInfo() << serviceName().toStdString() + " [onCompetitorReadOut] run_id:" << run_id;
 		sendCompetitorUpdate(json_qstr, run_id);
 	}
 }

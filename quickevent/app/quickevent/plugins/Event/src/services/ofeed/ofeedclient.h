@@ -97,7 +97,7 @@ private:
 	void sendCompetitorAdded(QString json_body);
 	void sendCompetitorDeleted(int run_id);
 	void onCompetitorAdded(int competitor_id);
-	void onCompetitorEdited(int competitor_id);
+	void onRunChanged(int run_id, const QVariantMap &dirty_vals);
 	void onCompetitorReadOut(int competitor_id);
 	void sendGraphQLRequest(const QString &query, const QJsonObject &variables, std::function<void(QJsonObject)> callback, bool withAuthorization);
 	void getChangesByOrigin();
