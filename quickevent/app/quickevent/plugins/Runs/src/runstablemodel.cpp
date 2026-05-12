@@ -76,6 +76,23 @@ QVariant RunsTableModel::data(const QModelIndex &index, int role) const
 		}
 	}
 
+	if(index.column() == col_runs_corridorTime && role == Qt::DisplayRole) {
+		QVariant raw = Super::data(index, Qt::EditRole);
+		if(raw.isNull() || !raw.isValid())
+			return QVariant();
+		QDateTime corridor_dt = raw.toDateTime();
+		if(!corridor_dt.isValid())
+			return QVariant();
+		int stage_id = getPlugin<EventPlugin>()->currentStageId();
+		QDateTime stage_start = getPlugin<EventPlugin>()->stageStartDateTime(stage_id);
+		if(!stage_start.isValid())
+			return QVariant();
+		qint64 offset_ms = stage_start.msecsTo(corridor_dt);
+		if(offset_ms < 0)
+			return QVariant();
+		return quickevent::core::og::TimeMs(static_cast<int>(offset_ms)).toString();
+	}
+
 	return Super::data(index, role);
 }
 
