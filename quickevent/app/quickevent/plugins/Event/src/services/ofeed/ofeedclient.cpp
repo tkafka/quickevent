@@ -1150,7 +1150,8 @@ void OFeedClient::processCompetitorsChanges(QJsonArray data_array)
 		int runs_id = external_id_str.toInt();
 		qfInfo() << "Processing change for competitorId (OFeed externalId):" << runs_id << ", type:" << type << ", " << previous_value << " -> " << new_value;
 
-		if (origin == QLatin1String("START") && created_at.isValid())
+		bool is_dns = type == QLatin1String("status_change") && new_value == QLatin1String("DidNotStart");
+		if (origin == QLatin1String("START") && created_at.isValid() && !is_dns)
 			processCorridorTimeUpdate(runs_id, created_at);
 
 		// Handle each type of change
