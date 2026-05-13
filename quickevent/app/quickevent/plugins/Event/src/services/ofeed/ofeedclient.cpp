@@ -256,6 +256,7 @@ void OFeedClient::onDbEventNotify(const QString &domain, int connection_id, cons
 				// Competitor fields visible in runsRecord JOIN
 				QStringLiteral("competitorname"), QStringLiteral("registration"), QStringLiteral("note"),
 				QStringLiteral("licence"), QStringLiteral("competitors__startnumber"),
+				QStringLiteral("classid"),
 			};
 			bool has_relevant = false;
 			for (const auto &key : dirty_vals.keys()) {
@@ -1722,7 +1723,7 @@ void OFeedClient::onRunChanged(int run_id, const QVariantMap &dirty_vals)
 
 	// Competitor fields visible in runsRecord JOIN
 	static const QSet<QString> competitor_dirty_fields = {
-		"competitorname", "registration", "note", "licence", "competitors__startnumber"
+		"competitorname", "registration", "note", "licence", "competitors__startnumber", "classid"
 	};
 	bool has_competitor_change = false;
 	for (auto it = dirty_vals.constBegin(); it != dirty_vals.constEnd(); ++it) {
