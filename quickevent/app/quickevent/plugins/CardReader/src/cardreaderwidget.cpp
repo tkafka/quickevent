@@ -46,7 +46,6 @@
 #include <plugins/Receipts/src/receiptsplugin.h>
 #include <plugins/Event/src/eventplugin.h>
 #include <plugins/Runs/src/findrunnerwidget.h>
-// #include <plugins/Competitors/src/competitorsplugin.h>
 #include <plugins/Runs/src/runflagsdialog.h>
 #include <plugins/Runs/src/runsplugin.h>
 
@@ -69,7 +68,6 @@ using qf::gui::framework::getPlugin;
 using Event::EventPlugin;
 using CardReader::CardReaderPlugin;
 using Receipts::ReceiptsPlugin;
-// using Competitors::CompetitorsPlugin;
 using Runs::RunsPlugin;
 
 namespace {
@@ -261,6 +259,8 @@ CardReaderWidget::CardReaderWidget(QWidget *parent)
 			}
 		}
 	}, Qt::QueuedConnection);
+
+	connect(qf::gui::framework::Application::instance(), &qf::gui::framework::Application::dbRecChng, this, &CardReaderWidget::onDbRecChng, Qt::QueuedConnection);
 }
 
 CardReaderWidget::~CardReaderWidget()
@@ -509,6 +509,20 @@ void CardReaderWidget::reload()
 	qfDebug() << qb.toString();
 	m_cardsModel->setQueryBuilder(qb, false);
 	m_cardsModel->reload();
+}
+
+void CardReaderWidget::onDbRecChng(const qf::core::sql::RecChng &recchng)
+{
+	if(isVisible()) {
+		if (recchng.table == "cards" && recchng.op == qf::core::sql::RecOp::Update) {
+			for (int i = 0; i < m_cardsModel->rowCount(); ++i) {
+				if (m_cardsModel->value(i, "cards.id").toInt() == recchng.id) {
+					m_cardsModel->reloadRow(i);
+					break;
+				}
+			}
+		}
+	}
 }
 
 void CardReaderWidget::onDbEventNotify(const QString &domain, int connection_id, const QVariant &data)
