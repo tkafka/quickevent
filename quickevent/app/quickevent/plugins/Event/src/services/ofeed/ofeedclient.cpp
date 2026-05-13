@@ -252,8 +252,10 @@ void OFeedClient::onDbEventNotify(const QString &domain, int connection_id, cons
 				QStringLiteral("siid"), QStringLiteral("disqualified"), QStringLiteral("disqualifiedbyorganizer"),
 				QStringLiteral("mispunch"), QStringLiteral("badcheck"),
 				QStringLiteral("notstart"), QStringLiteral("notfinish"), QStringLiteral("notcompeting"),
+				QStringLiteral("leg"), QStringLiteral("relayid"),
 				// Competitor fields visible in runsRecord JOIN
 				QStringLiteral("competitorname"), QStringLiteral("registration"), QStringLiteral("note"),
+				QStringLiteral("licence"), QStringLiteral("competitors__startnumber"),
 			};
 			bool has_relevant = false;
 			for (const auto &key : dirty_vals.keys()) {
@@ -1659,6 +1661,24 @@ void OFeedClient::onRunChanged(int run_id, const QVariantMap &dirty_vals)
 		}
 	}
 
+	// Leg (relay stage number)
+	if (has_field("leg")) {
+		QVariant v = field_value("leg");
+		if (!v.isNull()) {
+			json_payload << R"("leg":)" << v.toInt() << ",";
+			has_fields = true;
+		}
+	}
+
+	// Relay team
+	if (has_field("relayid")) {
+		QVariant v = field_value("relayid");
+		if (!v.isNull()) {
+			json_payload << R"("teamId":)" << v.toInt() << ",";
+			has_fields = true;
+		}
+	}
+
 	// Status — any flag change requires a DB read to compute the final value
 	static const QSet<QString> status_flag_fields = {
 		"disqualified", "disqualifiedbyorganizer", "mispunch", "badcheck",
@@ -1700,9 +1720,9 @@ void OFeedClient::onRunChanged(int run_id, const QVariantMap &dirty_vals)
 		sendCompetitorUpdate(QString::fromStdString(json_str), run_id);
 	}
 
-	// Competitor fields visible in runsRecord JOIN (competitorName, registration, note)
+	// Competitor fields visible in runsRecord JOIN
 	static const QSet<QString> competitor_dirty_fields = {
-		"competitorname", "registration", "note"
+		"competitorname", "registration", "note", "licence", "competitors__startnumber"
 	};
 	bool has_competitor_change = false;
 	for (auto it = dirty_vals.constBegin(); it != dirty_vals.constEnd(); ++it) {
@@ -1715,12 +1735,18 @@ void OFeedClient::onRunChanged(int run_id, const QVariantMap &dirty_vals)
 		bool name_changed = has_field("competitorname");
 		bool registration_changed = has_field("registration");
 		bool note_changed = has_field("note");
+		bool licence_changed = has_field("licence");
+		bool bib_changed = has_field("competitors__startnumber");
 
 		qf::core::sql::Query cq;
 		cq.exec("SELECT competitors.firstName, competitors.lastName, competitors.registration, competitors.note, "
+				"competitors.licence, competitors.startNumber, "
+				"classes.id AS classId, "
 				"clubs.name AS organisationName, clubs.abbr AS organisationAbbr "
 				"FROM runs "
 				"INNER JOIN competitors ON competitors.id = runs.competitorId "
+				"LEFT JOIN relays ON relays.id = runs.relayId "
+				"INNER JOIN classes ON classes.id = competitors.classId OR classes.id = relays.classId "
 				"LEFT JOIN clubs ON substr(competitors.registration, 1, 3) = clubs.abbr "
 				"WHERE runs.id=" QF_IARG(run_id), qf::core::Exception::Throw);
 		if (cq.next()) {
@@ -1744,6 +1770,28 @@ void OFeedClient::onRunChanged(int run_id, const QVariantMap &dirty_vals)
 			if (note_changed) {
 				cpayload << R"("note":")" << cq.value("note").toString().toStdString() << R"(",)";
 				has_cfields = true;
+			}
+			if (licence_changed) {
+				const QString lic = cq.value("licence").toString();
+				if (!lic.isEmpty()) {
+					cpayload << R"("license":")" << lic.toStdString() << R"(",)";
+					has_cfields = true;
+				}
+			}
+			if (bib_changed) {
+				const QVariant bib_v = cq.value("startNumber");
+				if (!bib_v.isNull()) {
+					cpayload << R"("bibNumber":)" << bib_v.toInt() << ",";
+					has_cfields = true;
+				}
+			}
+			// Always include classExternalId so a simultaneous class change is not lost
+			{
+				const int class_id = cq.value("classId").toInt();
+				if (class_id > 0) {
+					cpayload << R"("classExternalId":")" << class_id << R"(",)";
+					has_cfields = true;
+				}
 			}
 
 			if (has_cfields) {
