@@ -266,78 +266,43 @@
       </widget>
      </item>
      <item>
-      <layout class="QFormLayout" name="formLayout">
-       <item row="0" column="0">
-        <widget class="QPushButton" name="processChangesOnOffButton">
-         <property name="sizePolicy">
-          <sizepolicy hsizetype="Maximum" vsizetype="Fixed">
-           <horstretch>0</horstretch>
-           <verstretch>0</verstretch>
-          </sizepolicy>
-         </property>
-         <property name="minimumSize">
-          <size>
-           <width>0</width>
-           <height>0</height>
-          </size>
-         </property>
-         <property name="cursor">
-          <cursorShape>ArrowCursor</cursorShape>
-         </property>
+      <layout class="QHBoxLayout" name="processChangesLayout">
+       <item>
+        <widget class="ToggleSwitch" name="processChangesOnOffButton">
          <property name="toolTip">
-          <string>Turn on/off changes processing</string>
-         </property>
-         <property name="layoutDirection">
-          <enum>Qt::LayoutDirection::LeftToRight</enum>
-         </property>
-         <property name="autoFillBackground">
-          <bool>false</bool>
-         </property>
-         <property name="text">
-          <string>ON / OFF</string>
+          <string>Enable or disable automatic processing of changes from the start</string>
          </property>
          <property name="checkable">
           <bool>true</bool>
          </property>
         </widget>
        </item>
-       <item row="0" column="1">
+       <item>
         <widget class="QLabel" name="processChangesOnOffLabel">
          <property name="text">
-          <string>Processing changes is deactivated</string>
+          <string>Process changes from start (O Checklist)</string>
          </property>
         </widget>
        </item>
-      </layout>
-     </item>
-     <item>
-      <layout class="QFormLayout" name="processChangesOriginForm">
-       <item row="0" column="0">
-        <widget class="QLabel" name="originLabel">
-         <property name="text">
-          <string>Origin</string>
+       <item>
+        <spacer name="processChangesHorizontalSpacer">
+         <property name="orientation">
+          <enum>Qt::Orientation::Horizontal</enum>
          </property>
-        </widget>
-       </item>
-       <item row="0" column="1">
-        <widget class="QLineEdit" name="edChangelogOrigin">
-         <property name="text">
-          <string>START</string>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>40</width>
+           <height>20</height>
+          </size>
          </property>
-         <property name="readOnly">
-          <bool>true</bool>
-         </property>
-         <property name="placeholderText">
-          <string>START</string>
-         </property>
-        </widget>
+        </spacer>
        </item>
       </layout>
      </item>
      <item>
       <widget class="QLabel" name="processChangesDescription">
        <property name="text">
-        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Changes from the origin specified (permanent value at this moment) are processed automatically and visualized in &lt;span style=&quot; font-weight:700;&quot;&gt;Late registrations&lt;/span&gt; modul.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;When enabled, changes from the start are automatically processed and visualized in the &lt;span style=&quot; font-weight:700;&quot;&gt;Late registrations&lt;/span&gt; module.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
        </property>
        <property name="wordWrap">
         <bool>true</bool>
@@ -496,6 +461,13 @@
   <tabstop>btExportStartListXml30</tabstop>
   <tabstop>btExportResultsXml30</tabstop>
  </tabstops>
+ <customwidgets>
+  <customwidget>
+   <class>ToggleSwitch</class>
+   <extends>QAbstractButton</extends>
+   <header location="local">plugins/Event/src/services/ofeed/toggleswitch.h</header>
+  </customwidget>
+ </customwidgets>
  <resources/>
  <connections/>
 </ui>
