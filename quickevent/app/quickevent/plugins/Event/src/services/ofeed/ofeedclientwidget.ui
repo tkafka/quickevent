@@ -196,6 +196,16 @@
       </layout>
      </item>
      <item>
+      <widget class="QFrame" name="separatorCredentials">
+       <property name="frameShape">
+        <enum>QFrame::Shape::HLine</enum>
+       </property>
+       <property name="frameShadow">
+        <enum>QFrame::Shadow::Sunken</enum>
+       </property>
+      </widget>
+     </item>
+     <item>
       <widget class="QLabel" name="uploadDataTitle">
        <property name="font">
         <font>
@@ -253,6 +263,16 @@
       </layout>
      </item>
      <item>
+      <widget class="QFrame" name="separatorUploadData">
+       <property name="frameShape">
+        <enum>QFrame::Shape::HLine</enum>
+       </property>
+       <property name="frameShadow">
+        <enum>QFrame::Shadow::Sunken</enum>
+       </property>
+      </widget>
+     </item>
+     <item>
       <widget class="QLabel" name="processChangesTitle">
        <property name="font">
         <font>
@@ -306,6 +326,16 @@
        </property>
        <property name="wordWrap">
         <bool>true</bool>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QFrame" name="separatorProcessChanges">
+       <property name="frameShape">
+        <enum>QFrame::Shape::HLine</enum>
+       </property>
+       <property name="frameShadow">
+        <enum>QFrame::Shadow::Sunken</enum>
        </property>
       </widget>
      </item>
@@ -481,6 +511,16 @@
         </widget>
        </item>
       </layout>
+     </item>
+     <item>
+      <widget class="QFrame" name="separatorReceiptSetup">
+       <property name="frameShape">
+        <enum>QFrame::Shape::HLine</enum>
+       </property>
+       <property name="frameShadow">
+        <enum>QFrame::Shadow::Sunken</enum>
+       </property>
+      </widget>
      </item>
      <item>
       <widget class="QLabel" name="additionalSettingsTitle">
