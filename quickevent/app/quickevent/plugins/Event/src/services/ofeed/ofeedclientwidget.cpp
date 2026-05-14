@@ -197,12 +197,12 @@ OFeedClientWidget::OFeedClientWidget(QWidget *parent)
 	};
 	connect(ui->btToggleEventPasswordVisibility, &QToolButton::toggled, this, update_password_visibility);
 	update_password_visibility(ui->btToggleEventPasswordVisibility->isChecked());
-	connect(ui->additionalSettingsPrintEventImageOnReceipt, &QCheckBox::toggled, this, [this](bool on) {
+	connect(ui->additionalSettingsPrintEventImageOnReceipt, &QAbstractButton::toggled, this, [this](bool on) {
 		ui->lbReceiptImageHeight->setEnabled(on);
 		ui->edReceiptImageHeight->setEnabled(on);
 		updateTestConnectionState();
 	});
-	connect(ui->additionalSettingsPrintEventQrCodeOnReceipt, &QCheckBox::toggled, this, [this](bool on) {
+	connect(ui->additionalSettingsPrintEventQrCodeOnReceipt, &QAbstractButton::toggled, this, [this](bool on) {
 		ui->lbReceiptEventLink->setEnabled(on);
 		ui->edReceiptEventLink->setEnabled(on);
 		ui->lbReceiptEventQrCodeCaption->setEnabled(on);
