@@ -85,6 +85,9 @@ add_executable(quickevent
 	plugins/Event/src/services/ofeed/ofeedclient.cpp
 	plugins/Event/src/services/ofeed/ofeedclientwidget.cpp
 	plugins/Event/src/services/ofeed/ofeedclientwidget.ui
+	plugins/Event/src/services/ofeed/ofeedwelcomedialog.h
+	plugins/Event/src/services/ofeed/ofeedwelcomedialog.cpp
+	plugins/Event/src/services/ofeed/ofeedwelcomedialog.ui
 	plugins/Event/src/services/ofeed/toggleswitch.h
 	plugins/Event/src/services/ofeed/toggleswitch.cpp
 	plugins/Event/src/services/service.cpp

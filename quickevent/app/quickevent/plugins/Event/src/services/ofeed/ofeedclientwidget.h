@@ -19,6 +19,8 @@ class OFeedClientWidget : public qf::gui::framework::DialogWidget
 public:
 	explicit OFeedClientWidget(QWidget *parent = nullptr);
 	~OFeedClientWidget();
+protected:
+	void showEvent(QShowEvent *event) override;
 private:
 	void onBtExportResultsXml30Clicked();
 	void onBtExportStartListXml30Clicked();

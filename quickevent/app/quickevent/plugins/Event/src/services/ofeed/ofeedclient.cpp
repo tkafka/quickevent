@@ -646,6 +646,19 @@ void OFeedClient::setRunChangesProcessing(bool runChangesProcessing)
 	getPlugin<EventPlugin>()->eventConfig()->save(serviceName().toLower());
 }
 
+bool OFeedClient::introTourShowed() const
+{
+	return getPlugin<EventPlugin>()->eventConfig()->value(
+		serviceName().toLower() + QStringLiteral(".introTourShowed"), false).toBool();
+}
+
+void OFeedClient::setIntroTourShowed(bool shown)
+{
+	auto *event_config = getPlugin<EventPlugin>()->eventConfig();
+	event_config->setValue(serviceName().toLower() + QStringLiteral(".introTourShowed"), shown);
+	event_config->save(serviceName().toLower());
+}
+
 void OFeedClient::testConnection(const QString &host_url,
 								 const QString &event_id,
 								 const QString &event_password,

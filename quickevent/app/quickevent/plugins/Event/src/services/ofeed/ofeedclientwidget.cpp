@@ -1,6 +1,7 @@
 #include "ofeedclientwidget.h"
 #include "ui_ofeedclientwidget.h"
 #include "ofeedclient.h"
+#include "ofeedwelcomedialog.h"
 #include "toggleswitch.h"
 
 #include <qf/gui/framework/mainwindow.h>
@@ -11,6 +12,8 @@
 #include <qf/core/log.h>
 
 #include <QClipboard>
+#include <QLocale>
+#include <QShowEvent>
 #include <QDesktopServices>
 #include <QFileDialog>
 #include <QGuiApplication>
@@ -25,6 +28,15 @@
 namespace Event::services {
 
 namespace {
+
+QString docsBaseUrl()
+{
+	const bool isCzech = QLocale().language() == QLocale::Czech;
+	return isCzech
+		? QStringLiteral("https://docs.orienteerfeed.com/cs")
+		: QStringLiteral("https://docs.orienteerfeed.com");
+}
+
 struct ParsedOFeedSetupLink {
 	QString host_url;
 	QString event_id;
@@ -150,6 +162,21 @@ OFeedClientWidget::OFeedClientWidget(QWidget *parent)
 	setPersistentSettingsId("OFeedClientWidget");
 	ui->setupUi(this);
 
+	const QString base = docsBaseUrl();
+	ui->lbDocsLinks->setText(
+		QStringLiteral("<a href=\"%1/\">%2</a>"
+					   "&nbsp;&nbsp;|&nbsp;&nbsp;"
+					   "<a href=\"%3/category/tutorials/\">%4</a>"
+					   "&nbsp;&nbsp;|&nbsp;&nbsp;"
+					   "<a href=\"%5/integrations/quickevent/#how-does-the-service-work\">%6</a>"
+					   "&nbsp;&nbsp;|&nbsp;&nbsp;"
+					   "<a href=\"%7/support\">%8</a>")
+			.arg(base, tr("About"))
+			.arg(base, tr("Tutorials"))
+			.arg(base, tr("How it works"))
+			.arg(base, tr("Support"))
+	);
+
 	OFeedClient *svc = service();
 	if(svc) {
 		OFeedClientSettings ss = svc->settings();
@@ -223,6 +250,18 @@ OFeedClientWidget::OFeedClientWidget(QWidget *parent)
 OFeedClientWidget::~OFeedClientWidget()
 {
 	delete ui;
+}
+
+void OFeedClientWidget::showEvent(QShowEvent *event)
+{
+	Super::showEvent(event);
+	OFeedClient *svc = service();
+	if(svc && !svc->introTourShowed()) {
+		svc->setIntroTourShowed(true);
+		auto *dlg = new OFeedWelcomeDialog(this);
+		dlg->setAttribute(Qt::WA_DeleteOnClose);
+		dlg->show();
+	}
 }
 
 bool OFeedClientWidget::acceptDialogDone(int result)

@@ -17,6 +17,39 @@
    <item>
     <layout class="QVBoxLayout" name="ofeedVerticalLayout">
      <item>
+      <widget class="QLabel" name="docsSupportTitle">
+       <property name="font">
+        <font>
+         <pointsize>10</pointsize>
+         <bold>true</bold>
+        </font>
+       </property>
+       <property name="text">
+        <string>Documentation &amp; support</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QLabel" name="lbDocsLinks">
+       <property name="text">
+        <string/>
+       </property>
+       <property name="openExternalLinks">
+        <bool>true</bool>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QFrame" name="separatorDocs">
+       <property name="frameShape">
+        <enum>QFrame::Shape::HLine</enum>
+       </property>
+       <property name="frameShadow">
+        <enum>QFrame::Shadow::Sunken</enum>
+       </property>
+      </widget>
+     </item>
+     <item>
       <widget class="QLabel" name="credentialsTitle">
        <property name="font">
         <font>
@@ -206,33 +239,20 @@
       </widget>
      </item>
      <item>
-      <widget class="QLabel" name="uploadDataTitle">
-       <property name="font">
-        <font>
-         <pointsize>10</pointsize>
-         <bold>true</bold>
-        </font>
-       </property>
-       <property name="text">
-        <string>Upload data</string>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QLabel" name="uploadDataDescription">
-       <property name="text">
-        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Start lists and results are automatically exported at specified intervals, with changes such as edited competitor data or new competitors being synced in real time. Both results and start lists can also be exported manually using the buttons below. Additionally, when the service is active, individual competitor data is sent after readout and upon saving the competitor dialog. Refer to the &lt;a href=&quot;https://docs.orienteerfeed.com/&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#007af4;&quot;&gt;documentation&lt;/span&gt;&lt;/a&gt; for more details.&lt;/p&gt;&lt;p&gt;If you encounter any unexpected errors, check &lt;a href=&quot;https://docs.orienteerfeed.com/support&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#007af4;&quot;&gt;support&lt;/span&gt;&lt;/a&gt; page in the documentation.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-       </property>
-       <property name="wordWrap">
-        <bool>true</bool>
-       </property>
-       <property name="openExternalLinks">
-        <bool>true</bool>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <layout class="QHBoxLayout" name="exportHorizontalLayout">
+      <layout class="QHBoxLayout" name="manualUploadLayout">
+       <item>
+        <widget class="QLabel" name="uploadDataTitle">
+         <property name="font">
+          <font>
+           <pointsize>10</pointsize>
+           <bold>true</bold>
+          </font>
+         </property>
+         <property name="text">
+          <string>Manual data upload</string>
+         </property>
+        </widget>
+       </item>
        <item>
         <spacer name="exportHorizontalSpacer">
          <property name="orientation">
