@@ -29,6 +29,7 @@ private:
 	void onBtRefreshEventImageClicked();
 	void onBtOpenEventWebsiteClicked();
 	void updateTestConnectionState();
+	void updateCredentialStatus(bool valid);
 	void syncReceiptEventLinkWithDefaults();
 	QString defaultReceiptEventLink() const;
 	OFeedClient* service();

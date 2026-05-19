@@ -181,6 +181,7 @@ OFeedClientWidget::OFeedClientWidget(QWidget *parent)
 	if(svc) {
 		OFeedClientSettings ss = svc->settings();
 		ui->edExportInterval->setValue(ss.exportIntervalSec());
+		ui->edCredentialCheckInterval->setValue(ss.credentialCheckIntervalMin());
 		ui->edHostUrl->setText(userFacingHostUrl(svc->hostUrl()));
 		ui->edEventId->setText(svc->eventId());
 		ui->edEventPassword->setText(svc->eventPassword());
@@ -199,6 +200,8 @@ OFeedClientWidget::OFeedClientWidget(QWidget *parent)
 		ui->edReceiptEventQrCodeCaption->setEnabled(svc->printEventQrCodeOnReceipt());
 		ui->lbEventImageCacheStatus->setText(svc->hasCachedEventImage() ? tr("Cached image is available") : tr("No cached image"));
 		ui->processChangesOnOffButton->setChecked(svc->runChangesProcessing());
+		updateCredentialStatus(svc->credentialsValid() == 1);
+		connect(svc, &OFeedClient::credentialsStatusChanged, this, &OFeedClientWidget::updateCredentialStatus);
 	}
 	syncReceiptEventLinkWithDefaults();
 
@@ -287,6 +290,7 @@ bool OFeedClientWidget::saveSettings()
 	if(svc) {
 		OFeedClientSettings ss = svc->settings();
 		ss.setExportIntervalSec(ui->edExportInterval->value());
+		ss.setCredentialCheckIntervalMin(ui->edCredentialCheckInterval->value());
 		svc->setHostUrl(ui->edHostUrl->text().trimmed());
 		svc->setEventId(ui->edEventId->text().trimmed());
 		svc->setEventPassword(ui->edEventPassword->text().trimmed());
@@ -432,5 +436,16 @@ void OFeedClientWidget::updateTestConnectionState()
 	ui->btOpenEventWebsite->setToolTip(has_event_website_url ? tr("Open event page in browser") : tr("Fill Url and Event id to open event page"));
 	ui->btTestConnection->setEnabled(has_required_credentials && !m_isTestConnectionRunning);
 	ui->btRefreshEventImage->setEnabled(can_refresh_event_image);
+}
+
+void OFeedClientWidget::updateCredentialStatus(bool valid)
+{
+	OFeedClient *svc = service();
+	if(!svc)
+		return;
+	const bool known_invalid = !valid && svc->credentialsValid() == 0;
+	ui->lbCredentialWarning->setVisible(known_invalid);
+	if(known_invalid)
+		ui->lbCredentialWarning->setStyleSheet(QStringLiteral("color:#b00020; background:#fff3cd; padding:4px; border-radius:3px;"));
 }
 }

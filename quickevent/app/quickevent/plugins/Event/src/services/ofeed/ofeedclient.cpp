@@ -21,6 +21,7 @@
 
 #include <QCoreApplication>
 #include <QBuffer>
+#include <QMessageBox>
 #include <QHttpPart>
 #include <QImageReader>
 #include <QNetworkAccessManager>
@@ -120,6 +121,8 @@ OFeedClient::OFeedClient(QObject *parent)
 	m_networkManager = new QNetworkAccessManager(this);
 	m_exportTimer = new QTimer(this);
 	connect(m_exportTimer, &QTimer::timeout, this, &OFeedClient::onExportTimerTimeOut);
+	m_credentialCheckTimer = new QTimer(this);
+	connect(m_credentialCheckTimer, &QTimer::timeout, this, &OFeedClient::checkCredentials);
 	connect(this, &OFeedClient::settingsChanged, this, &OFeedClient::init, Qt::QueuedConnection);
 	connect(getPlugin<EventPlugin>(), &Event::EventPlugin::dbEventNotify, this, &OFeedClient::onDbEventNotify, Qt::QueuedConnection);
 }
@@ -133,15 +136,19 @@ void OFeedClient::run()
 {
 	Super::run();
 	ensureEventImageCachedAtStartup();
-	exportStartListIofXml3([this]()
-						   { exportResultsIofXml3(); });
+	exportStartListIofXml3([this]() { exportResultsIofXml3(); });
 	m_exportTimer->start();
+	QTimer::singleShot(3000, this, &OFeedClient::checkCredentials);
+	m_credentialCheckTimer->start();
 }
 
 void OFeedClient::stop()
 {
 	Super::stop();
 	m_exportTimer->stop();
+	m_credentialCheckTimer->stop();
+	m_credentialsValid = -1;
+	m_credentialWarningShown = false;
 }
 
 void OFeedClient::exportResultsIofXml3()
@@ -178,6 +185,7 @@ void OFeedClient::init()
 {
 	OFeedClientSettings ss = settings();
 	m_exportTimer->setInterval(ss.exportIntervalSec() * 1000);
+	m_credentialCheckTimer->setInterval(ss.credentialCheckIntervalMin() * 60 * 1000);
 	ensureEventImageCachedAtStartup();
 }
 
@@ -673,28 +681,20 @@ void OFeedClient::testConnection(const QString &host_url,
 		return;
 	}
 
-	QUrl base_url(normalized_base_host_url(trimmed_host_url));
-	if (!base_url.isValid() || base_url.scheme().isEmpty() || base_url.host().isEmpty()) {
+	QUrl url(normalized_base_host_url(trimmed_host_url));
+	if (!url.isValid() || url.scheme().isEmpty() || url.host().isEmpty()) {
 		callback(false, tr("Invalid OFeed URL."));
 		return;
 	}
 
-	base_url.setPath(QStringLiteral("/graphql"));
+	url.setPath(QStringLiteral("/rest/v1/events/%1/connection-check").arg(trimmed_event_id));
 
-	QNetworkRequest request(base_url);
+	QNetworkRequest request(url);
 	request.setHeader(QNetworkRequest::ContentTypeHeader, "application/json");
-
 	const QString combined = trimmed_event_id + ":" + trimmed_event_password;
-	const QByteArray auth = "Basic " + combined.toUtf8().toBase64();
-	request.setRawHeader("Authorization", auth);
+	request.setRawHeader("Authorization", "Basic " + combined.toUtf8().toBase64());
 
-	QJsonObject payload;
-	payload["query"] = "query MyQuery($eventId: String!) { event(id: $eventId) { name organizer } }";
-	QJsonObject variables;
-	variables["eventId"] = trimmed_event_id;
-	payload["variables"] = variables;
-
-	QNetworkReply *reply = m_networkManager->post(request, QJsonDocument(payload).toJson(QJsonDocument::Compact));
+	QNetworkReply *reply = m_networkManager->post(request, QByteArray("{}"));
 
 	connect(reply, &QNetworkReply::finished, this, [reply, callback]() {
 		const int http_status = reply->attribute(QNetworkRequest::HttpStatusCodeAttribute).toInt();
@@ -717,8 +717,7 @@ void OFeedClient::testConnection(const QString &host_url,
 		}
 
 		if (http_status != 200) {
-			const QString reason = http_reason.isEmpty() ? tr("Unexpected HTTP response") : http_reason;
-			callback_error(reason);
+			callback_error(http_reason.isEmpty() ? tr("Unexpected HTTP response") : http_reason);
 			reply->deleteLater();
 			return;
 		}
@@ -731,42 +730,116 @@ void OFeedClient::testConnection(const QString &host_url,
 			return;
 		}
 
-		const QJsonObject response_obj = doc.object();
-		if (response_obj.contains("errors") && response_obj.value("errors").isArray()) {
-			const QJsonArray errors = response_obj.value("errors").toArray();
-			QString first_error = tr("GraphQL error");
-			if (!errors.isEmpty() && errors.first().isObject()) {
-				const QString message = errors.first().toObject().value("message").toString().trimmed();
-				if (!message.isEmpty())
-					first_error = message;
-			}
-			callback_error(first_error);
+		const QJsonObject data_obj = doc.object().value("results").toObject().value("data").toObject();
+
+		const QJsonObject credentials_obj = data_obj.value("credentials").toObject();
+		if (!credentials_obj.value("valid").toBool()) {
+			const QString reason = credentials_obj.value("reason").toString();
+			QString reason_msg;
+			if (reason == QLatin1String("basic_password_expired"))
+				reason_msg = tr("Password has expired.");
+			else if (reason == QLatin1String("basic_event_id_mismatch"))
+				reason_msg = tr("Event ID mismatch.");
+			else if (reason == QLatin1String("basic_auth_required") || reason == QLatin1String("missing_authorization_header"))
+				reason_msg = tr("Authentication required.");
+			else
+				reason_msg = tr("Invalid credentials.");
+			callback(false, reason_msg);
 			reply->deleteLater();
 			return;
 		}
 
-		const QJsonObject data_obj = response_obj.value("data").toObject();
 		const QJsonObject event_obj = data_obj.value("event").toObject();
 		if (event_obj.isEmpty()) {
-			callback_error(tr("Missing event data in response."));
+			callback_error(tr("Event not found."));
 			reply->deleteLater();
 			return;
 		}
 
 		const QString event_name = event_obj.value("name").toString().trimmed();
-		if (event_name.isEmpty()) {
-			callback_error(tr("Missing event name in response."));
-			reply->deleteLater();
-			return;
-		}
-
 		const QString organizer = event_obj.value("organizer").toString().trimmed();
-		QString success_message = event_name;
-		if (!organizer.isEmpty())
-			success_message = QStringLiteral("%1 (%2)").arg(event_name, organizer);
+		const QString date_str = event_obj.value("date").toString();
+		const QString timezone = event_obj.value("timezone").toString().trimmed();
 
-		callback(true, success_message);
+		const QDateTime event_date = QDateTime::fromString(date_str, Qt::ISODate);
+		const QTimeZone event_tz = timezone.isEmpty() ? QTimeZone::utc() : QTimeZone(timezone.toUtf8());
+		const QDateTime local_date = event_date.isValid() ? event_date.toTimeZone(event_tz) : QDateTime();
+
+		const QString formatted_date = local_date.isValid()
+			? QLocale().toString(local_date.date(), QLocale::ShortFormat)
+			: date_str;
+		const QString formatted_time = local_date.isValid()
+			? QLocale().toString(local_date.time(), QLocale::ShortFormat)
+			: QString();
+
+		QStringList parts;
+		if (!formatted_date.isEmpty())
+			parts << formatted_date;
+		if (!event_name.isEmpty())
+			parts << event_name;
+		if (!organizer.isEmpty())
+			parts << organizer;
+		if (!formatted_time.isEmpty())
+			parts << formatted_time;
+
+		callback(true, parts.join(QStringLiteral(", ")));
 		reply->deleteLater();
+	});
+}
+
+void OFeedClient::checkCredentials()
+{
+	if (status() != Status::Running)
+		return;
+
+	const QString host_url = hostUrl();
+	const QString event_id = eventId();
+	const QString event_password = eventPassword();
+
+	if (host_url.isEmpty() || event_id.isEmpty() || event_password.isEmpty())
+		return;
+
+	QUrl url(normalized_base_host_url(host_url));
+	url.setPath(QStringLiteral("/rest/v1/events/%1/connection-check").arg(event_id));
+
+	QNetworkRequest request(url);
+	request.setHeader(QNetworkRequest::ContentTypeHeader, "application/json");
+	const QString combined = event_id + ":" + event_password;
+	request.setRawHeader("Authorization", "Basic " + combined.toUtf8().toBase64());
+
+	QNetworkReply *reply = m_networkManager->post(request, QByteArray("{}"));
+
+	connect(reply, &QNetworkReply::finished, this, [this, reply]() {
+		reply->deleteLater();
+
+		const int http_status = reply->attribute(QNetworkRequest::HttpStatusCodeAttribute).toInt();
+		if (reply->error() != QNetworkReply::NoError || http_status != 200)
+			return;
+
+		QJsonParseError parse_error;
+		const QJsonDocument doc = QJsonDocument::fromJson(reply->readAll(), &parse_error);
+		if (parse_error.error != QJsonParseError::NoError || !doc.isObject())
+			return;
+
+		const QJsonObject credentials_obj = doc.object().value("results").toObject().value("data").toObject().value("credentials").toObject();
+		if (credentials_obj.isEmpty())
+			return;
+
+		const bool creds_valid = credentials_obj.value("valid").toBool();
+		const bool was_valid = m_credentialsValid != 0;
+		m_credentialsValid = creds_valid ? 1 : 0;
+		emit credentialsStatusChanged(creds_valid);
+
+		if (!creds_valid && was_valid && !m_credentialWarningShown) {
+			m_credentialWarningShown = true;
+			QMessageBox::warning(
+				nullptr,
+				tr("OFeed — Invalid Credentials"),
+				tr("OFeed password is invalid or has expired.\n\nPlease open OFeed service settings and update your credentials.")
+			);
+		}
+		if (creds_valid)
+			m_credentialWarningShown = false;
 	});
 }
 

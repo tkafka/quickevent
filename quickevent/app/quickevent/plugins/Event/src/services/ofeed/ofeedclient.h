@@ -17,6 +17,7 @@ class OFeedClientSettings : public ServiceSettings
 	using Super = ServiceSettings;
 
 	QF_VARIANTMAP_FIELD2(int, e, setE, xportIntervalSec, 60)
+	QF_VARIANTMAP_FIELD2(int, c, setC, redentialCheckIntervalMin, 60)
 public:
 	OFeedClientSettings(const QVariantMap &o = QVariantMap()) : Super(o) {}
 };
@@ -26,6 +27,9 @@ class OFeedClient : public Service
 	Q_OBJECT
 
 	using Super = Service;
+signals:
+	void credentialsStatusChanged(bool valid);
+
 public:
 	OFeedClient(QObject *parent);
 
@@ -77,12 +81,16 @@ public:
 						const QString &eventId,
 						const QString &eventPassword,
 						std::function<void(bool success, const QString &message)> callback);
+	int credentialsValid() const { return m_credentialsValid; }
 
 private:
 	QTimer *m_exportTimer = nullptr;
+	QTimer *m_credentialCheckTimer = nullptr;
 	QNetworkAccessManager *m_networkManager = nullptr;
 	const QString OFEED_API_URL = "https://api.orienteerfeed.com";
 	bool m_eventImageStartupAttempted = false;
+	int m_credentialsValid = -1;  // -1=unknown, 0=invalid, 1=valid
+	bool m_credentialWarningShown = false;
 
 private:
 	qf::gui::framework::DialogWidget *createDetailWidget() override;
@@ -94,6 +102,7 @@ private:
 	void setReceiptConfigValue(const QString &suffix, const QVariant &value);
 	void setCachedEventImage(const QByteArray &raw_data, const QString &format);
 	void clearCachedEventImage();
+	void checkCredentials();
 	void sendFile(QString name, QString request_path, QString file, std::function<void()> on_success = nullptr);
 	void sendCompetitorUpdate(QString json_body, int competitor_id, bool usingExternalId);
 	void sendCompetitorAdded(QString json_body);
