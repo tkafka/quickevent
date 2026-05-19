@@ -166,12 +166,18 @@ OFeedClientWidget::OFeedClientWidget(QWidget *parent)
 	ui->lbDocsLinks->setText(
 		QStringLiteral("<a href=\"%1/\">%2</a>"
 					   "&nbsp;&nbsp;|&nbsp;&nbsp;"
-					   "<a href=\"%3/category/tutorials/\">%4</a>"
+					   "<a href=\"%3/getting-started\">%4</a>"
 					   "&nbsp;&nbsp;|&nbsp;&nbsp;"
-					   "<a href=\"%5/integrations/quickevent/#how-does-the-service-work\">%6</a>"
+					   "<a href=\"%5/best-practice\">%6</a>"
 					   "&nbsp;&nbsp;|&nbsp;&nbsp;"
-					   "<a href=\"%7/support\">%8</a>")
+					   "<a href=\"%7/category/tutorials/\">%8</a>"
+					   "&nbsp;&nbsp;|&nbsp;&nbsp;"
+					   "<a href=\"%9/integrations/quickevent/#how-does-the-service-work\">%10</a>"
+					   "&nbsp;&nbsp;|&nbsp;&nbsp;"
+					   "<a href=\"%11/support\">%12</a>")
 			.arg(base, tr("About"))
+			.arg(base, tr("Getting started"))
+			.arg(base, tr("Best practices"))
 			.arg(base, tr("Tutorials"))
 			.arg(base, tr("How it works"))
 			.arg(base, tr("Support"))

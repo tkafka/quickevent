@@ -45,7 +45,7 @@
    <item>
     <widget class="QLabel" name="lbDescription">
      <property name="text">
-      <string>OFeed is an online platform for orienteering race data. Connect QuickEvent to share competitor data in real time.</string>
+      <string>OFeed is an online platform for orienteering race data. Connect QuickEvent to enable handling start lists and results in real time.</string>
      </property>
      <property name="wordWrap">
       <bool>true</bool>
