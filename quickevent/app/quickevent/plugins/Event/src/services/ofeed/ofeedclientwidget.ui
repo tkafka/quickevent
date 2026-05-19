@@ -262,7 +262,7 @@
           </font>
          </property>
          <property name="text">
-          <string>Manual data upload</string>
+          <string>Manual execution</string>
          </property>
         </widget>
        </item>
@@ -290,6 +290,16 @@
         <widget class="QPushButton" name="btExportResultsXml30">
          <property name="text">
           <string>Export results</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QPushButton" name="btProcessChanges">
+         <property name="toolTip">
+          <string>Fetch and process pending changes from OFeed</string>
+         </property>
+         <property name="text">
+          <string>Process changes</string>
          </property>
         </widget>
        </item>

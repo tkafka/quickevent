@@ -213,6 +213,7 @@ OFeedClientWidget::OFeedClientWidget(QWidget *parent)
 
 	connect(ui->btExportResultsXml30, &QPushButton::clicked, this, &OFeedClientWidget::onBtExportResultsXml30Clicked);
 	connect(ui->btExportStartListXml30, &QPushButton::clicked, this, &OFeedClientWidget::onBtExportStartListXml30Clicked);
+	connect(ui->btProcessChanges, &QPushButton::clicked, this, &OFeedClientWidget::onBtProcessChangesClicked);
 	connect(ui->processChangesOnOffButton, &QAbstractButton::toggled, this, [this](bool checked) {
 		OFeedClient *svc = service();
 		if(svc)
@@ -328,6 +329,16 @@ void OFeedClientWidget::onBtExportStartListXml30Clicked()
 		saveSettings();
 		qfInfo() << OFeedClient::serviceName() + " [startlist - manual upload]";
 		svc->exportStartListIofXml3();
+	}
+}
+
+void OFeedClientWidget::onBtProcessChangesClicked()
+{
+	OFeedClient *svc = service();
+	if(svc) {
+		saveSettings();
+		qfInfo() << OFeedClient::serviceName() + " [process changes - manual trigger]";
+		svc->triggerChangesProcessing();
 	}
 }
 

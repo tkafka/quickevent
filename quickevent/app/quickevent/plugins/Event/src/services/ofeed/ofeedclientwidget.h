@@ -24,6 +24,7 @@ protected:
 private:
 	void onBtExportResultsXml30Clicked();
 	void onBtExportStartListXml30Clicked();
+	void onBtProcessChangesClicked();
 	void onBtPasteSetupLinkClicked();
 	void onBtTestConnectionClicked();
 	void onBtRefreshEventImageClicked();

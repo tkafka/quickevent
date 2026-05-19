@@ -175,6 +175,11 @@ void OFeedClient::exportStartListIofXml3(std::function<void()> on_success)
 	sendFile(tr("start list upload"), "/rest/v1/upload/iof", str, on_success);
 }
 
+void OFeedClient::triggerChangesProcessing()
+{
+	getChangesByOrigin();
+}
+
 qf::gui::framework::DialogWidget *OFeedClient::createDetailWidget()
 {
 	auto *w = new OFeedClientWidget();
