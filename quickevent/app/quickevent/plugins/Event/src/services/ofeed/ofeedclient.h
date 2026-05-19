@@ -113,6 +113,7 @@ private:
 	void sendGraphQLRequest(const QString &query, const QJsonObject &variables, std::function<void(QJsonObject)> callback, bool withAuthorization);
 	void getChangesByOrigin(std::function<void()> on_done = nullptr);
 	void processCompetitorsChanges(QJsonArray data_array);
+	void markChangelogEntryAsProcessed(int protocolId);
 	void processCardChange(int runs_id, const QString &new_value);
 	void processStatusChange(int runs_id, const QString &new_value);
 	void processNoteChange(int runs_id, const QString &new_value);

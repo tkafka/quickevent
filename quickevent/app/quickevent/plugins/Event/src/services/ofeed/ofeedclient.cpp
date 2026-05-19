@@ -1274,7 +1274,34 @@ void OFeedClient::processCompetitorsChanges(QJsonArray data_array)
 
 		// Store the processed change
 		storeChange(change);
+		markChangelogEntryAsProcessed(change["id"].toInt());
 	}
+}
+
+void OFeedClient::markChangelogEntryAsProcessed(int protocolId)
+{
+	QString mutation = R"(
+	mutation MarkChangelogProcessed($eventId: String!, $protocolId: Int!, $processedByType: ProtocolProcessedByType, $processedBySource: String!) {
+		markChangelogProcessed(eventId: $eventId, protocolId: $protocolId, processedByType: $processedByType, processedBySource: $processedBySource) {
+			id
+			processed
+		}
+	}
+	)";
+
+	QJsonObject variables;
+	variables["eventId"] = eventId();
+	variables["protocolId"] = protocolId;
+	variables["processedByType"] = QString("SYSTEM");
+	variables["processedBySource"] = QString("IT");
+
+	sendGraphQLRequest(mutation, variables, [this, protocolId](QJsonObject data) {
+		if (data.isEmpty()) {
+			qfWarning() << serviceName().toStdString() + " Failed to mark changelog entry " << protocolId << " as processed";
+		} else {
+			qfDebug() << serviceName().toStdString() + " Changelog entry " << protocolId << " marked as processed";
+		}
+	}, true);
 }
 
 void OFeedClient::processCardChange(int runs_id, const QString &new_value)
