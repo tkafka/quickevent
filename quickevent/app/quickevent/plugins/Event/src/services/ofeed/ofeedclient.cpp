@@ -152,6 +152,7 @@ void OFeedClient::stop()
 	m_resultsExportInProgress = false;
 	m_startListExportInProgress = false;
 	m_changesProcessingInProgress = false;
+	m_processingOFeedChanges = false;
 }
 
 void OFeedClient::exportResultsIofXml3()
@@ -236,12 +237,18 @@ void OFeedClient::init()
 void OFeedClient::onExportTimerTimeOut()
 {
 	emit exportTimerFired();
-	exportStartListIofXml3();
+	if (runChangesProcessing() && m_changesProcessingInProgress) {
+		// Skip - ongoing cycle will export start list + results after processing completes.
+		// Exporting now would send stale data and overwrite OFeed changes.
+		return;
+	}
 	if (runChangesProcessing()) {
-		getChangesByOrigin([this]() { exportResultsIofXml3(); });
+		getChangesByOrigin([this]() {
+			exportStartListIofXml3([this]() { exportResultsIofXml3(); });
+		});
 	}
 	else {
-		exportResultsIofXml3();
+		exportStartListIofXml3([this]() { exportResultsIofXml3(); });
 	}
 }
 
@@ -319,8 +326,12 @@ void OFeedClient::onDbEventNotify(const QString &domain, int connection_id, cons
 				}
 			}
 			if (has_relevant) {
-				qfInfo() << serviceName().toStdString() + " DB event RUN CHANGED, run id: " << run_id;
-				onRunChanged(run_id, dirty_vals);
+				if (m_processingOFeedChanges) {
+					qfDebug() << serviceName() << "skipping RUN_CHANGED back-send to OFeed (change originated from OFeed)";
+				} else {
+					qfInfo() << serviceName().toStdString() + " DB event RUN CHANGED, run id: " << run_id;
+					onRunChanged(run_id, dirty_vals);
+				}
 			}
 		}
 	}
@@ -1279,6 +1290,11 @@ void OFeedClient::processCompetitorsChanges(QJsonArray data_array)
 		return;
 	}
 
+	// Prevent back-sending of changes that originate from OFeed. The flag must
+	// stay true until all DB events queued by the SQL updates below are processed,
+	// so it is cleared via singleShot(0) which fires after those queued events.
+	m_processingOFeedChanges = true;
+
 	for (const QJsonValue &value : data_array)
 	{
 
@@ -1334,6 +1350,10 @@ void OFeedClient::processCompetitorsChanges(QJsonArray data_array)
 		storeChange(change);
 		markChangelogEntryAsProcessed(change["id"].toInt());
 	}
+
+	QTimer::singleShot(0, this, [this]() {
+		m_processingOFeedChanges = false;
+	});
 }
 
 void OFeedClient::markChangelogEntryAsProcessed(int protocolId)

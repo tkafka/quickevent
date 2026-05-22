@@ -101,6 +101,7 @@ private:
 	bool m_resultsExportInProgress = false;
 	bool m_startListExportInProgress = false;
 	bool m_changesProcessingInProgress = false;
+	bool m_processingOFeedChanges = false;
 
 private:
 	qf::gui::framework::DialogWidget *createDetailWidget() override;
