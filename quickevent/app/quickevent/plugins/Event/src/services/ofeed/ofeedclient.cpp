@@ -149,10 +149,19 @@ void OFeedClient::stop()
 	m_credentialCheckTimer->stop();
 	m_credentialsValid = -1;
 	m_credentialWarningShown = false;
+	m_resultsExportInProgress = false;
+	m_startListExportInProgress = false;
+	m_changesProcessingInProgress = false;
 }
 
 void OFeedClient::exportResultsIofXml3()
 {
+	if (m_resultsExportInProgress) {
+		qfDebug() << serviceName() << "results upload already in progress, skipping";
+		return;
+	}
+	m_resultsExportInProgress = true;
+
 	int current_stage = getPlugin<EventPlugin>()->currentStageId();
 	bool is_relays = getPlugin<EventPlugin>()->eventConfig()->isRelays();
 
@@ -160,11 +169,19 @@ void OFeedClient::exportResultsIofXml3()
 					  ? getPlugin<RelaysPlugin>()->resultsIofXml30()
 					  : getPlugin<RunsPlugin>()->resultsIofXml30Stage(current_stage);
 
-	sendFile(tr("results upload"), "/rest/v1/upload/iof", str);
+	sendFile(tr("results upload"), "/rest/v1/upload/iof", str, nullptr, [this]() {
+		m_resultsExportInProgress = false;
+	});
 }
 
 void OFeedClient::exportStartListIofXml3(std::function<void()> on_success)
 {
+	if (m_startListExportInProgress) {
+		qfDebug() << serviceName() << "start list upload already in progress, skipping";
+		return;
+	}
+	m_startListExportInProgress = true;
+
 	int current_stage = getPlugin<EventPlugin>()->currentStageId();
 	bool is_relays = getPlugin<EventPlugin>()->eventConfig()->isRelays();
 
@@ -172,7 +189,9 @@ void OFeedClient::exportStartListIofXml3(std::function<void()> on_success)
 					  ? getPlugin<RelaysPlugin>()->startListIofXml30()
 					  : getPlugin<RunsPlugin>()->startListStageIofXml30(current_stage, false);
 
-	sendFile(tr("start list upload"), "/rest/v1/upload/iof", str, on_success);
+	sendFile(tr("start list upload"), "/rest/v1/upload/iof", str, on_success, [this]() {
+		m_startListExportInProgress = false;
+	});
 }
 
 void OFeedClient::triggerChangesProcessing()
@@ -870,7 +889,7 @@ void OFeedClient::checkCredentials()
 	});
 }
 
-void OFeedClient::sendFile(QString name, QString request_path, QString file, std::function<void()> on_success)
+void OFeedClient::sendFile(QString name, QString request_path, QString file, std::function<void()> on_success, std::function<void()> on_done)
 {
 	// Create a multi-part request (like FormData in JS)
 	auto *multi_part = new QHttpMultiPart(QHttpMultiPart::FormDataType);
@@ -914,7 +933,7 @@ void OFeedClient::sendFile(QString name, QString request_path, QString file, std
 	multi_part->setParent(reply);
 
 	// Cleanup
-	connect(reply, &QNetworkReply::finished, this, [reply, name, request_url, on_success]() {
+	connect(reply, &QNetworkReply::finished, this, [reply, name, request_url, on_success, on_done]() {
 		if(reply->error()) {
 			auto err_msg = serviceName().toStdString() + " [" + name.toStdString() + "] " + request_url.toString().toStdString() + " : ";
 			auto response_body = reply->readAll();
@@ -928,6 +947,8 @@ void OFeedClient::sendFile(QString name, QString request_path, QString file, std
 				on_success();
 		}
 		reply->deleteLater();
+		if (on_done)
+			on_done();
 	});
 }
 
@@ -1155,6 +1176,14 @@ void OFeedClient::sendGraphQLRequest(const QString &query,
 
 void OFeedClient::getChangesByOrigin(std::function<void()> on_done)
 {
+	if (m_changesProcessingInProgress) {
+		qfDebug() << serviceName() << "changes processing already in progress, skipping";
+		if (on_done)
+			on_done();
+		return;
+	}
+	m_changesProcessingInProgress = true;
+
 	try
 	{
 		QDateTime last_changelog_call_value = lastChangelogCall();
@@ -1229,6 +1258,7 @@ void OFeedClient::getChangesByOrigin(std::function<void()> on_done)
 					}
 				}
 			}
+			m_changesProcessingInProgress = false;
 			if (on_done)
 				on_done();
 		}, true);
@@ -1236,6 +1266,7 @@ void OFeedClient::getChangesByOrigin(std::function<void()> on_done)
 	catch (const std::exception &e)
 	{
 		qCritical() << tr("Exception occurred while getting changes by origin: ") << e.what();
+		m_changesProcessingInProgress = false;
 		if (on_done)
 			on_done();
 	}

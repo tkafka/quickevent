@@ -98,6 +98,9 @@ private:
 	bool m_eventImageStartupAttempted = false;
 	int m_credentialsValid = -1;  // -1=unknown, 0=invalid, 1=valid
 	bool m_credentialWarningShown = false;
+	bool m_resultsExportInProgress = false;
+	bool m_startListExportInProgress = false;
+	bool m_changesProcessingInProgress = false;
 
 private:
 	qf::gui::framework::DialogWidget *createDetailWidget() override;
@@ -110,7 +113,7 @@ private:
 	void setCachedEventImage(const QByteArray &raw_data, const QString &format);
 	void clearCachedEventImage();
 	void checkCredentials();
-	void sendFile(QString name, QString request_path, QString file, std::function<void()> on_success = nullptr);
+	void sendFile(QString name, QString request_path, QString file, std::function<void()> on_success = nullptr, std::function<void()> on_done = nullptr);
 	void sendCompetitorUpdate(QString json_body, int competitor_id, bool usingExternalId);
 	void sendCompetitorAdded(QString json_body);
 	void sendCompetitorDeleted(int run_id);
