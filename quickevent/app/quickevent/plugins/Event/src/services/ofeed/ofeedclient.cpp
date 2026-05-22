@@ -180,6 +180,26 @@ void OFeedClient::triggerChangesProcessing()
 	getChangesByOrigin();
 }
 
+int OFeedClient::credentialCheckRemainingMs() const
+{
+	return m_credentialCheckTimer->remainingTime();
+}
+
+int OFeedClient::credentialCheckIntervalMs() const
+{
+	return m_credentialCheckTimer->interval();
+}
+
+int OFeedClient::exportTimerRemainingMs() const
+{
+	return m_exportTimer->remainingTime();
+}
+
+int OFeedClient::exportTimerIntervalMs() const
+{
+	return m_exportTimer->interval();
+}
+
 qf::gui::framework::DialogWidget *OFeedClient::createDetailWidget()
 {
 	auto *w = new OFeedClientWidget();
@@ -196,6 +216,7 @@ void OFeedClient::init()
 
 void OFeedClient::onExportTimerTimeOut()
 {
+	emit exportTimerFired();
 	exportStartListIofXml3();
 	if (runChangesProcessing()) {
 		getChangesByOrigin([this]() { exportResultsIofXml3(); });
@@ -796,6 +817,7 @@ void OFeedClient::checkCredentials()
 {
 	if (status() != Status::Running)
 		return;
+	emit credentialCheckFired();
 
 	const QString host_url = hostUrl();
 	const QString event_id = eventId();

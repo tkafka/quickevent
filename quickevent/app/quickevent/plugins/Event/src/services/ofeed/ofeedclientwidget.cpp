@@ -3,6 +3,7 @@
 #include "ofeedclient.h"
 #include "ofeedwelcomedialog.h"
 #include "toggleswitch.h"
+#include "circulartimerwidget.h"
 
 #include <qf/gui/framework/mainwindow.h>
 #include <qf/gui/dialogs/messagebox.h>
@@ -13,6 +14,7 @@
 
 #include <QClipboard>
 #include <QLocale>
+#include <QTimer>
 #include <QShowEvent>
 #include <QDesktopServices>
 #include <QFileDialog>
@@ -209,6 +211,23 @@ OFeedClientWidget::OFeedClientWidget(QWidget *parent)
 		updateCredentialStatus(svc->credentialsValid() == 1);
 		connect(svc, &OFeedClient::credentialsStatusChanged, this, &OFeedClientWidget::updateCredentialStatus);
 	}
+	m_exportTimerIndicator = new CircularTimerWidget(this);
+	m_exportTimerIndicator->setToolTip(tr("Time until next automatic export"));
+	ui->exportIntervalLayout->addWidget(m_exportTimerIndicator);
+
+	m_credentialTimerIndicator = new CircularTimerWidget(this);
+	m_credentialTimerIndicator->setToolTip(tr("Time until next credential check"));
+	ui->credentialCheckIntervalLayout->addWidget(m_credentialTimerIndicator);
+
+	if(svc) {
+		connect(svc, &OFeedClient::exportTimerFired, m_exportTimerIndicator, &CircularTimerWidget::markJustFired);
+		connect(svc, &OFeedClient::credentialCheckFired, m_credentialTimerIndicator, &CircularTimerWidget::markJustFired);
+	}
+
+	m_uiTickTimer = new QTimer(this);
+	m_uiTickTimer->setInterval(1000);
+	connect(m_uiTickTimer, &QTimer::timeout, this, &OFeedClientWidget::updateTimerIndicators);
+
 	syncReceiptEventLinkWithDefaults();
 
 	connect(ui->btExportResultsXml30, &QPushButton::clicked, this, &OFeedClientWidget::onBtExportResultsXml30Clicked);
@@ -265,6 +284,8 @@ OFeedClientWidget::~OFeedClientWidget()
 void OFeedClientWidget::showEvent(QShowEvent *event)
 {
 	Super::showEvent(event);
+	updateTimerIndicators();
+	m_uiTickTimer->start();
 	OFeedClient *svc = service();
 	if(svc && !svc->introTourShowed()) {
 		svc->setIntroTourShowed(true);
@@ -272,6 +293,12 @@ void OFeedClientWidget::showEvent(QShowEvent *event)
 		dlg->setAttribute(Qt::WA_DeleteOnClose);
 		dlg->show();
 	}
+}
+
+void OFeedClientWidget::hideEvent(QHideEvent *event)
+{
+	Super::hideEvent(event);
+	m_uiTickTimer->stop();
 }
 
 bool OFeedClientWidget::acceptDialogDone(int result)
@@ -453,6 +480,19 @@ void OFeedClientWidget::updateTestConnectionState()
 	ui->btOpenEventWebsite->setToolTip(has_event_website_url ? tr("Open event page in browser") : tr("Fill Url and Event id to open event page"));
 	ui->btTestConnection->setEnabled(has_required_credentials && !m_isTestConnectionRunning);
 	ui->btRefreshEventImage->setEnabled(can_refresh_event_image);
+}
+
+void OFeedClientWidget::updateTimerIndicators()
+{
+	OFeedClient *svc = service();
+	m_exportTimerIndicator->setProgress(
+		svc ? svc->exportTimerRemainingMs() : -1,
+		svc ? svc->exportTimerIntervalMs() : 0
+	);
+	m_credentialTimerIndicator->setProgress(
+		svc ? svc->credentialCheckRemainingMs() : -1,
+		svc ? svc->credentialCheckIntervalMs() : 0
+	);
 }
 
 void OFeedClientWidget::updateCredentialStatus(bool valid)

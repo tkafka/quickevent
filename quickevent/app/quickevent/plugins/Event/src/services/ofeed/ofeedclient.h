@@ -29,6 +29,8 @@ class OFeedClient : public Service
 	using Super = Service;
 signals:
 	void credentialsStatusChanged(bool valid);
+	void exportTimerFired();
+	void credentialCheckFired();
 
 public:
 	OFeedClient(QObject *parent);
@@ -83,6 +85,10 @@ public:
 						const QString &eventPassword,
 						std::function<void(bool success, const QString &message)> callback);
 	int credentialsValid() const { return m_credentialsValid; }
+	int credentialCheckRemainingMs() const;
+	int credentialCheckIntervalMs() const;
+	int exportTimerRemainingMs() const;
+	int exportTimerIntervalMs() const;
 
 private:
 	QTimer *m_exportTimer = nullptr;

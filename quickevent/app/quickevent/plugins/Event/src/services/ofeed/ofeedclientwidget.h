@@ -2,6 +2,9 @@
 
 #include <qf/gui/framework/dialogwidget.h>
 
+class QTimer;
+class CircularTimerWidget;
+
 namespace Event {
 namespace services {
 
@@ -21,7 +24,9 @@ public:
 	~OFeedClientWidget();
 protected:
 	void showEvent(QShowEvent *event) override;
+	void hideEvent(QHideEvent *event) override;
 private:
+	void updateTimerIndicators();
 	void onBtExportResultsXml30Clicked();
 	void onBtExportStartListXml30Clicked();
 	void onBtProcessChangesClicked();
@@ -41,6 +46,9 @@ private:
 	bool m_isTestConnectionRunning = false;
 	bool m_isImageRefreshRunning = false;
 	QString m_lastAutoReceiptEventLink;
+	QTimer *m_uiTickTimer = nullptr;
+	CircularTimerWidget *m_exportTimerIndicator = nullptr;
+	CircularTimerWidget *m_credentialTimerIndicator = nullptr;
 };
 
 }}
