@@ -1766,6 +1766,7 @@ void RunsPlugin::report_startListClasses()
 	quickevent::gui::ReportOptionsDialog dlg(fwk);
 	dlg.setPersistentSettingsId("startListClassesReportOptions");
 	dlg.loadPersistentSettings();
+	dlg.setCurrentStageId(getPlugin<EventPlugin>()->currentStageId());
 	dlg.setStartListOptionsVisible(true);
 	dlg.setPageLayoutVisible(true);
 	dlg.setStartTimeFormatVisible(true);
@@ -1791,6 +1792,7 @@ void RunsPlugin::report_startListClubs()
 	quickevent::gui::ReportOptionsDialog dlg(fwk);
 	dlg.setPersistentSettingsId("startListClubsReportOptions");
 	dlg.loadPersistentSettings();
+	dlg.setCurrentStageId(getPlugin<EventPlugin>()->currentStageId());
 	dlg.setClassFilterVisible(false);
 	dlg.setStartListOptionsVisible(true);
 	dlg.setStartListPrintVacantsVisible(false);
@@ -1818,6 +1820,7 @@ void RunsPlugin::report_startListStarters()
 	quickevent::gui::ReportOptionsDialog dlg(fwk);
 	dlg.setPersistentSettingsId("startListStartersReportOptions");
 	dlg.loadPersistentSettings();
+	dlg.setCurrentStageId(getPlugin<EventPlugin>()->currentStageId());
 	dlg.setClassFilterVisible(true);
 	dlg.setStartListOptionsVisible(true);
 	dlg.setStartListPrintVacantsVisible(false);
