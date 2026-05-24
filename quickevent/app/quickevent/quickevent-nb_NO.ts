@@ -101,12 +101,11 @@
         <translation>Programspråk</translation>
     </message>
     <message>
-        <location filename="src/appclioptions.cpp" line="7"/>
         <source>Application profile, see: https://github.com/fvacek/quickbox/wiki/Application-profiles</source>
-        <translation>Programprofil, se https://github.com/fvacek/quickbox/wiki/Application-profiles</translation>
+        <translation type="vanished">Programprofil, se https://github.com/fvacek/quickbox/wiki/Application-profiles</translation>
     </message>
     <message>
-        <location filename="src/appclioptions.cpp" line="8"/>
+        <location filename="src/appclioptions.cpp" line="7"/>
         <source>Application font scale</source>
         <translation type="unfinished">Programskriftstørrelse</translation>
     </message>
@@ -751,7 +750,7 @@ If you continue, this flag will be removed</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="plugins/Oris/src/chooseoriseventdialog.ui" line="43"/>
+        <location filename="plugins/Oris/src/chooseoriseventdialog.ui" line="42"/>
         <source>Oris event ID</source>
         <translation type="unfinished"></translation>
     </message>
@@ -761,32 +760,32 @@ If you continue, this flag will be removed</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="plugins/Oris/src/chooseoriseventdialog.cpp" line="61"/>
+        <location filename="plugins/Oris/src/chooseoriseventdialog.cpp" line="63"/>
         <source>OB</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="plugins/Oris/src/chooseoriseventdialog.cpp" line="62"/>
+        <location filename="plugins/Oris/src/chooseoriseventdialog.cpp" line="64"/>
         <source>LOB</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="plugins/Oris/src/chooseoriseventdialog.cpp" line="63"/>
+        <location filename="plugins/Oris/src/chooseoriseventdialog.cpp" line="65"/>
         <source>MTBO</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="plugins/Oris/src/chooseoriseventdialog.cpp" line="64"/>
+        <location filename="plugins/Oris/src/chooseoriseventdialog.cpp" line="66"/>
         <source>TRAIL</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="plugins/Oris/src/chooseoriseventdialog.cpp" line="65"/>
+        <location filename="plugins/Oris/src/chooseoriseventdialog.cpp" line="67"/>
         <source>???</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="plugins/Oris/src/chooseoriseventdialog.cpp" line="85"/>
+        <location filename="plugins/Oris/src/chooseoriseventdialog.cpp" line="79"/>
         <source>Search in events ...</source>
         <translation type="unfinished"></translation>
     </message>
@@ -908,6 +907,11 @@ If you continue, this flag will be removed</source>
         <location filename="plugins/Classes/src/classeswidget.ui" line="136"/>
         <source>...</source>
         <translation type="unfinished">…</translation>
+    </message>
+    <message>
+        <location filename="plugins/Classes/src/classeswidget.cpp" line="118"/>
+        <source>Id</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="plugins/Classes/src/classeswidget.cpp" line="119"/>
@@ -2224,58 +2228,58 @@ Consider setting &quot;Interval&quot; column for all classes before continuing.<
 <context>
     <name>Event::EventPlugin</name>
     <message>
-        <location filename="plugins/Event/src/eventplugin.cpp" line="283"/>
+        <location filename="plugins/Event/src/eventplugin.cpp" line="336"/>
         <source>&amp;Connect to database</source>
         <translation>&amp;Koble til database</translation>
     </message>
     <message>
-        <location filename="plugins/Event/src/eventplugin.cpp" line="287"/>
+        <location filename="plugins/Event/src/eventplugin.cpp" line="340"/>
         <source>&amp;Open event</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="plugins/Event/src/eventplugin.cpp" line="292"/>
+        <location filename="plugins/Event/src/eventplugin.cpp" line="345"/>
         <source>Create eve&amp;nt</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="plugins/Event/src/eventplugin.cpp" line="296"/>
+        <location filename="plugins/Event/src/eventplugin.cpp" line="349"/>
         <source>E&amp;dit event</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="plugins/Event/src/eventplugin.cpp" line="303"/>
-        <location filename="plugins/Event/src/eventplugin.cpp" line="307"/>
+        <location filename="plugins/Event/src/eventplugin.cpp" line="356"/>
+        <location filename="plugins/Event/src/eventplugin.cpp" line="360"/>
         <source>Event (*.qbe)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="plugins/Event/src/eventplugin.cpp" line="324"/>
+        <location filename="plugins/Event/src/eventplugin.cpp" line="377"/>
         <source>&amp;Event</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="plugins/Event/src/eventplugin.cpp" line="341"/>
+        <location filename="plugins/Event/src/eventplugin.cpp" line="394"/>
         <source>Event</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="plugins/Event/src/eventplugin.cpp" line="355"/>
+        <location filename="plugins/Event/src/eventplugin.cpp" line="408"/>
         <source>Current stage E%1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="plugins/Event/src/eventplugin.cpp" line="389"/>
+        <location filename="plugins/Event/src/eventplugin.cpp" line="442"/>
         <source>Services</source>
         <translation>Tjenester</translation>
     </message>
     <message>
-        <location filename="plugins/Event/src/eventplugin.cpp" line="406"/>
+        <location filename="plugins/Event/src/eventplugin.cpp" line="459"/>
         <source>Registrations</source>
         <translation type="unfinished">Registreringer</translation>
     </message>
     <message>
-        <location filename="plugins/Event/src/eventplugin.cpp" line="735"/>
+        <location filename="plugins/Event/src/eventplugin.cpp" line="790"/>
         <source>You are not connected to database.
 Program features will be limited.
 
@@ -2284,19 +2288,19 @@ To connect to a database or to choose a working directory where event files can 
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="plugins/Event/src/eventplugin.cpp" line="779"/>
+        <location filename="plugins/Event/src/eventplugin.cpp" line="834"/>
         <source>Connect Database Error: %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="plugins/Event/src/eventplugin.cpp" line="786"/>
+        <location filename="plugins/Event/src/eventplugin.cpp" line="841"/>
         <source>Path to the working directory cannot be empty.
 
 Enter path to the working directory or connect to SQL server.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="plugins/Event/src/eventplugin.cpp" line="790"/>
+        <location filename="plugins/Event/src/eventplugin.cpp" line="845"/>
         <source>Entered directory does not exist:
 %1
 
@@ -2304,160 +2308,288 @@ Enter a valid path to the working directory.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="plugins/Event/src/eventplugin.cpp" line="850"/>
+        <location filename="plugins/Event/src/eventplugin.cpp" line="902"/>
         <source>Create event</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="plugins/Event/src/eventplugin.cpp" line="860"/>
+        <location filename="plugins/Event/src/eventplugin.cpp" line="912"/>
         <source>Event ID cannot be empty.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="plugins/Event/src/eventplugin.cpp" line="864"/>
+        <location filename="plugins/Event/src/eventplugin.cpp" line="916"/>
         <source>Event ID %1 exists already.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="plugins/Event/src/eventplugin.cpp" line="891"/>
-        <location filename="plugins/Event/src/eventplugin.cpp" line="1042"/>
-        <location filename="plugins/Event/src/eventplugin.cpp" line="1210"/>
-        <location filename="plugins/Event/src/eventplugin.cpp" line="1290"/>
-        <location filename="plugins/Event/src/eventplugin.cpp" line="1307"/>
+        <location filename="plugins/Event/src/eventplugin.cpp" line="943"/>
+        <location filename="plugins/Event/src/eventplugin.cpp" line="1121"/>
+        <location filename="plugins/Event/src/eventplugin.cpp" line="1289"/>
+        <location filename="plugins/Event/src/eventplugin.cpp" line="1369"/>
+        <location filename="plugins/Event/src/eventplugin.cpp" line="1386"/>
+        <location filename="plugins/Event/src/eventplugin.cpp" line="1452"/>
+        <location filename="plugins/Event/src/eventplugin.cpp" line="1465"/>
         <source>Open Database Error: %1</source>
         <translation type="unfinished">Databaseåpningsfeil: %1</translation>
     </message>
     <message>
-        <location filename="plugins/Event/src/eventplugin.cpp" line="933"/>
-        <location filename="plugins/Event/src/eventplugin.cpp" line="1227"/>
-        <location filename="plugins/Event/src/eventplugin.cpp" line="1325"/>
+        <location filename="plugins/Event/src/eventplugin.cpp" line="986"/>
+        <location filename="plugins/Event/src/eventplugin.cpp" line="1306"/>
+        <location filename="plugins/Event/src/eventplugin.cpp" line="1403"/>
+        <location filename="plugins/Event/src/eventplugin.cpp" line="1482"/>
         <source>Create Database Error: %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="plugins/Event/src/eventplugin.cpp" line="937"/>
+        <location filename="plugins/Event/src/eventplugin.cpp" line="990"/>
         <source>Cannot create event, database is not open: %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="plugins/Event/src/eventplugin.cpp" line="952"/>
+        <location filename="plugins/Event/src/eventplugin.cpp" line="1005"/>
         <source>Edit event</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="plugins/Event/src/eventplugin.cpp" line="988"/>
+        <location filename="plugins/Event/src/eventplugin.cpp" line="1041"/>
         <source>Connected to an empty database.
 Start by creating or importing an event.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="plugins/Event/src/eventplugin.cpp" line="992"/>
+        <location filename="plugins/Event/src/eventplugin.cpp" line="1045"/>
         <source>Working directory does not contain any event files.
 Start by creating or importing an event.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="plugins/Event/src/eventplugin.cpp" line="1002"/>
-        <source>select event to open:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="plugins/Event/src/eventplugin.cpp" line="1002"/>
-        <source>Open event</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="plugins/Event/src/eventplugin.cpp" line="1047"/>
+        <location filename="plugins/Event/src/eventplugin.cpp" line="1126"/>
         <source>Database file %1 doesn&apos;t exist.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="plugins/Event/src/eventplugin.cpp" line="1056"/>
+        <location filename="plugins/Event/src/eventplugin.cpp" line="1135"/>
         <source>Event data version (%1) is too low, minimal version is (%2).
 Use: File --&gt; Import --&gt; Event (*.qbe) to convert event to current version.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="plugins/Event/src/eventplugin.cpp" line="1063"/>
+        <location filename="plugins/Event/src/eventplugin.cpp" line="1142"/>
         <source>Event was created in more recent QuickEvent version (%1) and the application might not work as expected. Download latest QuickEvent is strongly recommended.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="plugins/Event/src/eventplugin.cpp" line="1192"/>
+        <location filename="plugins/Event/src/eventplugin.cpp" line="1271"/>
         <source>Export as Quick Event</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="plugins/Event/src/eventplugin.cpp" line="1192"/>
-        <location filename="plugins/Event/src/eventplugin.cpp" line="1262"/>
+        <location filename="plugins/Event/src/eventplugin.cpp" line="1271"/>
+        <location filename="plugins/Event/src/eventplugin.cpp" line="1518"/>
         <source>Quick Event files *%1 (*%1)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="plugins/Event/src/eventplugin.cpp" line="1202"/>
+        <location filename="plugins/Event/src/eventplugin.cpp" line="1281"/>
         <source>Cannot delete existing file %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="plugins/Event/src/eventplugin.cpp" line="1220"/>
-        <location filename="plugins/Event/src/eventplugin.cpp" line="1317"/>
+        <location filename="plugins/Event/src/eventplugin.cpp" line="1299"/>
+        <location filename="plugins/Event/src/eventplugin.cpp" line="1395"/>
+        <location filename="plugins/Event/src/eventplugin.cpp" line="1474"/>
         <source>Creating database</source>
         <translation>Oppretter database</translation>
     </message>
     <message>
-        <location filename="plugins/Event/src/eventplugin.cpp" line="1235"/>
-        <location filename="plugins/Event/src/eventplugin.cpp" line="1333"/>
+        <location filename="plugins/Event/src/eventplugin.cpp" line="1314"/>
+        <location filename="plugins/Event/src/eventplugin.cpp" line="1411"/>
+        <location filename="plugins/Event/src/eventplugin.cpp" line="1490"/>
         <source>Copying table %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="plugins/Event/src/eventplugin.cpp" line="1262"/>
+        <location filename="plugins/Event/src/eventplugin.cpp" line="1344"/>
+        <source>Cannot delete event file: %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="plugins/Event/src/eventplugin.cpp" line="1350"/>
+        <source>Cannot delete event schema &apos;%1&apos;: %2</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="plugins/Event/src/eventplugin.cpp" line="1518"/>
         <source>Import as Quick Event</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="plugins/Event/src/eventplugin.cpp" line="1266"/>
+        <location filename="plugins/Event/src/eventplugin.cpp" line="1522"/>
         <source>Query</source>
         <translation>Spørring</translation>
     </message>
     <message>
-        <location filename="plugins/Event/src/eventplugin.cpp" line="1266"/>
+        <location filename="plugins/Event/src/eventplugin.cpp" line="1522"/>
         <source>Event will be imported as ID:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="plugins/Event/src/eventplugin.cpp" line="1271"/>
+        <location filename="plugins/Event/src/eventplugin.cpp" line="1527"/>
         <source>PostgreSQL schema must start with small letter and it may contain small letters, digits and underscores only.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="plugins/Event/src/eventplugin.cpp" line="1276"/>
+        <location filename="plugins/Event/src/eventplugin.cpp" line="1532"/>
         <source>Event ID &apos;%1&apos; exists already!</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="plugins/Event/src/eventplugin.cpp" line="1353"/>
+        <location filename="plugins/Event/src/eventplugin.cpp" line="1536"/>
         <source>Open imported event &apos;%1&apos;?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="plugins/Event/src/eventplugin.cpp" line="1399"/>
+        <location filename="plugins/Event/src/eventplugin.cpp" line="1583"/>
         <source>Name</source>
         <translation type="unfinished">Navn</translation>
     </message>
     <message>
-        <location filename="plugins/Event/src/eventplugin.cpp" line="1400"/>
+        <location filename="plugins/Event/src/eventplugin.cpp" line="1584"/>
         <source>Reg</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="plugins/Event/src/eventplugin.cpp" line="1401"/>
+        <location filename="plugins/Event/src/eventplugin.cpp" line="1585"/>
         <source>Lic</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="plugins/Event/src/eventplugin.cpp" line="1402"/>
+        <location filename="plugins/Event/src/eventplugin.cpp" line="1586"/>
         <source>SI</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>Event::OpenEventDialog</name>
+    <message>
+        <location filename="plugins/Event/src/openeventdialog.cpp" line="112"/>
+        <source>Open event</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="plugins/Event/src/openeventdialog.cpp" line="126"/>
+        <source>Filter events…</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="plugins/Event/src/openeventdialog.cpp" line="128"/>
+        <source>Search:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="plugins/Event/src/openeventdialog.cpp" line="136"/>
+        <source>ID</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="plugins/Event/src/openeventdialog.cpp" line="136"/>
+        <source>Date</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="plugins/Event/src/openeventdialog.cpp" line="136"/>
+        <source>Name</source>
+        <translation type="unfinished">Navn</translation>
+    </message>
+    <message>
+        <location filename="plugins/Event/src/openeventdialog.cpp" line="137"/>
+        <source>Sport</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="plugins/Event/src/openeventdialog.cpp" line="137"/>
+        <source>Discipline</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="plugins/Event/src/openeventdialog.cpp" line="137"/>
+        <source>DB version</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="plugins/Event/src/openeventdialog.cpp" line="137"/>
+        <source>Action</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="plugins/Event/src/openeventdialog.cpp" line="168"/>
+        <source>Resize section to contents</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="plugins/Event/src/openeventdialog.cpp" line="172"/>
+        <source>Resize all sections to contents</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="plugins/Event/src/openeventdialog.cpp" line="209"/>
+        <source>?</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="plugins/Event/src/openeventdialog.cpp" line="225"/>
+        <source>Convert</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="plugins/Event/src/openeventdialog.cpp" line="225"/>
+        <source>Open</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="plugins/Event/src/openeventdialog.cpp" line="227"/>
+        <source>Create a converted copy: version %1 → %2</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="plugins/Event/src/openeventdialog.cpp" line="248"/>
+        <source>Delete event permanently</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="plugins/Event/src/openeventdialog.cpp" line="283"/>
+        <source>Compatible</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="plugins/Event/src/openeventdialog.cpp" line="285"/>
+        <source>Older version (convert required)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="plugins/Event/src/openeventdialog.cpp" line="336"/>
+        <source>Convert event</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="plugins/Event/src/openeventdialog.cpp" line="341"/>
+        <source>Convert event &lt;b&gt;%1&lt;/b&gt; to the current version.&lt;br&gt;A new event will be created with the ID below.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="plugins/Event/src/openeventdialog.cpp" line="346"/>
+        <source>New event ID:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="plugins/Event/src/openeventdialog.cpp" line="376"/>
+        <source>Delete event</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="plugins/Event/src/openeventdialog.cpp" line="377"/>
+        <source>Permanently delete event &lt;b&gt;%1&lt;/b&gt;?&lt;br&gt;This action cannot be undone.</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -2614,114 +2746,117 @@ Use: File --&gt; Import --&gt; Event (*.qbe) to convert event to current version
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="plugins/Event/src/services/ofeed/ofeedclient.cpp" line="473"/>
+        <location filename="plugins/Event/src/services/ofeed/ofeedclient.cpp" line="506"/>
         <source>Missing OFeed event credentials.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="plugins/Event/src/services/ofeed/ofeedclient.cpp" line="480"/>
-        <location filename="plugins/Event/src/services/ofeed/ofeedclient.cpp" line="635"/>
+        <location filename="plugins/Event/src/services/ofeed/ofeedclient.cpp" line="513"/>
+        <location filename="plugins/Event/src/services/ofeed/ofeedclient.cpp" line="668"/>
         <source>Invalid OFeed URL.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="plugins/Event/src/services/ofeed/ofeedclient.cpp" line="503"/>
+        <location filename="plugins/Event/src/services/ofeed/ofeedclient.cpp" line="536"/>
         <source>No event image is available in OFeed.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="plugins/Event/src/services/ofeed/ofeedclient.cpp" line="505"/>
+        <location filename="plugins/Event/src/services/ofeed/ofeedclient.cpp" line="538"/>
         <source>Event image download failed: %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="plugins/Event/src/services/ofeed/ofeedclient.cpp" line="510"/>
+        <location filename="plugins/Event/src/services/ofeed/ofeedclient.cpp" line="543"/>
         <source>No event image payload received from OFeed.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="plugins/Event/src/services/ofeed/ofeedclient.cpp" line="520"/>
+        <location filename="plugins/Event/src/services/ofeed/ofeedclient.cpp" line="553"/>
         <source>Event image cached as SVG.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="plugins/Event/src/services/ofeed/ofeedclient.cpp" line="539"/>
+        <location filename="plugins/Event/src/services/ofeed/ofeedclient.cpp" line="572"/>
         <source>Unsupported image format received from OFeed.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="plugins/Event/src/services/ofeed/ofeedclient.cpp" line="551"/>
+        <location filename="plugins/Event/src/services/ofeed/ofeedclient.cpp" line="584"/>
         <source>Cannot encode cached event image.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="plugins/Event/src/services/ofeed/ofeedclient.cpp" line="557"/>
+        <location filename="plugins/Event/src/services/ofeed/ofeedclient.cpp" line="590"/>
         <source>Cached image encoding produced empty payload.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="plugins/Event/src/services/ofeed/ofeedclient.cpp" line="562"/>
+        <location filename="plugins/Event/src/services/ofeed/ofeedclient.cpp" line="595"/>
         <source>Event image cached (%1x%2).</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="plugins/Event/src/services/ofeed/ofeedclient.cpp" line="629"/>
+        <location filename="plugins/Event/src/services/ofeed/ofeedclient.cpp" line="662"/>
         <source>Please fill URL, event id, and password.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="plugins/Event/src/services/ofeed/ofeedclient.cpp" line="677"/>
+        <location filename="plugins/Event/src/services/ofeed/ofeedclient.cpp" line="710"/>
         <source>Unexpected HTTP response</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="plugins/Event/src/services/ofeed/ofeedclient.cpp" line="686"/>
+        <location filename="plugins/Event/src/services/ofeed/ofeedclient.cpp" line="719"/>
         <source>Invalid JSON response.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="plugins/Event/src/services/ofeed/ofeedclient.cpp" line="694"/>
+        <location filename="plugins/Event/src/services/ofeed/ofeedclient.cpp" line="727"/>
         <source>GraphQL error</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="plugins/Event/src/services/ofeed/ofeedclient.cpp" line="708"/>
+        <location filename="plugins/Event/src/services/ofeed/ofeedclient.cpp" line="741"/>
         <source>Missing event data in response.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="plugins/Event/src/services/ofeed/ofeedclient.cpp" line="715"/>
+        <location filename="plugins/Event/src/services/ofeed/ofeedclient.cpp" line="748"/>
         <source>Missing event name in response.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="plugins/Event/src/services/ofeed/ofeedclient.cpp" line="1089"/>
+        <location filename="plugins/Event/src/services/ofeed/ofeedclient.cpp" line="1122"/>
         <source>Exception occurred while getting changes by origin: </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="plugins/Event/src/services/ofeed/ofeedclient.cpp" line="1160"/>
-        <location filename="plugins/Event/src/services/ofeed/ofeedclient.cpp" line="1185"/>
-        <location filename="plugins/Event/src/services/ofeed/ofeedclient.cpp" line="1210"/>
+        <location filename="plugins/Event/src/services/ofeed/ofeedclient.cpp" line="1198"/>
+        <location filename="plugins/Event/src/services/ofeed/ofeedclient.cpp" line="1223"/>
+        <location filename="plugins/Event/src/services/ofeed/ofeedclient.cpp" line="1248"/>
+        <location filename="plugins/Event/src/services/ofeed/ofeedclient.cpp" line="1274"/>
         <source>Database query failed: </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="plugins/Event/src/services/ofeed/ofeedclient.cpp" line="1165"/>
-        <location filename="plugins/Event/src/services/ofeed/ofeedclient.cpp" line="1190"/>
-        <location filename="plugins/Event/src/services/ofeed/ofeedclient.cpp" line="1215"/>
+        <location filename="plugins/Event/src/services/ofeed/ofeedclient.cpp" line="1203"/>
+        <location filename="plugins/Event/src/services/ofeed/ofeedclient.cpp" line="1228"/>
+        <location filename="plugins/Event/src/services/ofeed/ofeedclient.cpp" line="1253"/>
+        <location filename="plugins/Event/src/services/ofeed/ofeedclient.cpp" line="1278"/>
         <source>Exception occurred while executing query: </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="plugins/Event/src/services/ofeed/ofeedclient.cpp" line="1169"/>
-        <location filename="plugins/Event/src/services/ofeed/ofeedclient.cpp" line="1194"/>
-        <location filename="plugins/Event/src/services/ofeed/ofeedclient.cpp" line="1219"/>
+        <location filename="plugins/Event/src/services/ofeed/ofeedclient.cpp" line="1207"/>
+        <location filename="plugins/Event/src/services/ofeed/ofeedclient.cpp" line="1232"/>
+        <location filename="plugins/Event/src/services/ofeed/ofeedclient.cpp" line="1257"/>
+        <location filename="plugins/Event/src/services/ofeed/ofeedclient.cpp" line="1282"/>
         <source>Unknown exception occurred while executing query.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="plugins/Event/src/services/ofeed/ofeedclient.cpp" line="1286"/>
+        <location filename="plugins/Event/src/services/ofeed/ofeedclient.cpp" line="1349"/>
         <source>No data received or an error occurred.</source>
         <translation type="unfinished"></translation>
     </message>
@@ -2885,6 +3020,7 @@ Use: File --&gt; Import --&gt; Event (*.qbe) to convert event to current version
     </message>
     <message>
         <location filename="plugins/Event/src/services/ofeed/ofeedclientwidget.ui" line="182"/>
+        <location filename="plugins/Event/src/services/ofeed/ofeedclientwidget.cpp" line="357"/>
         <source>Test connection</source>
         <translation type="unfinished"></translation>
     </message>
@@ -3428,163 +3564,161 @@ In case of unexpected errors, contact support@oresults.eu</source>
         <translation>Skjema</translation>
     </message>
     <message>
-        <location filename="plugins/Event/src/eventdialogwidget.ui" line="20"/>
+        <location filename="plugins/Event/src/eventdialogwidget.ui" line="126"/>
         <source>Event ID</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="plugins/Event/src/eventdialogwidget.ui" line="30"/>
+        <location filename="plugins/Event/src/eventdialogwidget.ui" line="324"/>
         <source>Unique event name</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="plugins/Event/src/eventdialogwidget.ui" line="37"/>
+        <location filename="plugins/Event/src/eventdialogwidget.ui" line="35"/>
         <source>&amp;Name</source>
         <translation>&amp;Navn</translation>
     </message>
     <message>
-        <location filename="plugins/Event/src/eventdialogwidget.ui" line="50"/>
+        <location filename="plugins/Event/src/eventdialogwidget.ui" line="304"/>
         <source>&amp;Stage count</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="plugins/Event/src/eventdialogwidget.ui" line="67"/>
+        <location filename="plugins/Event/src/eventdialogwidget.ui" line="25"/>
         <source>&amp;Date</source>
         <translation>&amp;Dato</translation>
     </message>
     <message>
-        <location filename="plugins/Event/src/eventdialogwidget.ui" line="77"/>
+        <location filename="plugins/Event/src/eventdialogwidget.ui" line="116"/>
         <source>dd.MM.yyyy</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="plugins/Event/src/eventdialogwidget.ui" line="97"/>
+        <location filename="plugins/Event/src/eventdialogwidget.ui" line="45"/>
         <source>h:mm:ss</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="plugins/Event/src/eventdialogwidget.ui" line="111"/>
+        <location filename="plugins/Event/src/eventdialogwidget.ui" line="79"/>
         <source>&amp;Place</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="plugins/Event/src/eventdialogwidget.ui" line="124"/>
+        <location filename="plugins/Event/src/eventdialogwidget.ui" line="200"/>
         <source>Des&amp;cription</source>
         <translation>Bes&amp;krivelse</translation>
     </message>
     <message>
-        <location filename="plugins/Event/src/eventdialogwidget.ui" line="137"/>
+        <location filename="plugins/Event/src/eventdialogwidget.ui" line="136"/>
         <source>Main r&amp;eferee</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="plugins/Event/src/eventdialogwidget.ui" line="150"/>
+        <location filename="plugins/Event/src/eventdialogwidget.ui" line="59"/>
         <source>D&amp;irector</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="plugins/Event/src/eventdialogwidget.ui" line="163"/>
+        <location filename="plugins/Event/src/eventdialogwidget.ui" line="272"/>
         <source>&amp;Handicap length</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="plugins/Event/src/eventdialogwidget.ui" line="173"/>
+        <location filename="plugins/Event/src/eventdialogwidget.ui" line="282"/>
         <source>No handicap</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="plugins/Event/src/eventdialogwidget.ui" line="176"/>
+        <location filename="plugins/Event/src/eventdialogwidget.ui" line="285"/>
         <source> min</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="plugins/Event/src/eventdialogwidget.ui" line="195"/>
+        <location filename="plugins/Event/src/eventdialogwidget.ui" line="190"/>
         <source>Sport</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="plugins/Event/src/eventdialogwidget.ui" line="206"/>
+        <location filename="plugins/Event/src/eventdialogwidget.ui" line="90"/>
         <source>OB</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="plugins/Event/src/eventdialogwidget.ui" line="211"/>
+        <location filename="plugins/Event/src/eventdialogwidget.ui" line="95"/>
         <source>LOB</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="plugins/Event/src/eventdialogwidget.ui" line="216"/>
+        <location filename="plugins/Event/src/eventdialogwidget.ui" line="100"/>
         <source>MTBO</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="plugins/Event/src/eventdialogwidget.ui" line="221"/>
+        <location filename="plugins/Event/src/eventdialogwidget.ui" line="105"/>
         <source>TRAIL</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="plugins/Event/src/eventdialogwidget.ui" line="229"/>
+        <location filename="plugins/Event/src/eventdialogwidget.ui" line="146"/>
         <source>Discipline</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="plugins/Event/src/eventdialogwidget.ui" line="240"/>
+        <location filename="plugins/Event/src/eventdialogwidget.ui" line="157"/>
+        <location filename="plugins/Event/src/eventdialogwidget.cpp" line="21"/>
         <source>Long distance</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="plugins/Event/src/eventdialogwidget.ui" line="245"/>
+        <location filename="plugins/Event/src/eventdialogwidget.ui" line="162"/>
+        <location filename="plugins/Event/src/eventdialogwidget.cpp" line="22"/>
         <source>Middle distance</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="plugins/Event/src/eventdialogwidget.ui" line="250"/>
+        <location filename="plugins/Event/src/eventdialogwidget.ui" line="167"/>
+        <location filename="plugins/Event/src/eventdialogwidget.cpp" line="24"/>
         <source>Sprint</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="plugins/Event/src/eventdialogwidget.ui" line="255"/>
+        <location filename="plugins/Event/src/eventdialogwidget.ui" line="172"/>
+        <location filename="plugins/Event/src/eventdialogwidget.cpp" line="23"/>
         <source>Ultralong distance</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="plugins/Event/src/eventdialogwidget.ui" line="260"/>
+        <location filename="plugins/Event/src/eventdialogwidget.ui" line="177"/>
         <source>Relay</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="plugins/Event/src/eventdialogwidget.ui" line="352"/>
+        <location filename="plugins/Event/src/eventdialogwidget.ui" line="336"/>
         <source>Is IOF Race (data from Eventor - eventor.orienteering.org)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="plugins/Event/src/eventdialogwidget.ui" line="362"/>
-        <source>ORIS</source>
+        <location filename="plugins/Event/src/eventdialogwidget.ui" line="390"/>
+        <source>Used for import one-time clubs. Source - ORIS-&gt;Event-&gt;Information-&gt;Event key</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="plugins/Event/src/eventdialogwidget.ui" line="368"/>
+        <location filename="plugins/Event/src/eventdialogwidget.ui" line="373"/>
         <source>Event key</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="plugins/Event/src/eventdialogwidget.ui" line="378"/>
+        <location filename="plugins/Event/src/eventdialogwidget.ui" line="383"/>
         <source>Unique event security key (32 chars)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="plugins/Event/src/eventdialogwidget.ui" line="385"/>
-        <source>Used for import one-time clubs
-source - ORIS-&gt;Event-&gt;Information-&gt;Event key</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="plugins/Event/src/eventdialogwidget.ui" line="396"/>
+        <location filename="plugins/Event/src/eventdialogwidget.ui" line="400"/>
         <source>Event id</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="plugins/Event/src/eventdialogwidget.ui" line="403"/>
+        <location filename="plugins/Event/src/eventdialogwidget.ui" line="363"/>
         <source>Is ORIS Race (data from ORIS - oris.orientacnisporty.cz)</source>
         <translation type="unfinished"></translation>
     </message>
@@ -3593,65 +3727,106 @@ source - ORIS-&gt;Event-&gt;Information-&gt;Event key</source>
         <translation type="vanished">Importer ID</translation>
     </message>
     <message>
-        <location filename="plugins/Event/src/eventdialogwidget.ui" line="289"/>
+        <location filename="plugins/Event/src/eventdialogwidget.ui" line="232"/>
         <source> sec</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="plugins/Event/src/eventdialogwidget.ui" line="305"/>
+        <location filename="plugins/Event/src/eventdialogwidget.ui" line="248"/>
         <source>1/10 sec results</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="plugins/Event/src/eventdialogwidget.ui" line="321"/>
+        <location filename="plugins/Event/src/eventdialogwidget.ui" line="264"/>
         <source>Enabled</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="plugins/Event/src/eventdialogwidget.ui" line="329"/>
-        <source>IOF Eventor</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="plugins/Event/src/eventdialogwidget.ui" line="335"/>
+        <location filename="plugins/Event/src/eventdialogwidget.ui" line="346"/>
         <source>Race number</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="plugins/Event/src/eventdialogwidget.ui" line="342"/>
+        <location filename="plugins/Event/src/eventdialogwidget.ui" line="353"/>
         <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;IOF Eventor race number - if nonzero, used as &amp;lt;Race&amp;gt; node and for attribute of &amp;lt;Start&amp;gt; node for IOF XML exports&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="plugins/Event/src/eventdialogwidget.ui" line="349"/>
+        <location filename="plugins/Event/src/eventdialogwidget.ui" line="333"/>
         <source>IOF Eventor race - used for IOF XML exports</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="plugins/Event/src/eventdialogwidget.ui" line="87"/>
+        <location filename="plugins/Event/src/eventdialogwidget.ui" line="69"/>
         <source>&amp;Time</source>
         <translation>&amp;Tid</translation>
     </message>
     <message>
-        <location filename="plugins/Event/src/eventdialogwidget.ui" line="265"/>
+        <location filename="plugins/Event/src/eventdialogwidget.ui" line="182"/>
+        <location filename="plugins/Event/src/eventdialogwidget.cpp" line="26"/>
         <source>Teams</source>
         <translation>Lag</translation>
     </message>
     <message>
-        <location filename="plugins/Event/src/eventdialogwidget.ui" line="273"/>
+        <location filename="plugins/Event/src/eventdialogwidget.ui" line="216"/>
         <source>Card check</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="plugins/Event/src/eventdialogwidget.ui" line="283"/>
+        <location filename="plugins/Event/src/eventdialogwidget.ui" line="226"/>
         <source>Maximal distance between card CHECK and START time</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="plugins/Event/src/eventdialogwidget.ui" line="286"/>
-        <location filename="plugins/Event/src/eventdialogwidget.ui" line="316"/>
+        <location filename="plugins/Event/src/eventdialogwidget.ui" line="229"/>
+        <location filename="plugins/Event/src/eventdialogwidget.ui" line="259"/>
         <source>Disabled</source>
         <translation>Avskrudd</translation>
+    </message>
+    <message>
+        <location filename="plugins/Event/src/eventdialogwidget.cpp" line="25"/>
+        <source>Relays</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="plugins/Event/src/eventdialogwidget.cpp" line="27"/>
+        <source>Free order</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="plugins/Event/src/eventdialogwidget.cpp" line="28"/>
+        <source>Night</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="plugins/Event/src/eventdialogwidget.cpp" line="29"/>
+        <source>Sprint relays</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="plugins/Event/src/eventdialogwidget.cpp" line="30"/>
+        <source>Knock-out sprint</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="plugins/Event/src/eventdialogwidget.cpp" line="31"/>
+        <source>TempO</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="plugins/Event/src/eventdialogwidget.cpp" line="32"/>
+        <source>Multi stages</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="plugins/Event/src/eventdialogwidget.cpp" line="33"/>
+        <source>Indoor</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="plugins/Event/src/eventdialogwidget.cpp" line="34"/>
+        <source>Mass start</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -4131,6 +4306,79 @@ source - ORIS-&gt;Event-&gt;Information-&gt;Event key</source>
     </message>
 </context>
 <context>
+    <name>OpenEventDialog</name>
+    <message>
+        <location filename="plugins/Event/src/openeventdialog.cpp" line="86"/>
+        <source>Long</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="plugins/Event/src/openeventdialog.cpp" line="87"/>
+        <source>Middle</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="plugins/Event/src/openeventdialog.cpp" line="88"/>
+        <source>Sprint</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="plugins/Event/src/openeventdialog.cpp" line="89"/>
+        <source>Ultralong</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="plugins/Event/src/openeventdialog.cpp" line="90"/>
+        <source>Relays</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="plugins/Event/src/openeventdialog.cpp" line="91"/>
+        <source>Teams</source>
+        <translation type="unfinished">Lag</translation>
+    </message>
+    <message>
+        <location filename="plugins/Event/src/openeventdialog.cpp" line="92"/>
+        <source>Free order</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="plugins/Event/src/openeventdialog.cpp" line="93"/>
+        <source>Night</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="plugins/Event/src/openeventdialog.cpp" line="94"/>
+        <source>TempO</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="plugins/Event/src/openeventdialog.cpp" line="95"/>
+        <source>Multi stages</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="plugins/Event/src/openeventdialog.cpp" line="96"/>
+        <source>Mass start</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="plugins/Event/src/openeventdialog.cpp" line="97"/>
+        <source>Sprint relays</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="plugins/Event/src/openeventdialog.cpp" line="98"/>
+        <source>Knock-out</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="plugins/Event/src/openeventdialog.cpp" line="99"/>
+        <source>Indoor</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>Oris::OrisPlugin</name>
     <message>
         <location filename="plugins/Oris/src/orisplugin.cpp" line="38"/>
@@ -4201,107 +4449,107 @@ source - ORIS-&gt;Event-&gt;Information-&gt;Event key</source>
 <context>
     <name>OrisImporter</name>
     <message>
-        <location filename="plugins/Oris/src/orisimporter.cpp" line="134"/>
+        <location filename="plugins/Oris/src/orisimporter.cpp" line="102"/>
         <source>JSON document parse error: %1 at: %2 near: %3</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="plugins/Oris/src/orisimporter.cpp" line="175"/>
+        <location filename="plugins/Oris/src/orisimporter.cpp" line="145"/>
         <source>Cannot find Oris import ID.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="plugins/Oris/src/orisimporter.cpp" line="348"/>
+        <location filename="plugins/Oris/src/orisimporter.cpp" line="301"/>
         <source>Import finished successfully.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="plugins/Oris/src/orisimporter.cpp" line="737"/>
+        <location filename="plugins/Oris/src/orisimporter.cpp" line="686"/>
         <source>New entries</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="plugins/Oris/src/orisimporter.cpp" line="738"/>
+        <location filename="plugins/Oris/src/orisimporter.cpp" line="687"/>
         <source>Edited entries</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="plugins/Oris/src/orisimporter.cpp" line="739"/>
+        <location filename="plugins/Oris/src/orisimporter.cpp" line="688"/>
         <source>Deleted entries</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="plugins/Oris/src/orisimporter.cpp" line="742"/>
+        <location filename="plugins/Oris/src/orisimporter.cpp" line="691"/>
         <source>Oris import report</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="plugins/Oris/src/orisimporter.cpp" line="752"/>
+        <location filename="plugins/Oris/src/orisimporter.cpp" line="701"/>
         <source>Save without drops</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="plugins/Oris/src/orisimporter.cpp" line="759"/>
+        <location filename="plugins/Oris/src/orisimporter.cpp" line="708"/>
         <source>Export</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="plugins/Oris/src/orisimporter.cpp" line="761"/>
+        <location filename="plugins/Oris/src/orisimporter.cpp" line="710"/>
         <source>Export as ...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="plugins/Oris/src/orisimporter.cpp" line="761"/>
+        <location filename="plugins/Oris/src/orisimporter.cpp" line="710"/>
         <source>HTML files *.html (*.html)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="plugins/Oris/src/orisimporter.cpp" line="768"/>
+        <location filename="plugins/Oris/src/orisimporter.cpp" line="717"/>
         <source>Cannot open file &apos;%1&apos; for writing.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="plugins/Oris/src/orisimporter.cpp" line="827"/>
+        <location filename="plugins/Oris/src/orisimporter.cpp" line="776"/>
         <source>Import ORIS Registrations</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="plugins/Oris/src/orisimporter.cpp" line="827"/>
+        <location filename="plugins/Oris/src/orisimporter.cpp" line="776"/>
         <source>Year of registration:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="plugins/Oris/src/orisimporter.cpp" line="838"/>
+        <location filename="plugins/Oris/src/orisimporter.cpp" line="787"/>
         <source>Importing registrations</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="plugins/Oris/src/orisimporter.cpp" line="895"/>
+        <location filename="plugins/Oris/src/orisimporter.cpp" line="844"/>
         <source>Importing clubs</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="plugins/Oris/src/orisimporter.cpp" line="954"/>
+        <location filename="plugins/Oris/src/orisimporter.cpp" line="903"/>
         <source>Warning</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="plugins/Oris/src/orisimporter.cpp" line="954"/>
+        <location filename="plugins/Oris/src/orisimporter.cpp" line="903"/>
         <source>For import one-time clubs, you need to fill ORIS Event Key in File-&gt;Event-&gt;Edit event</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="plugins/Oris/src/orisimporter.cpp" line="993"/>
+        <location filename="plugins/Oris/src/orisimporter.cpp" line="942"/>
         <source>Information</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="plugins/Oris/src/orisimporter.cpp" line="993"/>
+        <location filename="plugins/Oris/src/orisimporter.cpp" line="942"/>
         <source>No missing one-time clubs found.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="plugins/Oris/src/orisimporter.cpp" line="999"/>
+        <location filename="plugins/Oris/src/orisimporter.cpp" line="948"/>
         <source>Importing one-time clubs</source>
         <translation type="unfinished"></translation>
     </message>
@@ -4957,7 +5205,7 @@ Please choose a receipt template first.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="plugins/Relays/src/relaysplugin.cpp" line="989"/>
+        <location filename="plugins/Relays/src/relaysplugin.cpp" line="991"/>
         <source>Relays IOF-XML 3.0 startlist</source>
         <translation type="unfinished"></translation>
     </message>
@@ -5402,29 +5650,29 @@ Press refresh button to show imported data.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="plugins/Runs/src/runsplugin.cpp" line="1152"/>
+        <location filename="plugins/Runs/src/runsplugin.cpp" line="1151"/>
         <source>E%1 IOF XML stage results</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="plugins/Runs/src/runsplugin.cpp" line="1781"/>
-        <location filename="plugins/Runs/src/runsplugin.cpp" line="2148"/>
+        <location filename="plugins/Runs/src/runsplugin.cpp" line="1780"/>
+        <location filename="plugins/Runs/src/runsplugin.cpp" line="2147"/>
         <source>Start list by classes</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="plugins/Runs/src/runsplugin.cpp" line="1809"/>
-        <location filename="plugins/Runs/src/runsplugin.cpp" line="2247"/>
+        <location filename="plugins/Runs/src/runsplugin.cpp" line="1808"/>
+        <location filename="plugins/Runs/src/runsplugin.cpp" line="2246"/>
         <source>Start list by clubs</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="plugins/Runs/src/runsplugin.cpp" line="1834"/>
+        <location filename="plugins/Runs/src/runsplugin.cpp" line="1833"/>
         <source>Start list for starters</source>
         <translation type="unfinished"></translation>
     </message>
     <message numerus="yes">
-        <location filename="plugins/Runs/src/runsplugin.cpp" line="1867"/>
+        <location filename="plugins/Runs/src/runsplugin.cpp" line="1866"/>
         <source>Start list by classes for %n stage(s)</source>
         <translation type="unfinished">
             <numerusform></numerusform>
@@ -5432,7 +5680,7 @@ Press refresh button to show imported data.</source>
         </translation>
     </message>
     <message numerus="yes">
-        <location filename="plugins/Runs/src/runsplugin.cpp" line="1899"/>
+        <location filename="plugins/Runs/src/runsplugin.cpp" line="1898"/>
         <source>Start list by clubs for %n stage(s)</source>
         <translation type="unfinished">
             <numerusform></numerusform>
@@ -5440,19 +5688,19 @@ Press refresh button to show imported data.</source>
         </translation>
     </message>
     <message>
-        <location filename="plugins/Runs/src/runsplugin.cpp" line="1923"/>
-        <location filename="plugins/Runs/src/runsplugin.cpp" line="1949"/>
+        <location filename="plugins/Runs/src/runsplugin.cpp" line="1922"/>
+        <location filename="plugins/Runs/src/runsplugin.cpp" line="1948"/>
         <source>Results by classes</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="plugins/Runs/src/runsplugin.cpp" line="1972"/>
+        <location filename="plugins/Runs/src/runsplugin.cpp" line="1971"/>
         <source>Stage awards</source>
         <translation type="unfinished"></translation>
     </message>
     <message numerus="yes">
-        <location filename="plugins/Runs/src/runsplugin.cpp" line="1999"/>
-        <location filename="plugins/Runs/src/runsplugin.cpp" line="2026"/>
+        <location filename="plugins/Runs/src/runsplugin.cpp" line="1998"/>
+        <location filename="plugins/Runs/src/runsplugin.cpp" line="2025"/>
         <source>Results after %n stage(s)</source>
         <oldsource>Results after %1 stages</oldsource>
         <translation type="unfinished">
@@ -5461,169 +5709,169 @@ Press refresh button to show imported data.</source>
         </translation>
     </message>
     <message>
-        <location filename="plugins/Runs/src/runsplugin.cpp" line="2048"/>
+        <location filename="plugins/Runs/src/runsplugin.cpp" line="2047"/>
         <source>Awards after %1 stages</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="plugins/Runs/src/runsplugin.cpp" line="2099"/>
-        <location filename="plugins/Runs/src/runsplugin.cpp" line="2305"/>
+        <location filename="plugins/Runs/src/runsplugin.cpp" line="2098"/>
+        <location filename="plugins/Runs/src/runsplugin.cpp" line="2304"/>
         <source>length:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="plugins/Runs/src/runsplugin.cpp" line="2101"/>
-        <location filename="plugins/Runs/src/runsplugin.cpp" line="2307"/>
+        <location filename="plugins/Runs/src/runsplugin.cpp" line="2100"/>
+        <location filename="plugins/Runs/src/runsplugin.cpp" line="2306"/>
         <source>climb:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="plugins/Runs/src/runsplugin.cpp" line="2104"/>
-        <location filename="plugins/Runs/src/runsplugin.cpp" line="2202"/>
-        <location filename="plugins/Runs/src/runsplugin.cpp" line="2311"/>
-        <location filename="plugins/Runs/src/runsplugin.cpp" line="2435"/>
+        <location filename="plugins/Runs/src/runsplugin.cpp" line="2103"/>
+        <location filename="plugins/Runs/src/runsplugin.cpp" line="2201"/>
+        <location filename="plugins/Runs/src/runsplugin.cpp" line="2310"/>
+        <location filename="plugins/Runs/src/runsplugin.cpp" line="2434"/>
         <source>Top</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="plugins/Runs/src/runsplugin.cpp" line="2117"/>
-        <location filename="plugins/Runs/src/runsplugin.cpp" line="2215"/>
+        <location filename="plugins/Runs/src/runsplugin.cpp" line="2116"/>
+        <location filename="plugins/Runs/src/runsplugin.cpp" line="2214"/>
         <source>St. Num</source>
         <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="plugins/Runs/src/runsplugin.cpp" line="2117"/>
+        <location filename="plugins/Runs/src/runsplugin.cpp" line="2216"/>
+        <location filename="plugins/Runs/src/runsplugin.cpp" line="2318"/>
+        <location filename="plugins/Runs/src/runsplugin.cpp" line="2442"/>
+        <location filename="plugins/Runs/src/runsplugin.cpp" line="2543"/>
+        <source>Name</source>
+        <translation type="unfinished">Navn</translation>
     </message>
     <message>
         <location filename="plugins/Runs/src/runsplugin.cpp" line="2118"/>
         <location filename="plugins/Runs/src/runsplugin.cpp" line="2217"/>
         <location filename="plugins/Runs/src/runsplugin.cpp" line="2319"/>
         <location filename="plugins/Runs/src/runsplugin.cpp" line="2443"/>
-        <location filename="plugins/Runs/src/runsplugin.cpp" line="2544"/>
-        <source>Name</source>
-        <translation type="unfinished">Navn</translation>
-    </message>
-    <message>
-        <location filename="plugins/Runs/src/runsplugin.cpp" line="2119"/>
-        <location filename="plugins/Runs/src/runsplugin.cpp" line="2218"/>
-        <location filename="plugins/Runs/src/runsplugin.cpp" line="2320"/>
-        <location filename="plugins/Runs/src/runsplugin.cpp" line="2444"/>
-        <location filename="plugins/Runs/src/runsplugin.cpp" line="2558"/>
+        <location filename="plugins/Runs/src/runsplugin.cpp" line="2557"/>
         <source>Registration</source>
         <translation type="unfinished">Registrering</translation>
     </message>
     <message>
-        <location filename="plugins/Runs/src/runsplugin.cpp" line="2120"/>
-        <location filename="plugins/Runs/src/runsplugin.cpp" line="2219"/>
+        <location filename="plugins/Runs/src/runsplugin.cpp" line="2119"/>
+        <location filename="plugins/Runs/src/runsplugin.cpp" line="2218"/>
         <source>SI</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="plugins/Runs/src/runsplugin.cpp" line="2121"/>
-        <location filename="plugins/Runs/src/runsplugin.cpp" line="2220"/>
+        <location filename="plugins/Runs/src/runsplugin.cpp" line="2120"/>
+        <location filename="plugins/Runs/src/runsplugin.cpp" line="2219"/>
         <source>Start</source>
         <translation type="unfinished">Start</translation>
     </message>
     <message>
-        <location filename="plugins/Runs/src/runsplugin.cpp" line="2216"/>
+        <location filename="plugins/Runs/src/runsplugin.cpp" line="2215"/>
         <source>Class</source>
         <translation type="unfinished">Klasse</translation>
     </message>
     <message>
-        <location filename="plugins/Runs/src/runsplugin.cpp" line="2262"/>
+        <location filename="plugins/Runs/src/runsplugin.cpp" line="2261"/>
         <source>Preparing data</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="plugins/Runs/src/runsplugin.cpp" line="2291"/>
-        <location filename="plugins/Runs/src/runsplugin.cpp" line="2421"/>
+        <location filename="plugins/Runs/src/runsplugin.cpp" line="2290"/>
+        <location filename="plugins/Runs/src/runsplugin.cpp" line="2420"/>
         <source>Procesing class %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="plugins/Runs/src/runsplugin.cpp" line="2310"/>
+        <location filename="plugins/Runs/src/runsplugin.cpp" line="2309"/>
         <source>Laps</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="plugins/Runs/src/runsplugin.cpp" line="2318"/>
-        <location filename="plugins/Runs/src/runsplugin.cpp" line="2442"/>
-        <location filename="plugins/Runs/src/runsplugin.cpp" line="2543"/>
+        <location filename="plugins/Runs/src/runsplugin.cpp" line="2317"/>
+        <location filename="plugins/Runs/src/runsplugin.cpp" line="2441"/>
+        <location filename="plugins/Runs/src/runsplugin.cpp" line="2542"/>
         <source>Place</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="plugins/Runs/src/runsplugin.cpp" line="2321"/>
-        <location filename="plugins/Runs/src/runsplugin.cpp" line="2445"/>
+        <location filename="plugins/Runs/src/runsplugin.cpp" line="2320"/>
+        <location filename="plugins/Runs/src/runsplugin.cpp" line="2444"/>
         <source>Club</source>
         <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="plugins/Runs/src/runsplugin.cpp" line="2321"/>
+        <location filename="plugins/Runs/src/runsplugin.cpp" line="2452"/>
+        <location filename="plugins/Runs/src/runsplugin.cpp" line="2544"/>
+        <source>Time</source>
+        <translation type="unfinished">Tid</translation>
     </message>
     <message>
         <location filename="plugins/Runs/src/runsplugin.cpp" line="2322"/>
         <location filename="plugins/Runs/src/runsplugin.cpp" line="2453"/>
         <location filename="plugins/Runs/src/runsplugin.cpp" line="2545"/>
-        <source>Time</source>
-        <translation type="unfinished">Tid</translation>
-    </message>
-    <message>
-        <location filename="plugins/Runs/src/runsplugin.cpp" line="2323"/>
-        <location filename="plugins/Runs/src/runsplugin.cpp" line="2454"/>
-        <location filename="plugins/Runs/src/runsplugin.cpp" line="2546"/>
         <source>Loss</source>
         <translation type="unfinished">Tap</translation>
     </message>
     <message>
-        <location filename="plugins/Runs/src/runsplugin.cpp" line="2493"/>
+        <location filename="plugins/Runs/src/runsplugin.cpp" line="2492"/>
         <source>NC</source>
         <comment>Not Competing</comment>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="plugins/Runs/src/runsplugin.cpp" line="2496"/>
+        <location filename="plugins/Runs/src/runsplugin.cpp" line="2495"/>
         <source>DISQ</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="plugins/Runs/src/runsplugin.cpp" line="2792"/>
+        <location filename="plugins/Runs/src/runsplugin.cpp" line="2795"/>
         <source>E%1 IOF XML stage startlist</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="plugins/Runs/src/runsplugin.cpp" line="2359"/>
-        <location filename="plugins/Runs/src/runsplugin.cpp" line="2510"/>
-        <location filename="plugins/Runs/src/runsplugin.cpp" line="2637"/>
+        <location filename="plugins/Runs/src/runsplugin.cpp" line="2358"/>
+        <location filename="plugins/Runs/src/runsplugin.cpp" line="2509"/>
+        <location filename="plugins/Runs/src/runsplugin.cpp" line="2636"/>
         <source>Stage results</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="plugins/Runs/src/runsplugin.cpp" line="2378"/>
+        <location filename="plugins/Runs/src/runsplugin.cpp" line="2377"/>
         <source>Warning</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="plugins/Runs/src/runsplugin.cpp" line="2378"/>
+        <location filename="plugins/Runs/src/runsplugin.cpp" line="2377"/>
         <source>Export error</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="plugins/Runs/src/runsplugin.cpp" line="2380"/>
+        <location filename="plugins/Runs/src/runsplugin.cpp" line="2379"/>
         <source>Information</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="plugins/Runs/src/runsplugin.cpp" line="2380"/>
+        <location filename="plugins/Runs/src/runsplugin.cpp" line="2379"/>
         <source>Results exported to %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="plugins/Runs/src/runsplugin.cpp" line="2400"/>
+        <location filename="plugins/Runs/src/runsplugin.cpp" line="2399"/>
         <source>Overall results after stage %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="plugins/Runs/src/runsplugin.cpp" line="2450"/>
+        <location filename="plugins/Runs/src/runsplugin.cpp" line="2449"/>
         <source>Stage %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="plugins/Runs/src/runsplugin.cpp" line="2551"/>
+        <location filename="plugins/Runs/src/runsplugin.cpp" line="2550"/>
         <source>FIN</source>
         <translation type="unfinished"></translation>
     </message>

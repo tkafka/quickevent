@@ -67,6 +67,7 @@ add_executable(quickevent
 	plugins/Event/src/eventdialogwidget.cpp
 	plugins/Event/src/eventdialogwidget.ui
 	plugins/Event/src/eventplugin.cpp
+	plugins/Event/src/openeventdialog.cpp
 	plugins/Event/src/stage.cpp
 	plugins/Event/src/stagedocument.cpp
 	plugins/Event/src/stagewidget.cpp
