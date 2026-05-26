@@ -8,7 +8,6 @@
 class QStandardItemModel;
 
 namespace Ui { class OpenEventDialog; }
-namespace qf::gui { class TableViewProxyModel; }
 
 namespace Event {
 
@@ -42,7 +41,6 @@ private:
 
 	Ui::OpenEventDialog *ui = nullptr;
 	QStandardItemModel *m_model = nullptr;
-	qf::gui::TableViewProxyModel *m_proxy = nullptr;
 	QString m_selectedEventId;
 	QString m_convertedEventId;
 	RowAction m_selectedAction = RowAction::Open;

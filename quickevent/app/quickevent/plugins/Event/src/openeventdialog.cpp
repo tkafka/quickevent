@@ -6,13 +6,15 @@
 #include <qf/core/utils.h>
 #include <qf/gui/model/tablemodel.h>
 #include <qf/gui/style.h>
-#include <qf/gui/tableviewproxymodel.h>
+#include <qf/gui/tableview.h>
 
 #include <QApplication>
 #include <QCoreApplication>
 #include <QDialogButtonBox>
 #include <QHeaderView>
 #include <QLineEdit>
+#include <QPushButton>
+#include <QSortFilterProxyModel>
 #include <QMenu>
 #include <QMessageBox>
 #include <QMouseEvent>
@@ -175,10 +177,7 @@ OpenEventDialog::OpenEventDialog(const QList<EventInfo> &events, int appDbVersio
 	}
 
 	// TableViewProxyModel: same collator filtering and highlighting used across the whole app.
-	m_proxy = new qf::gui::TableViewProxyModel(this);
-	m_proxy->setSourceModel(m_model);
-
-	ui->tableView->setModel(m_proxy);
+	ui->tableView->sortFilterProxyModel()->setSourceModel(m_model);
 	ui->tableView->setSelectionBehavior(QAbstractItemView::SelectRows);
 	ui->tableView->setSelectionMode(QAbstractItemView::SingleSelection);
 	ui->tableView->setEditTriggers(QAbstractItemView::NoEditTriggers);
@@ -221,7 +220,7 @@ OpenEventDialog::OpenEventDialog(const QList<EventInfo> &events, int appDbVersio
 	ui->tableView->resizeColumnsToContents();
 	ui->tableView->sortByColumn(ColDate, Qt::DescendingOrder);
 
-	connect(ui->searchEdit, &QLineEdit::textChanged, m_proxy, &qf::gui::TableViewProxyModel::setRowFilterString);
+	connect(ui->searchEdit, &QLineEdit::textChanged, ui->tableView, &qf::gui::TableView::filterByString);
 
 	ui->legend->setText(
 		QStringLiteral("<span style='background:%1;border:1px solid gray'>&nbsp;&nbsp;&nbsp;</span> %2"
