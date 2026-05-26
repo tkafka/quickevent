@@ -205,7 +205,7 @@ OpenEventDialog::OpenEventDialog(const QList<EventInfo> &events, int appDbVersio
 	hdr->setSectionResizeMode(ColSport,      QHeaderView::Interactive);
 	hdr->setSectionResizeMode(ColDiscipline, QHeaderView::Interactive);
 	hdr->setSectionResizeMode(ColDbVersion,  QHeaderView::Interactive);
-	hdr->setSectionResizeMode(ColAction,     QHeaderView::Fixed);
+	hdr->setSectionResizeMode(ColAction,     QHeaderView::ResizeToContents);
 	hdr->setStretchLastSection(false);
 
 	hdr->setContextMenuPolicy(Qt::CustomContextMenu);
@@ -219,17 +219,11 @@ OpenEventDialog::OpenEventDialog(const QList<EventInfo> &events, int appDbVersio
 		}
 		menu.addAction(tr("Resize all sections to contents"), [this]() {
 			m_tableView->resizeColumnsToContents();
-			m_tableView->setColumnWidth(ColAction, 110);
 		});
 		menu.exec(m_tableView->horizontalHeader()->viewport()->mapToGlobal(pos));
 	});
 
-	m_tableView->setColumnWidth(ColId,        220);
-	m_tableView->setColumnWidth(ColDate,       90);
-	m_tableView->setColumnWidth(ColSport,      55);
-	m_tableView->setColumnWidth(ColDiscipline, 90);
-	m_tableView->setColumnWidth(ColDbVersion,  80);
-	m_tableView->setColumnWidth(ColAction,    110);
+	m_tableView->resizeColumnsToContents();
 	m_tableView->sortByColumn(ColDate, Qt::DescendingOrder);
 
 	// Search — delegates to TableViewProxyModel::setRowFilterString(), same as other tabs.
