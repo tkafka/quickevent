@@ -1387,39 +1387,7 @@ bool EventPlugin::importEventFromFile(const QString &src_file, const QString &de
 			break;
 		}
 
-		qfs::Transaction transaction(exp_conn);
-		DbSchema *db_schema = dbSchema();
-		auto tables = db_schema->tables();
-		int step_cnt = tables.count() + 1;
-		int step_no = 0;
-		fwk->showProgress(tr("Creating database"), ++step_no, step_cnt);
-		{
-			DbSchema::CreateDbSqlScriptOptions create_options;
-			create_options.setDriverName(exp_conn.driverName());
-			create_options.setSchemaName(dest_event_name);
-			QStringList create_script = db_schema->loadCreateDbSqlScript(create_options);
-			qfs::Query ex_q(exp_conn);
-			if(!run_sql_script(ex_q, create_script)) {
-				err_str = tr("Create Database Error: %1").arg(ex_q.lastError().text());
-				break;
-			}
-		}
-		exp_conn.setCurrentSchema(dest_event_name);
-		for(QObject *table : tables) {
-			const QString table_name = table->property("name").toString();
-			qfDebug() << "Copying table" << table_name;
-			fwk->showProgress(tr("Copying table %1").arg(table_name), ++step_no, step_cnt);
-			QSqlRecord rec = db_schema->sqlRecord(table, true);
-			err_str = copy_sql_table(table_name, rec, imp_conn, exp_conn);
-			if(!err_str.isEmpty())
-				break;
-			if(table_name == QLatin1String("stages")) {
-				repairStageStarts(imp_conn, exp_conn);
-			}
-		}
-		if(!err_str.isEmpty())
-			break;
-		transaction.commit();
+		err_str = copyEventSchema(imp_conn, exp_conn, dest_event_name);
 	} while(false);
 	QSqlDatabase::removeDatabase(import_connection_name);
 	QSqlDatabase::removeDatabase(export_connection_name);
@@ -1466,24 +1434,40 @@ bool EventPlugin::convertSqlEvent(const QString &from_event, const QString &to_e
 			break;
 		}
 
-		qfs::Transaction transaction(exp_conn);
-		DbSchema *db_schema = dbSchema();
-		auto tables = db_schema->tables();
-		int step_cnt = tables.count() + 1;
-		int step_no = 0;
-		fwk->showProgress(tr("Creating database"), ++step_no, step_cnt);
-		{
-			DbSchema::CreateDbSqlScriptOptions create_options;
-			create_options.setDriverName(exp_conn.driverName());
-			create_options.setSchemaName(to_event);
-			QStringList create_script = db_schema->loadCreateDbSqlScript(create_options);
-			qfs::Query ex_q(exp_conn);
-			if(!run_sql_script(ex_q, create_script)) {
-				err_str = tr("Create Database Error: %1").arg(ex_q.lastError().text());
-				break;
-			}
+		err_str = copyEventSchema(imp_conn, exp_conn, to_event);
+	} while(false);
+	QSqlDatabase::removeDatabase(import_connection_name);
+	QSqlDatabase::removeDatabase(export_connection_name);
+	fwk->hideProgress();
+	if(!err_str.isEmpty()) {
+		qfd::MessageBox::showError(fwk, err_str);
+		return false;
+	}
+	return true;
+}
+
+QString EventPlugin::copyEventSchema(qfs::Connection &imp_conn, qfs::Connection &exp_conn,
+                                     const QString &dest_schema_name)
+{
+	qff::MainWindow *fwk = qff::MainWindow::frameWork();
+	QString err_str;
+	qfs::Transaction transaction(exp_conn);
+	DbSchema *db_schema = dbSchema();
+	auto tables = db_schema->tables();
+	int step_cnt = tables.count() + 1;
+	int step_no = 0;
+	fwk->showProgress(tr("Creating database"), ++step_no, step_cnt);
+	do {
+		DbSchema::CreateDbSqlScriptOptions create_options;
+		create_options.setDriverName(exp_conn.driverName());
+		create_options.setSchemaName(dest_schema_name);
+		QStringList create_script = db_schema->loadCreateDbSqlScript(create_options);
+		qfs::Query ex_q(exp_conn);
+		if(!run_sql_script(ex_q, create_script)) {
+			err_str = tr("Create Database Error: %1").arg(ex_q.lastError().text());
+			break;
 		}
-		exp_conn.setCurrentSchema(to_event);
+		exp_conn.setCurrentSchema(dest_schema_name);
 		for(QObject *table : tables) {
 			const QString table_name = table->property("name").toString();
 			qfDebug() << "Copying table" << table_name;
@@ -1500,14 +1484,7 @@ bool EventPlugin::convertSqlEvent(const QString &from_event, const QString &to_e
 			break;
 		transaction.commit();
 	} while(false);
-	QSqlDatabase::removeDatabase(import_connection_name);
-	QSqlDatabase::removeDatabase(export_connection_name);
-	fwk->hideProgress();
-	if(!err_str.isEmpty()) {
-		qfd::MessageBox::showError(fwk, err_str);
-		return false;
-	}
-	return true;
+	return err_str;
 }
 
 void EventPlugin::importEvent_qbe()

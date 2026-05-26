@@ -148,6 +148,8 @@ private:
 	bool importEventFromFile(const QString &src_file, const QString &dest_event_name);
 	bool convertSqlEvent(const QString &from_event, const QString &to_event);
 	void deleteEvent(const QString &event_name);
+	QString copyEventSchema(qf::core::sql::Connection &imp_conn, qf::core::sql::Connection &exp_conn,
+	                        const QString &dest_schema_name);
 
 	void onServiceDockVisibleChanged(bool on = true);
 private:
