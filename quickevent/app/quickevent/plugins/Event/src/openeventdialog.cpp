@@ -1,5 +1,6 @@
 #include "openeventdialog.h"
 #include "eventconfig.h"
+#include "eventdialogwidget.h"
 
 #include <qf/core/utils.h>
 #include <qf/gui/model/tablemodel.h>
@@ -33,38 +34,6 @@ enum Col { ColId = 0, ColDate, ColName, ColSport, ColDiscipline, ColDbVersion, C
 // Roles above TableModel::FirstUnusedRole to avoid conflicts with libqf roles.
 constexpr int EventIdRole = qf::gui::model::TableModel::FirstUnusedRole;
 constexpr int IsOlderRole = qf::gui::model::TableModel::FirstUnusedRole + 1;
-
-QString sportName(int sport_id)
-{
-	switch (static_cast<EventConfig::Sport>(sport_id)) {
-	case EventConfig::Sport::OB:    return QStringLiteral("OB");
-	case EventConfig::Sport::LOB:   return QStringLiteral("LOB");
-	case EventConfig::Sport::MTBO:  return QStringLiteral("MTBO");
-	case EventConfig::Sport::TRAIL: return QStringLiteral("Trail");
-	}
-	return QString();
-}
-
-QString disciplineName(int disc_id)
-{
-	switch (static_cast<EventConfig::Discipline>(disc_id)) {
-	case EventConfig::Discipline::LongDistance:      return QCoreApplication::translate("OpenEventDialog", "Long");
-	case EventConfig::Discipline::ShortDistance:     return QCoreApplication::translate("OpenEventDialog", "Middle");
-	case EventConfig::Discipline::Sprint:            return QCoreApplication::translate("OpenEventDialog", "Sprint");
-	case EventConfig::Discipline::UltralongDistance: return QCoreApplication::translate("OpenEventDialog", "Ultralong");
-	case EventConfig::Discipline::Relays:            return QCoreApplication::translate("OpenEventDialog", "Relays");
-	case EventConfig::Discipline::Teams:             return QCoreApplication::translate("OpenEventDialog", "Teams");
-	case EventConfig::Discipline::FreeOrder:         return QCoreApplication::translate("OpenEventDialog", "Free order");
-	case EventConfig::Discipline::NightRace:         return QCoreApplication::translate("OpenEventDialog", "Night");
-	case EventConfig::Discipline::TempO:             return QCoreApplication::translate("OpenEventDialog", "TempO");
-	case EventConfig::Discipline::MultiStages:       return QCoreApplication::translate("OpenEventDialog", "Multi stages");
-	case EventConfig::Discipline::MassStart:         return QCoreApplication::translate("OpenEventDialog", "Mass start");
-	case EventConfig::Discipline::SprintRelays:      return QCoreApplication::translate("OpenEventDialog", "Sprint relays");
-	case EventConfig::Discipline::KnocOutSprint:     return QCoreApplication::translate("OpenEventDialog", "Knock-out");
-	case EventConfig::Discipline::Indoor:            return QCoreApplication::translate("OpenEventDialog", "Indoor");
-	}
-	return QString();
-}
 
 } // namespace
 
@@ -193,8 +162,8 @@ OpenEventDialog::OpenEventDialog(const QList<EventInfo> &events, int appDbVersio
 			info.date.isValid() ? info.date.toString(QStringLiteral("yyyy-MM-dd")) : QString(),
 			Qt::AlignCenter));
 		m_model->setItem(row, ColName,        makeItem(info.name));
-		m_model->setItem(row, ColSport,       makeItem(sportName(info.sportId),           Qt::AlignCenter));
-		m_model->setItem(row, ColDiscipline,  makeItem(disciplineName(info.disciplineId), Qt::AlignCenter));
+		m_model->setItem(row, ColSport,       makeItem(EventDialogWidget::sportName(info.sportId),       Qt::AlignCenter));
+		m_model->setItem(row, ColDiscipline,  makeItem(EventDialogWidget::disciplineName(info.disciplineId), Qt::AlignCenter));
 
 		// Store integer in SortRole so variantCmp() uses QMetaType::Int comparison.
 		auto *ver_item = makeItem(db_ver_str, Qt::AlignCenter);
