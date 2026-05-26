@@ -24,7 +24,7 @@ XmlImporter::XmlImporter(QObject *parent)
 {
 }
 
-bool XmlImporter::readPersonNode (SPerson &s, QXmlStreamReader &reader, [[maybe_unused]] const XmlCreators creator)
+bool XmlImporter::readPersonNode (SPerson &s, QXmlStreamReader &reader, const XmlCreators creator)
 {
 	bool result = false;
 	while(reader.readNextStartElement()) {
@@ -185,7 +185,8 @@ bool XmlImporter::importEntries(QXmlStreamReader &reader, const XmlCreators crea
 		}
 	}
 
-	int selected_race = 0; // if entries has more races in (defined in Event), selected race
+	Event::EventConfig *event_config = getPlugin<EventPlugin>()->eventConfig();
+	int selected_race = event_config->iofXmlRaceNumber(); // if entries has more races in (defined in Event), selected race
 	// load from XML & insert to db
 	int items_processed = 0;
 	int relays_processed = 0;
