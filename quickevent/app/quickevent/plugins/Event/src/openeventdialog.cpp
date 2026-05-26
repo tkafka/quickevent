@@ -243,7 +243,6 @@ OpenEventDialog::OpenEventDialog(const QList<EventInfo> &events, int appDbVersio
 
 		auto *deleteBtn = new QPushButton(this);
 		deleteBtn->setIcon(deleteIcon);
-		deleteBtn->setFixedSize(26, 26);
 		deleteBtn->setFlat(true);
 		deleteBtn->setToolTip(tr("Delete event permanently"));
 		{
