@@ -2446,18 +2446,17 @@ Introduce una dirección valida a la carpeta de trabajo.</translation>
         <location filename="plugins/Event/src/eventplugin.cpp" line="943"/>
         <location filename="plugins/Event/src/eventplugin.cpp" line="1121"/>
         <location filename="plugins/Event/src/eventplugin.cpp" line="1289"/>
-        <location filename="plugins/Event/src/eventplugin.cpp" line="1369"/>
-        <location filename="plugins/Event/src/eventplugin.cpp" line="1386"/>
-        <location filename="plugins/Event/src/eventplugin.cpp" line="1452"/>
-        <location filename="plugins/Event/src/eventplugin.cpp" line="1465"/>
+        <location filename="plugins/Event/src/eventplugin.cpp" line="1378"/>
+        <location filename="plugins/Event/src/eventplugin.cpp" line="1389"/>
+        <location filename="plugins/Event/src/eventplugin.cpp" line="1419"/>
+        <location filename="plugins/Event/src/eventplugin.cpp" line="1428"/>
         <source>Open Database Error: %1</source>
         <translation>Error abriendo la base de datos: %1</translation>
     </message>
     <message>
         <location filename="plugins/Event/src/eventplugin.cpp" line="986"/>
         <location filename="plugins/Event/src/eventplugin.cpp" line="1306"/>
-        <location filename="plugins/Event/src/eventplugin.cpp" line="1403"/>
-        <location filename="plugins/Event/src/eventplugin.cpp" line="1482"/>
+        <location filename="plugins/Event/src/eventplugin.cpp" line="1462"/>
         <source>Create Database Error: %1</source>
         <translation>Error creando la base de datos: %1</translation>
     </message>
@@ -2517,7 +2516,7 @@ Utilice: Archivo --&gt; Importar --&gt; Evento (*.qbe) para convertir el evento 
     </message>
     <message>
         <location filename="plugins/Event/src/eventplugin.cpp" line="1271"/>
-        <location filename="plugins/Event/src/eventplugin.cpp" line="1518"/>
+        <location filename="plugins/Event/src/eventplugin.cpp" line="1490"/>
         <source>Quick Event files *%1 (*%1)</source>
         <translation>Archivos de QuickEvent *%1 (*%1)</translation>
     </message>
@@ -2528,15 +2527,13 @@ Utilice: Archivo --&gt; Importar --&gt; Evento (*.qbe) para convertir el evento 
     </message>
     <message>
         <location filename="plugins/Event/src/eventplugin.cpp" line="1299"/>
-        <location filename="plugins/Event/src/eventplugin.cpp" line="1395"/>
-        <location filename="plugins/Event/src/eventplugin.cpp" line="1474"/>
+        <location filename="plugins/Event/src/eventplugin.cpp" line="1454"/>
         <source>Creating database</source>
         <translation>Creando la base de datos</translation>
     </message>
     <message>
         <location filename="plugins/Event/src/eventplugin.cpp" line="1314"/>
-        <location filename="plugins/Event/src/eventplugin.cpp" line="1411"/>
-        <location filename="plugins/Event/src/eventplugin.cpp" line="1490"/>
+        <location filename="plugins/Event/src/eventplugin.cpp" line="1469"/>
         <source>Copying table %1</source>
         <translation>Copiando tabla %1</translation>
     </message>
@@ -2551,52 +2548,52 @@ Utilice: Archivo --&gt; Importar --&gt; Evento (*.qbe) para convertir el evento 
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="plugins/Event/src/eventplugin.cpp" line="1518"/>
+        <location filename="plugins/Event/src/eventplugin.cpp" line="1490"/>
         <source>Import as Quick Event</source>
         <translation>Importar como Quick Event</translation>
     </message>
     <message>
-        <location filename="plugins/Event/src/eventplugin.cpp" line="1522"/>
+        <location filename="plugins/Event/src/eventplugin.cpp" line="1494"/>
         <source>Query</source>
         <translation>Consulta</translation>
     </message>
     <message>
-        <location filename="plugins/Event/src/eventplugin.cpp" line="1522"/>
+        <location filename="plugins/Event/src/eventplugin.cpp" line="1494"/>
         <source>Event will be imported as ID:</source>
         <translation>El evento va a ser importando con ID:</translation>
     </message>
     <message>
-        <location filename="plugins/Event/src/eventplugin.cpp" line="1527"/>
+        <location filename="plugins/Event/src/eventplugin.cpp" line="1499"/>
         <source>PostgreSQL schema must start with small letter and it may contain small letters, digits and underscores only.</source>
         <translation>El esquema de la base de datos PostgreSQL debe comentar con letras minúsculas y contener únicamente letras minúsculas, números y barra bajas.</translation>
     </message>
     <message>
-        <location filename="plugins/Event/src/eventplugin.cpp" line="1532"/>
+        <location filename="plugins/Event/src/eventplugin.cpp" line="1504"/>
         <source>Event ID &apos;%1&apos; exists already!</source>
         <translation>¡ID de evento &apos;%1&apos; ya existe!</translation>
     </message>
     <message>
-        <location filename="plugins/Event/src/eventplugin.cpp" line="1536"/>
+        <location filename="plugins/Event/src/eventplugin.cpp" line="1508"/>
         <source>Open imported event &apos;%1&apos;?</source>
         <translation>¿Desea abrir el evento importado &apos;%1&apos;?</translation>
     </message>
     <message>
-        <location filename="plugins/Event/src/eventplugin.cpp" line="1583"/>
+        <location filename="plugins/Event/src/eventplugin.cpp" line="1555"/>
         <source>Name</source>
         <translation>Nombre</translation>
     </message>
     <message>
-        <location filename="plugins/Event/src/eventplugin.cpp" line="1584"/>
+        <location filename="plugins/Event/src/eventplugin.cpp" line="1556"/>
         <source>Reg</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="plugins/Event/src/eventplugin.cpp" line="1585"/>
+        <location filename="plugins/Event/src/eventplugin.cpp" line="1557"/>
         <source>Lic</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="plugins/Event/src/eventplugin.cpp" line="1586"/>
+        <location filename="plugins/Event/src/eventplugin.cpp" line="1558"/>
         <source>SI</source>
         <translation type="unfinished"></translation>
     </message>
@@ -2604,122 +2601,91 @@ Utilice: Archivo --&gt; Importar --&gt; Evento (*.qbe) para convertir el evento 
 <context>
     <name>Event::OpenEventDialog</name>
     <message>
-        <location filename="plugins/Event/src/openeventdialog.cpp" line="112"/>
         <source>Open event</source>
-        <translation type="unfinished">Abrir evento</translation>
+        <translation type="obsolete">Abrir evento</translation>
     </message>
     <message>
-        <location filename="plugins/Event/src/openeventdialog.cpp" line="126"/>
-        <source>Filter events…</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="plugins/Event/src/openeventdialog.cpp" line="128"/>
-        <source>Search:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="plugins/Event/src/openeventdialog.cpp" line="136"/>
+        <location filename="plugins/Event/src/openeventdialog.cpp" line="134"/>
         <source>ID</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="plugins/Event/src/openeventdialog.cpp" line="136"/>
+        <location filename="plugins/Event/src/openeventdialog.cpp" line="134"/>
         <source>Date</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="plugins/Event/src/openeventdialog.cpp" line="136"/>
+        <location filename="plugins/Event/src/openeventdialog.cpp" line="134"/>
         <source>Name</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="plugins/Event/src/openeventdialog.cpp" line="137"/>
+        <location filename="plugins/Event/src/openeventdialog.cpp" line="135"/>
         <source>Sport</source>
         <translation type="unfinished">Disciplina</translation>
     </message>
     <message>
-        <location filename="plugins/Event/src/openeventdialog.cpp" line="137"/>
+        <location filename="plugins/Event/src/openeventdialog.cpp" line="135"/>
         <source>Discipline</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="plugins/Event/src/openeventdialog.cpp" line="137"/>
+        <location filename="plugins/Event/src/openeventdialog.cpp" line="135"/>
         <source>DB version</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="plugins/Event/src/openeventdialog.cpp" line="137"/>
+        <location filename="plugins/Event/src/openeventdialog.cpp" line="135"/>
         <source>Action</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="plugins/Event/src/openeventdialog.cpp" line="168"/>
+        <location filename="plugins/Event/src/openeventdialog.cpp" line="210"/>
         <source>Resize section to contents</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="plugins/Event/src/openeventdialog.cpp" line="172"/>
+        <location filename="plugins/Event/src/openeventdialog.cpp" line="214"/>
         <source>Resize all sections to contents</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="plugins/Event/src/openeventdialog.cpp" line="209"/>
+        <location filename="plugins/Event/src/openeventdialog.cpp" line="156"/>
         <source>?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="plugins/Event/src/openeventdialog.cpp" line="225"/>
-        <source>Convert</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="plugins/Event/src/openeventdialog.cpp" line="225"/>
-        <source>Open</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="plugins/Event/src/openeventdialog.cpp" line="227"/>
-        <source>Create a converted copy: version %1 → %2</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="plugins/Event/src/openeventdialog.cpp" line="248"/>
-        <source>Delete event permanently</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="plugins/Event/src/openeventdialog.cpp" line="283"/>
+        <location filename="plugins/Event/src/openeventdialog.cpp" line="229"/>
         <source>Compatible</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="plugins/Event/src/openeventdialog.cpp" line="285"/>
+        <location filename="plugins/Event/src/openeventdialog.cpp" line="230"/>
         <source>Older version (convert required)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="plugins/Event/src/openeventdialog.cpp" line="336"/>
+        <location filename="plugins/Event/src/openeventdialog.cpp" line="254"/>
         <source>Convert event</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="plugins/Event/src/openeventdialog.cpp" line="341"/>
+        <location filename="plugins/Event/src/openeventdialog.cpp" line="259"/>
         <source>Convert event &lt;b&gt;%1&lt;/b&gt; to the current version.&lt;br&gt;A new event will be created with the ID below.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="plugins/Event/src/openeventdialog.cpp" line="346"/>
+        <location filename="plugins/Event/src/openeventdialog.cpp" line="264"/>
         <source>New event ID:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="plugins/Event/src/openeventdialog.cpp" line="376"/>
+        <location filename="plugins/Event/src/openeventdialog.cpp" line="294"/>
         <source>Delete event</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="plugins/Event/src/openeventdialog.cpp" line="377"/>
+        <location filename="plugins/Event/src/openeventdialog.cpp" line="295"/>
         <source>Permanently delete event &lt;b&gt;%1&lt;/b&gt;?&lt;br&gt;This action cannot be undone.</source>
         <translation type="unfinished"></translation>
     </message>
@@ -3700,12 +3666,12 @@ En el caso de errores inesperados, contacte con support@oresults.eu</translation
         <translation>Formulario</translation>
     </message>
     <message>
-        <location filename="plugins/Event/src/eventdialogwidget.ui" line="126"/>
+        <location filename="plugins/Event/src/eventdialogwidget.ui" line="106"/>
         <source>Event ID</source>
         <translation>ID de evento</translation>
     </message>
     <message>
-        <location filename="plugins/Event/src/eventdialogwidget.ui" line="324"/>
+        <location filename="plugins/Event/src/eventdialogwidget.ui" line="274"/>
         <source>Unique event name</source>
         <oldsource>Enter event database name</oldsource>
         <translation>Nombre único del evento</translation>
@@ -3716,7 +3682,7 @@ En el caso de errores inesperados, contacte con support@oresults.eu</translation
         <translation>&amp;Nombre</translation>
     </message>
     <message>
-        <location filename="plugins/Event/src/eventdialogwidget.ui" line="304"/>
+        <location filename="plugins/Event/src/eventdialogwidget.ui" line="254"/>
         <source>&amp;Stage count</source>
         <translation>&amp;Número de etapas</translation>
     </message>
@@ -3726,7 +3692,7 @@ En el caso de errores inesperados, contacte con support@oresults.eu</translation
         <translation>&amp;Fecha</translation>
     </message>
     <message>
-        <location filename="plugins/Event/src/eventdialogwidget.ui" line="116"/>
+        <location filename="plugins/Event/src/eventdialogwidget.ui" line="96"/>
         <source>dd.MM.yyyy</source>
         <translation>dd.MM.yyyy</translation>
     </message>
@@ -3736,12 +3702,12 @@ En el caso de errores inesperados, contacte con support@oresults.eu</translation
         <translation>&amp;Lugar</translation>
     </message>
     <message>
-        <location filename="plugins/Event/src/eventdialogwidget.ui" line="200"/>
+        <location filename="plugins/Event/src/eventdialogwidget.ui" line="150"/>
         <source>Des&amp;cription</source>
         <translation>&amp;Descripción</translation>
     </message>
     <message>
-        <location filename="plugins/Event/src/eventdialogwidget.ui" line="136"/>
+        <location filename="plugins/Event/src/eventdialogwidget.ui" line="116"/>
         <source>Main r&amp;eferee</source>
         <translation>Juez controlador</translation>
     </message>
@@ -3751,12 +3717,12 @@ En el caso de errores inesperados, contacte con support@oresults.eu</translation
         <translation>D&amp;irector</translation>
     </message>
     <message>
-        <location filename="plugins/Event/src/eventdialogwidget.ui" line="272"/>
+        <location filename="plugins/Event/src/eventdialogwidget.ui" line="222"/>
         <source>&amp;Handicap length</source>
         <translation>&amp;Tiempo de corte</translation>
     </message>
     <message>
-        <location filename="plugins/Event/src/eventdialogwidget.ui" line="285"/>
+        <location filename="plugins/Event/src/eventdialogwidget.ui" line="235"/>
         <source> min</source>
         <oldsource>min</oldsource>
         <translation> min</translation>
@@ -3766,29 +3732,25 @@ En el caso de errores inesperados, contacte con support@oresults.eu</translation
         <translation type="vanished">ID de importación</translation>
     </message>
     <message>
-        <location filename="plugins/Event/src/eventdialogwidget.ui" line="190"/>
+        <location filename="plugins/Event/src/eventdialogwidget.ui" line="140"/>
         <source>Sport</source>
         <translation>Disciplina</translation>
     </message>
     <message>
-        <location filename="plugins/Event/src/eventdialogwidget.ui" line="90"/>
         <source>OB</source>
-        <translation type="unfinished">OB</translation>
+        <translation type="obsolete">OB</translation>
     </message>
     <message>
-        <location filename="plugins/Event/src/eventdialogwidget.ui" line="95"/>
         <source>LOB</source>
-        <translation type="unfinished">LOB</translation>
+        <translation type="obsolete">LOB</translation>
     </message>
     <message>
-        <location filename="plugins/Event/src/eventdialogwidget.ui" line="100"/>
         <source>MTBO</source>
-        <translation>MTBO</translation>
+        <translation type="vanished">MTBO</translation>
     </message>
     <message>
-        <location filename="plugins/Event/src/eventdialogwidget.ui" line="105"/>
         <source>TRAIL</source>
-        <translation type="unfinished">TRAIL</translation>
+        <translation type="obsolete">TRAIL</translation>
     </message>
     <message>
         <location filename="plugins/Event/src/eventdialogwidget.ui" line="69"/>
@@ -3802,113 +3764,107 @@ En el caso de errores inesperados, contacte con support@oresults.eu</translation
         <translation>h:mm:ss</translation>
     </message>
     <message>
-        <location filename="plugins/Event/src/eventdialogwidget.ui" line="282"/>
+        <location filename="plugins/Event/src/eventdialogwidget.ui" line="232"/>
         <source>No handicap</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="plugins/Event/src/eventdialogwidget.ui" line="146"/>
+        <location filename="plugins/Event/src/eventdialogwidget.ui" line="126"/>
         <source>Discipline</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="plugins/Event/src/eventdialogwidget.ui" line="157"/>
-        <location filename="plugins/Event/src/eventdialogwidget.cpp" line="21"/>
+        <location filename="plugins/Event/src/eventdialogwidget.cpp" line="127"/>
         <source>Long distance</source>
         <translation>Larga distancia</translation>
     </message>
     <message>
-        <location filename="plugins/Event/src/eventdialogwidget.ui" line="162"/>
-        <location filename="plugins/Event/src/eventdialogwidget.cpp" line="22"/>
+        <location filename="plugins/Event/src/eventdialogwidget.cpp" line="128"/>
         <source>Middle distance</source>
         <translation>Media distancia</translation>
     </message>
     <message>
-        <location filename="plugins/Event/src/eventdialogwidget.ui" line="167"/>
-        <location filename="plugins/Event/src/eventdialogwidget.cpp" line="24"/>
+        <location filename="plugins/Event/src/eventdialogwidget.cpp" line="130"/>
         <source>Sprint</source>
         <translation>Sprint</translation>
     </message>
     <message>
-        <location filename="plugins/Event/src/eventdialogwidget.ui" line="172"/>
-        <location filename="plugins/Event/src/eventdialogwidget.cpp" line="23"/>
+        <location filename="plugins/Event/src/eventdialogwidget.cpp" line="129"/>
         <source>Ultralong distance</source>
         <translation>Ultralarga</translation>
     </message>
     <message>
-        <location filename="plugins/Event/src/eventdialogwidget.ui" line="177"/>
         <source>Relay</source>
-        <translation>Relevo</translation>
+        <translation type="vanished">Relevo</translation>
     </message>
     <message>
-        <location filename="plugins/Event/src/eventdialogwidget.ui" line="182"/>
-        <location filename="plugins/Event/src/eventdialogwidget.cpp" line="26"/>
+        <location filename="plugins/Event/src/eventdialogwidget.cpp" line="132"/>
         <source>Teams</source>
         <translation>Equipos</translation>
     </message>
     <message>
-        <location filename="plugins/Event/src/eventdialogwidget.ui" line="216"/>
+        <location filename="plugins/Event/src/eventdialogwidget.ui" line="166"/>
         <source>Card check</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="plugins/Event/src/eventdialogwidget.ui" line="226"/>
+        <location filename="plugins/Event/src/eventdialogwidget.ui" line="176"/>
         <source>Maximal distance between card CHECK and START time</source>
         <translation>Tiempo máximo entre la picada de comprobar y la hora de salida</translation>
     </message>
     <message>
-        <location filename="plugins/Event/src/eventdialogwidget.ui" line="229"/>
-        <location filename="plugins/Event/src/eventdialogwidget.ui" line="259"/>
+        <location filename="plugins/Event/src/eventdialogwidget.ui" line="179"/>
+        <location filename="plugins/Event/src/eventdialogwidget.ui" line="209"/>
         <source>Disabled</source>
         <translation>Desactivado</translation>
     </message>
     <message>
-        <location filename="plugins/Event/src/eventdialogwidget.ui" line="232"/>
+        <location filename="plugins/Event/src/eventdialogwidget.ui" line="182"/>
         <source> sec</source>
         <translation> s</translation>
     </message>
     <message>
-        <location filename="plugins/Event/src/eventdialogwidget.ui" line="248"/>
+        <location filename="plugins/Event/src/eventdialogwidget.ui" line="198"/>
         <source>1/10 sec results</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="plugins/Event/src/eventdialogwidget.ui" line="264"/>
+        <location filename="plugins/Event/src/eventdialogwidget.ui" line="214"/>
         <source>Enabled</source>
         <translation>Activado</translation>
     </message>
     <message>
-        <location filename="plugins/Event/src/eventdialogwidget.ui" line="390"/>
+        <location filename="plugins/Event/src/eventdialogwidget.ui" line="340"/>
         <source>Used for import one-time clubs. Source - ORIS-&gt;Event-&gt;Information-&gt;Event key</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="plugins/Event/src/eventdialogwidget.ui" line="346"/>
+        <location filename="plugins/Event/src/eventdialogwidget.ui" line="296"/>
         <source>Race number</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="plugins/Event/src/eventdialogwidget.ui" line="336"/>
+        <location filename="plugins/Event/src/eventdialogwidget.ui" line="286"/>
         <source>Is IOF Race (data from Eventor - eventor.orienteering.org)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="plugins/Event/src/eventdialogwidget.ui" line="373"/>
+        <location filename="plugins/Event/src/eventdialogwidget.ui" line="323"/>
         <source>Event key</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="plugins/Event/src/eventdialogwidget.ui" line="383"/>
+        <location filename="plugins/Event/src/eventdialogwidget.ui" line="333"/>
         <source>Unique event security key (32 chars)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="plugins/Event/src/eventdialogwidget.ui" line="400"/>
+        <location filename="plugins/Event/src/eventdialogwidget.ui" line="350"/>
         <source>Event id</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="plugins/Event/src/eventdialogwidget.ui" line="363"/>
+        <location filename="plugins/Event/src/eventdialogwidget.ui" line="313"/>
         <source>Is ORIS Race (data from ORIS - oris.orientacnisporty.cz)</source>
         <translation type="unfinished"></translation>
     </message>
@@ -3917,7 +3873,7 @@ En el caso de errores inesperados, contacte con support@oresults.eu</translation
         <translation type="vanished">Datos de la carrera</translation>
     </message>
     <message>
-        <location filename="plugins/Event/src/eventdialogwidget.ui" line="333"/>
+        <location filename="plugins/Event/src/eventdialogwidget.ui" line="283"/>
         <source>IOF Eventor race - used for IOF XML exports</source>
         <oldsource>IOF Eventor race - user for IOF XML exports</oldsource>
         <translation>Carrera de IOF Eventor - usado para la exportación en formato IOF XML</translation>
@@ -3927,53 +3883,53 @@ En el caso de errores inesperados, contacte con support@oresults.eu</translation
         <translation type="vanished">Es carrera IOF (datos de Eventos)</translation>
     </message>
     <message>
-        <location filename="plugins/Event/src/eventdialogwidget.ui" line="353"/>
+        <location filename="plugins/Event/src/eventdialogwidget.ui" line="303"/>
         <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;IOF Eventor race number - if nonzero, used as &amp;lt;Race&amp;gt; node and for attribute of &amp;lt;Start&amp;gt; node for IOF XML exports&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
         <oldsource>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;IOF Eventor race number - if nonzero, user as &amp;lt;Race&amp;gt; node and for attribute of &amp;lt;Start&amp;gt; node for IOF XML exports&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</oldsource>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="plugins/Event/src/eventdialogwidget.cpp" line="25"/>
+        <location filename="plugins/Event/src/eventdialogwidget.cpp" line="131"/>
         <source>Relays</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="plugins/Event/src/eventdialogwidget.cpp" line="27"/>
+        <location filename="plugins/Event/src/eventdialogwidget.cpp" line="133"/>
         <source>Free order</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="plugins/Event/src/eventdialogwidget.cpp" line="28"/>
+        <location filename="plugins/Event/src/eventdialogwidget.cpp" line="134"/>
         <source>Night</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="plugins/Event/src/eventdialogwidget.cpp" line="29"/>
+        <location filename="plugins/Event/src/eventdialogwidget.cpp" line="135"/>
         <source>Sprint relays</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="plugins/Event/src/eventdialogwidget.cpp" line="30"/>
+        <location filename="plugins/Event/src/eventdialogwidget.cpp" line="136"/>
         <source>Knock-out sprint</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="plugins/Event/src/eventdialogwidget.cpp" line="31"/>
+        <location filename="plugins/Event/src/eventdialogwidget.cpp" line="137"/>
         <source>TempO</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="plugins/Event/src/eventdialogwidget.cpp" line="32"/>
+        <location filename="plugins/Event/src/eventdialogwidget.cpp" line="138"/>
         <source>Multi stages</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="plugins/Event/src/eventdialogwidget.cpp" line="33"/>
+        <location filename="plugins/Event/src/eventdialogwidget.cpp" line="140"/>
         <source>Indoor</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="plugins/Event/src/eventdialogwidget.cpp" line="34"/>
+        <location filename="plugins/Event/src/eventdialogwidget.cpp" line="139"/>
         <source>Mass start</source>
         <translation type="unfinished"></translation>
     </message>
@@ -4466,73 +4422,40 @@ En el caso de errores inesperados, contacte con support@oresults.eu</translation
 <context>
     <name>OpenEventDialog</name>
     <message>
-        <location filename="plugins/Event/src/openeventdialog.cpp" line="86"/>
         <source>Long</source>
-        <translation type="unfinished">Lon</translation>
+        <translation type="obsolete">Lon</translation>
     </message>
     <message>
-        <location filename="plugins/Event/src/openeventdialog.cpp" line="87"/>
-        <source>Middle</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="plugins/Event/src/openeventdialog.cpp" line="88"/>
         <source>Sprint</source>
-        <translation type="unfinished">Sprint</translation>
+        <translation type="obsolete">Sprint</translation>
     </message>
     <message>
-        <location filename="plugins/Event/src/openeventdialog.cpp" line="89"/>
-        <source>Ultralong</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="plugins/Event/src/openeventdialog.cpp" line="90"/>
-        <source>Relays</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="plugins/Event/src/openeventdialog.cpp" line="91"/>
         <source>Teams</source>
-        <translation type="unfinished">Equipos</translation>
+        <translation type="obsolete">Equipos</translation>
     </message>
     <message>
-        <location filename="plugins/Event/src/openeventdialog.cpp" line="92"/>
-        <source>Free order</source>
+        <location filename="plugins/Event/src/openeventdialog.ui" line="6"/>
+        <source>Open event</source>
+        <translation type="unfinished">Abrir evento</translation>
+    </message>
+    <message>
+        <location filename="plugins/Event/src/openeventdialog.ui" line="35"/>
+        <source>Search:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="plugins/Event/src/openeventdialog.cpp" line="93"/>
-        <source>Night</source>
+        <location filename="plugins/Event/src/openeventdialog.ui" line="42"/>
+        <source>Filter events…</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="plugins/Event/src/openeventdialog.cpp" line="94"/>
-        <source>TempO</source>
+        <location filename="plugins/Event/src/openeventdialog.cpp" line="64"/>
+        <source>Convert</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="plugins/Event/src/openeventdialog.cpp" line="95"/>
-        <source>Multi stages</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="plugins/Event/src/openeventdialog.cpp" line="96"/>
-        <source>Mass start</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="plugins/Event/src/openeventdialog.cpp" line="97"/>
-        <source>Sprint relays</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="plugins/Event/src/openeventdialog.cpp" line="98"/>
-        <source>Knock-out</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="plugins/Event/src/openeventdialog.cpp" line="99"/>
-        <source>Indoor</source>
+        <location filename="plugins/Event/src/openeventdialog.cpp" line="65"/>
+        <source>Open</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
