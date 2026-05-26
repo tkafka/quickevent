@@ -157,13 +157,13 @@ OpenEventDialog::OpenEventDialog(const QList<EventInfo> &events, int appDbVersio
 			? qf::core::Utils::intToVersionString(info.dbVersion)
 			: tr("?");
 
-		m_model->setItem(row, ColId,         makeItem(info.id));
-		m_model->setItem(row, ColDate,        makeItem(
+		m_model->setItem(row, ColId, makeItem(info.id));
+		m_model->setItem(row, ColDate, makeItem(
 			info.date.isValid() ? info.date.toString(QStringLiteral("yyyy-MM-dd")) : QString(),
 			Qt::AlignCenter));
-		m_model->setItem(row, ColName,        makeItem(info.name));
-		m_model->setItem(row, ColSport,       makeItem(EventDialogWidget::sportName(info.sportId),       Qt::AlignCenter));
-		m_model->setItem(row, ColDiscipline,  makeItem(EventDialogWidget::disciplineName(info.disciplineId), Qt::AlignCenter));
+		m_model->setItem(row, ColName, makeItem(info.name));
+		m_model->setItem(row, ColSport, makeItem(EventDialogWidget::sportName(info.sportId), Qt::AlignCenter));
+		m_model->setItem(row, ColDiscipline, makeItem(EventDialogWidget::disciplineName(info.disciplineId), Qt::AlignCenter));
 
 		// Store integer in SortRole so variantCmp() uses QMetaType::Int comparison.
 		auto *ver_item = makeItem(db_ver_str, Qt::AlignCenter);
@@ -174,7 +174,7 @@ OpenEventDialog::OpenEventDialog(const QList<EventInfo> &events, int appDbVersio
 		action_item->setBackground(bg);
 		action_item->setFlags(Qt::ItemIsEnabled);
 		action_item->setData(info.id, EventIdRole);
-		action_item->setData(older,   IsOlderRole);
+		action_item->setData(older, IsOlderRole);
 		m_model->setItem(row, ColAction, action_item);
 	}
 
@@ -194,18 +194,18 @@ OpenEventDialog::OpenEventDialog(const QList<EventInfo> &events, int appDbVersio
 
 	auto *action_delegate = new ActionDelegate(qf::gui::Style::icon(QStringLiteral("delete")), m_tableView);
 	m_tableView->setItemDelegateForColumn(ColAction, action_delegate);
-	connect(action_delegate, &ActionDelegate::openRequested,    this, &OpenEventDialog::onOpenClicked);
+	connect(action_delegate, &ActionDelegate::openRequested, this, &OpenEventDialog::onOpenClicked);
 	connect(action_delegate, &ActionDelegate::convertRequested, this, &OpenEventDialog::onConvertClicked);
-	connect(action_delegate, &ActionDelegate::deleteRequested,  this, &OpenEventDialog::onDeleteClicked);
+	connect(action_delegate, &ActionDelegate::deleteRequested, this, &OpenEventDialog::onDeleteClicked);
 
 	auto *hdr = m_tableView->horizontalHeader();
-	hdr->setSectionResizeMode(ColId,        QHeaderView::Interactive);
-	hdr->setSectionResizeMode(ColDate,       QHeaderView::Interactive);
-	hdr->setSectionResizeMode(ColName,       QHeaderView::Stretch);
-	hdr->setSectionResizeMode(ColSport,      QHeaderView::Interactive);
+	hdr->setSectionResizeMode(ColId, QHeaderView::Interactive);
+	hdr->setSectionResizeMode(ColDate, QHeaderView::Interactive);
+	hdr->setSectionResizeMode(ColName, QHeaderView::Stretch);
+	hdr->setSectionResizeMode(ColSport, QHeaderView::Interactive);
 	hdr->setSectionResizeMode(ColDiscipline, QHeaderView::Interactive);
-	hdr->setSectionResizeMode(ColDbVersion,  QHeaderView::Interactive);
-	hdr->setSectionResizeMode(ColAction,     QHeaderView::ResizeToContents);
+	hdr->setSectionResizeMode(ColDbVersion, QHeaderView::Interactive);
+	hdr->setSectionResizeMode(ColAction, QHeaderView::ResizeToContents);
 	hdr->setStretchLastSection(false);
 
 	hdr->setContextMenuPolicy(Qt::CustomContextMenu);
