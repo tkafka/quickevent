@@ -21,8 +21,6 @@
 
 namespace Event {
 
-// ── Delegate: prevents hover from greying out custom-coloured cells,
-//             highlights cells matching the search needle in yellow ──────────
 class RowColorDelegate : public QStyledItemDelegate
 {
 public:
@@ -34,8 +32,8 @@ public:
 	{
 		QStyledItemDelegate::initStyleOption(option, index);
 		if (!m_needle.isEmpty()) {
-			const QString text = index.data(Qt::DisplayRole).toString();
-			const QByteArray hay = qf::core::Collator::toAscii7(QLocale::Czech, text, true);
+			const QByteArray hay = qf::core::Collator::toAscii7(
+				QLocale::Czech, index.data(Qt::DisplayRole).toString(), true);
 			if (hay.contains(m_needle)) {
 				option->backgroundBrush = QBrush(QColor(220, 185, 0));
 				option->palette.setColor(QPalette::Text, Qt::black);
@@ -53,7 +51,6 @@ private:
 
 namespace {
 
-// ── QTableWidgetItem that sorts by an integer stored in UserRole ───────────────
 class IntSortItem : public QTableWidgetItem
 {
 public:
@@ -68,7 +65,6 @@ public:
 	}
 };
 
-// ── helpers ────────────────────────────────────────────────────────────────────
 QString sportName(int sport_id)
 {
 	switch (static_cast<EventConfig::Sport>(sport_id)) {
@@ -107,7 +103,7 @@ enum Col { ColId = 0, ColDate, ColName, ColSport, ColDiscipline, ColDbVersion, C
 
 OpenEventDialog::OpenEventDialog(const QList<EventInfo> &events, int appDbVersion,
                                  const QStringList &existing_names, QWidget *parent)
-	: QDialog(parent)
+	: QDialog(parent), m_appDbVersion(appDbVersion), m_existingNames(existing_names)
 {
 	setWindowTitle(tr("Open event"));
 	setMinimumSize(1000, 450);
@@ -120,7 +116,6 @@ OpenEventDialog::OpenEventDialog(const QList<EventInfo> &events, int appDbVersio
 	rootLayout->setContentsMargins(6, 6, 6, 6);
 	rootLayout->setSpacing(4);
 
-	// ── search bar ────────────────────────────────────────────────────────────
 	auto *searchRow = new QHBoxLayout();
 	m_searchEdit = new QLineEdit(this);
 	m_searchEdit->setPlaceholderText(tr("Filter events…"));
@@ -129,7 +124,6 @@ OpenEventDialog::OpenEventDialog(const QList<EventInfo> &events, int appDbVersio
 	searchRow->addWidget(m_searchEdit, 1);
 	rootLayout->addLayout(searchRow);
 
-	// ── table ─────────────────────────────────────────────────────────────────
 	m_table = new QTableWidget(this);
 	m_table->setColumnCount(ColCount);
 	m_table->setHorizontalHeaderLabels({
@@ -158,7 +152,6 @@ OpenEventDialog::OpenEventDialog(const QList<EventInfo> &events, int appDbVersio
 	hdr->setSectionResizeMode(ColAction,      QHeaderView::Fixed);
 	hdr->setStretchLastSection(false);
 
-	// ── right-click header context menu ──────────────────────────────────────
 	hdr->setContextMenuPolicy(Qt::CustomContextMenu);
 	connect(hdr, &QWidget::customContextMenuRequested, this, [this](const QPoint &pos) {
 		auto *hdr = m_table->horizontalHeader();
@@ -176,7 +169,6 @@ OpenEventDialog::OpenEventDialog(const QList<EventInfo> &events, int appDbVersio
 		menu.exec(hdr->viewport()->mapToGlobal(pos));
 	});
 
-	// ── populate rows ─────────────────────────────────────────────────────────
 	m_table->setSortingEnabled(false);
 
 	const QIcon deleteIcon = qf::gui::Style::icon(QStringLiteral("delete"));
@@ -184,23 +176,12 @@ OpenEventDialog::OpenEventDialog(const QList<EventInfo> &events, int appDbVersio
 	for (int row = 0; row < events.count(); ++row) {
 		const EventInfo &info = events[row];
 		const bool older = (info.dbVersion > 0 && info.dbVersion < appDbVersion);
-
-		QColor bg;
-		QString tooltip;
-		if (info.dbVersion >= appDbVersion) {
-			bg = compatible_bg;
-		}
-		else if (older) {
-			bg = older_bg;
-		}
+		const QColor bg = older ? older_bg : compatible_bg;
 
 		auto makeItem = [&](const QString &text, Qt::AlignmentFlag align = Qt::AlignLeft) {
 			auto *item = new QTableWidgetItem(text);
 			item->setTextAlignment(align | Qt::AlignVCenter);
-			if (bg.isValid())
-				item->setBackground(bg);
-			if (!tooltip.isEmpty())
-				item->setToolTip(tooltip);
+			item->setBackground(bg);
 			return item;
 		};
 
@@ -217,25 +198,20 @@ OpenEventDialog::OpenEventDialog(const QList<EventInfo> &events, int appDbVersio
 		m_table->setItem(row, ColDiscipline, makeItem(disciplineName(info.disciplineId), Qt::AlignCenter));
 
 		auto *verItem = new IntSortItem(dbVerStr, info.dbVersion);
-		if (bg.isValid())        verItem->setBackground(bg);
-		if (!tooltip.isEmpty())  verItem->setToolTip(tooltip);
+		verItem->setBackground(bg);
 		m_table->setItem(row, ColDbVersion, verItem);
 
-		// ── action cell: [Open/Convert] [Delete] ─────────────────────────────
+		const QString eventId = info.id;
 		auto *openConvertBtn = new QPushButton(older ? tr("Convert") : tr("Open"), this);
 		if (older) {
 			openConvertBtn->setToolTip(tr("Create a converted copy: version %1 → %2")
 			                           .arg(dbVerStr)
 			                           .arg(qf::core::Utils::intToVersionString(appDbVersion)));
-			const QString eventId = info.id;
-			connect(openConvertBtn, &QPushButton::clicked, this,
-			        [this, eventId, existing_names, appDbVersion]() {
-				onConvertClicked(eventId, existing_names, appDbVersion);
+			connect(openConvertBtn, &QPushButton::clicked, this, [this, eventId]() {
+				onConvertClicked(eventId);
 			});
 		}
 		else {
-			if (!tooltip.isEmpty()) openConvertBtn->setToolTip(tooltip);
-			const QString eventId = info.id;
 			connect(openConvertBtn, &QPushButton::clicked, this, [this, eventId]() {
 				onOpenClicked(eventId);
 			});
@@ -245,12 +221,9 @@ OpenEventDialog::OpenEventDialog(const QList<EventInfo> &events, int appDbVersio
 		deleteBtn->setIcon(deleteIcon);
 		deleteBtn->setFlat(true);
 		deleteBtn->setToolTip(tr("Delete event permanently"));
-		{
-			const QString eventId = info.id;
-			connect(deleteBtn, &QPushButton::clicked, this, [this, eventId]() {
-				onDeleteClicked(eventId);
-			});
-		}
+		connect(deleteBtn, &QPushButton::clicked, this, [this, eventId]() {
+			onDeleteClicked(eventId);
+		});
 
 		auto *cell = new QWidget(this);
 		auto *cellLayout = new QHBoxLayout(cell);
@@ -272,25 +245,20 @@ OpenEventDialog::OpenEventDialog(const QList<EventInfo> &events, int appDbVersio
 
 	rootLayout->addWidget(m_table);
 
-	// ── legend ────────────────────────────────────────────────────────────────
-	auto makeSwatch = [](const QColor &c) {
-		return QStringLiteral("<span style='background:%1;border:1px solid gray'>&nbsp;&nbsp;&nbsp;</span>")
-		       .arg(c.name());
-	};
 	auto *legend = new QLabel(this);
 	legend->setText(
-		makeSwatch(compatible_bg) + QLatin1Char(' ') + tr("Compatible") +
-		QStringLiteral("&nbsp;&nbsp;&nbsp;") +
-		makeSwatch(older_bg) + QLatin1Char(' ') + tr("Older version (convert required)")
+		QStringLiteral("<span style='background:%1;border:1px solid gray'>&nbsp;&nbsp;&nbsp;</span> %2"
+		               "&nbsp;&nbsp;&nbsp;"
+		               "<span style='background:%3;border:1px solid gray'>&nbsp;&nbsp;&nbsp;</span> %4")
+		.arg(compatible_bg.name(), tr("Compatible"),
+		     older_bg.name(),      tr("Older version (convert required)"))
 	);
 	rootLayout->addWidget(legend);
 
-	// ── cancel button ─────────────────────────────────────────────────────────
 	auto *buttons = new QDialogButtonBox(QDialogButtonBox::Cancel, this);
 	connect(buttons, &QDialogButtonBox::rejected, this, &QDialog::reject);
 	rootLayout->addWidget(buttons);
 
-	// ── search / sort filter wiring ───────────────────────────────────────────
 	connect(m_searchEdit, &QLineEdit::textChanged, this, &OpenEventDialog::applyFilter);
 	connect(m_table->horizontalHeader(), &QHeaderView::sortIndicatorChanged,
 	        this, [this](int, Qt::SortOrder) {
@@ -324,11 +292,11 @@ void OpenEventDialog::onOpenClicked(const QString &event_id)
 	accept();
 }
 
-void OpenEventDialog::onConvertClicked(const QString &event_id, const QStringList &existing_names, int app_db_version)
+void OpenEventDialog::onConvertClicked(const QString &event_id)
 {
-	const QString suffix = QStringLiteral("_db%1").arg(app_db_version);
+	const QString suffix = QStringLiteral("_db%1").arg(m_appDbVersion);
 	QString suggested = event_id + suffix;
-	while (existing_names.contains(suggested))
+	while (m_existingNames.contains(suggested))
 		suggested += suffix;
 
 	QDialog dlg(this);

@@ -36,7 +36,7 @@ public:
 
 private:
 	void onOpenClicked(const QString &event_id);
-	void onConvertClicked(const QString &event_id, const QStringList &existing_names, int app_db_version);
+	void onConvertClicked(const QString &event_id);
 	void onDeleteClicked(const QString &event_id);
 	void applyFilter();
 
@@ -46,6 +46,8 @@ private:
 	QString m_selectedEventId;
 	QString m_convertedEventId;
 	RowAction m_selectedAction = RowAction::Open;
+	int m_appDbVersion = 0;
+	QStringList m_existingNames;
 };
 
 } // namespace Event
