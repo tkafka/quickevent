@@ -5,12 +5,13 @@
 #include <QString>
 #include <QStringList>
 
-class QTableWidget;
 class QLineEdit;
+class QStandardItemModel;
+class QTableView;
+
+namespace qf::gui { class TableViewProxyModel; }
 
 namespace Event {
-
-class RowColorDelegate; // defined in openeventdialog.cpp
 
 class OpenEventDialog : public QDialog
 {
@@ -38,11 +39,11 @@ private:
 	void onOpenClicked(const QString &event_id);
 	void onConvertClicked(const QString &event_id);
 	void onDeleteClicked(const QString &event_id);
-	void applyFilter();
 
-	QTableWidget *m_table = nullptr;
+	QTableView *m_tableView = nullptr;
+	QStandardItemModel *m_model = nullptr;
+	qf::gui::TableViewProxyModel *m_proxy = nullptr;
 	QLineEdit *m_searchEdit = nullptr;
-	RowColorDelegate *m_delegate = nullptr;
 	QString m_selectedEventId;
 	QString m_convertedEventId;
 	RowAction m_selectedAction = RowAction::Open;

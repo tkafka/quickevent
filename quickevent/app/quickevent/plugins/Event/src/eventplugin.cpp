@@ -1352,6 +1352,15 @@ void EventPlugin::deleteEvent(const QString &event_name)
 	}
 }
 
+static void cloneDbConnection(qfs::Connection &dst, const qfs::Connection &src)
+{
+	dst.setHostName(src.hostName());
+	dst.setPort(src.port());
+	dst.setUserName(src.userName());
+	dst.setPassword(src.password());
+	dst.setDatabaseName(src.databaseName());
+}
+
 bool EventPlugin::importEventFromFile(const QString &src_file, const QString &dest_event_name)
 {
 	qfLogFuncFrame();
@@ -1371,16 +1380,10 @@ bool EventPlugin::importEventFromFile(const QString &src_file, const QString &de
 		}
 
 		qfs::Connection exp_conn(QSqlDatabase::addDatabase(current_conn.driverName(), export_connection_name));
-		if(connectionType() == ConnectionType::SingleFile) {
+		if(connectionType() == ConnectionType::SingleFile)
 			exp_conn.setDatabaseName(eventNameToFileName(dest_event_name));
-		}
-		else {
-			exp_conn.setHostName(current_conn.hostName());
-			exp_conn.setPort(current_conn.port());
-			exp_conn.setUserName(current_conn.userName());
-			exp_conn.setPassword(current_conn.password());
-			exp_conn.setDatabaseName(current_conn.databaseName());
-		}
+		else
+			cloneDbConnection(exp_conn, current_conn);
 		qfInfo() << "Opening export database:" << exp_conn.databaseName();
 		if(!exp_conn.open()) {
 			err_str = tr("Open Database Error: %1").arg(exp_conn.errorString());
@@ -1410,11 +1413,7 @@ bool EventPlugin::convertSqlEvent(const QString &from_event, const QString &to_e
 		qfs::Connection current_conn = qfs::Connection::forName();
 
 		qfs::Connection imp_conn(QSqlDatabase::addDatabase(current_conn.driverName(), import_connection_name));
-		imp_conn.setHostName(current_conn.hostName());
-		imp_conn.setPort(current_conn.port());
-		imp_conn.setUserName(current_conn.userName());
-		imp_conn.setPassword(current_conn.password());
-		imp_conn.setDatabaseName(current_conn.databaseName());
+		cloneDbConnection(imp_conn, current_conn);
 		qfInfo() << "Opening import schema" << from_event;
 		if(!imp_conn.open()) {
 			err_str = tr("Open Database Error: %1").arg(imp_conn.errorString());
@@ -1423,11 +1422,7 @@ bool EventPlugin::convertSqlEvent(const QString &from_event, const QString &to_e
 		imp_conn.setCurrentSchema(from_event);
 
 		qfs::Connection exp_conn(QSqlDatabase::addDatabase(current_conn.driverName(), export_connection_name));
-		exp_conn.setHostName(current_conn.hostName());
-		exp_conn.setPort(current_conn.port());
-		exp_conn.setUserName(current_conn.userName());
-		exp_conn.setPassword(current_conn.password());
-		exp_conn.setDatabaseName(current_conn.databaseName());
+		cloneDbConnection(exp_conn, current_conn);
 		qfInfo() << "Opening export schema" << to_event;
 		if(!exp_conn.open()) {
 			err_str = tr("Open Database Error: %1").arg(exp_conn.errorString());

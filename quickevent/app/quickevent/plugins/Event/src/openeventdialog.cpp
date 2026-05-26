@@ -2,68 +2,37 @@
 #include "eventconfig.h"
 
 #include <qf/core/utils.h>
-#include <qf/core/collator.h>
+#include <qf/gui/model/tablemodel.h>
 #include <qf/gui/style.h>
+#include <qf/gui/tableviewproxymodel.h>
 
+#include <QApplication>
 #include <QCoreApplication>
-#include <QTableWidget>
-#include <QHeaderView>
-#include <QPushButton>
-#include <QVBoxLayout>
-#include <QHBoxLayout>
 #include <QDialogButtonBox>
-#include <QLineEdit>
+#include <QHBoxLayout>
+#include <QHeaderView>
 #include <QLabel>
+#include <QLineEdit>
 #include <QMenu>
 #include <QMessageBox>
+#include <QMouseEvent>
+#include <QPainter>
+#include <QPushButton>
+#include <QStandardItemModel>
+#include <QStyleOptionButton>
 #include <QStyledItemDelegate>
-#include <QTimer>
+#include <QTableView>
+#include <QVBoxLayout>
 
 namespace Event {
 
-class RowColorDelegate : public QStyledItemDelegate
-{
-public:
-	using QStyledItemDelegate::QStyledItemDelegate;
-
-	void setNeedle(const QByteArray &needle) { m_needle = needle; }
-
-	void initStyleOption(QStyleOptionViewItem *option, const QModelIndex &index) const override
-	{
-		QStyledItemDelegate::initStyleOption(option, index);
-		if (!m_needle.isEmpty()) {
-			const QByteArray hay = qf::core::Collator::toAscii7(
-				QLocale::Czech, index.data(Qt::DisplayRole).toString(), true);
-			if (hay.contains(m_needle)) {
-				option->backgroundBrush = QBrush(QColor(220, 185, 0));
-				option->palette.setColor(QPalette::Text, Qt::black);
-				option->state &= ~QStyle::State_MouseOver;
-				return;
-			}
-		}
-		if (index.data(Qt::BackgroundRole).isValid())
-			option->state &= ~QStyle::State_MouseOver;
-	}
-
-private:
-	QByteArray m_needle;
-};
-
 namespace {
 
-class IntSortItem : public QTableWidgetItem
-{
-public:
-	IntSortItem(const QString &text, int sort_key) : QTableWidgetItem(text)
-	{
-		setData(Qt::UserRole, sort_key);
-		setTextAlignment(Qt::AlignCenter | Qt::AlignVCenter);
-	}
-	bool operator<(const QTableWidgetItem &other) const override
-	{
-		return data(Qt::UserRole).toInt() < other.data(Qt::UserRole).toInt();
-	}
-};
+enum Col { ColId = 0, ColDate, ColName, ColSport, ColDiscipline, ColDbVersion, ColAction, ColCount };
+
+// Roles above TableModel::FirstUnusedRole to avoid conflicts with libqf roles.
+constexpr int EventIdRole = qf::gui::model::TableModel::FirstUnusedRole;
+constexpr int IsOlderRole = qf::gui::model::TableModel::FirstUnusedRole + 1;
 
 QString sportName(int sport_id)
 {
@@ -97,153 +66,212 @@ QString disciplineName(int disc_id)
 	return QString();
 }
 
-enum Col { ColId = 0, ColDate, ColName, ColSport, ColDiscipline, ColDbVersion, ColAction, ColCount };
-
 } // namespace
+
+// Draws Open/Convert + Delete buttons inside the action column cell; emits signals on click.
+class ActionDelegate : public QStyledItemDelegate
+{
+	Q_OBJECT
+public:
+	explicit ActionDelegate(const QIcon &delete_icon, QObject *parent)
+		: QStyledItemDelegate(parent), m_deleteIcon(delete_icon) {}
+
+	QSize sizeHint(const QStyleOptionViewItem &, const QModelIndex &) const override
+	{
+		return {110, 26};
+	}
+
+	void paint(QPainter *painter, const QStyleOptionViewItem &option,
+	           const QModelIndex &index) const override
+	{
+		const QVariant bg = index.data(Qt::BackgroundRole);
+		painter->fillRect(option.rect, bg.isValid() ? bg.value<QBrush>() : option.backgroundBrush);
+
+		const bool is_older = index.data(IsOlderRole).toBool();
+		const auto [open_rect, del_rect] = buttonRects(option.rect);
+
+		QStyleOptionButton open_opt;
+		open_opt.rect  = open_rect;
+		open_opt.state = QStyle::State_Enabled | QStyle::State_Active;
+		open_opt.text  = is_older
+			? QCoreApplication::translate("OpenEventDialog", "Convert")
+			: QCoreApplication::translate("OpenEventDialog", "Open");
+		QApplication::style()->drawControl(QStyle::CE_PushButton, &open_opt, painter);
+
+		QStyleOptionButton del_opt;
+		del_opt.rect     = del_rect;
+		del_opt.state    = QStyle::State_Enabled | QStyle::State_Active;
+		del_opt.features = QStyleOptionButton::Flat;
+		del_opt.icon     = m_deleteIcon;
+		del_opt.iconSize = QSize(16, 16);
+		QApplication::style()->drawControl(QStyle::CE_PushButton, &del_opt, painter);
+	}
+
+	bool editorEvent(QEvent *event, QAbstractItemModel *,
+	                 const QStyleOptionViewItem &option, const QModelIndex &index) override
+	{
+		if (event->type() != QEvent::MouseButtonRelease)
+			return false;
+		const auto *me = static_cast<const QMouseEvent *>(event);
+		const auto [open_rect, del_rect] = buttonRects(option.rect);
+		const QString event_id = index.data(EventIdRole).toString();
+		if (open_rect.contains(me->pos())) {
+			if (index.data(IsOlderRole).toBool())
+				emit convertRequested(event_id);
+			else
+				emit openRequested(event_id);
+			return true;
+		}
+		if (del_rect.contains(me->pos())) {
+			emit deleteRequested(event_id);
+			return true;
+		}
+		return false;
+	}
+
+signals:
+	void openRequested(const QString &event_id);
+	void convertRequested(const QString &event_id);
+	void deleteRequested(const QString &event_id);
+
+private:
+	static std::pair<QRect, QRect> buttonRects(const QRect &cell)
+	{
+		constexpr int del_w  = 26;
+		constexpr int margin = 3;
+		const int open_w = cell.width() - del_w - margin * 3;
+		const QRect open_rect(cell.left() + margin,        cell.top() + 2, open_w, cell.height() - 4);
+		const QRect del_rect (open_rect.right() + margin,  cell.top() + 2, del_w,  cell.height() - 4);
+		return {open_rect, del_rect};
+	}
+
+	QIcon m_deleteIcon;
+};
+
+// --- OpenEventDialog ---
 
 OpenEventDialog::OpenEventDialog(const QList<EventInfo> &events, int appDbVersion,
                                  const QStringList &existing_names, QWidget *parent)
 	: QDialog(parent), m_appDbVersion(appDbVersion), m_existingNames(existing_names)
 {
 	setWindowTitle(tr("Open event"));
-	setMinimumSize(1000, 450);
+	resize(1000, 500);
 
 	const bool dark = qf::gui::isDarkTheme();
-	const QColor compatible_bg = dark ? QColor(30,  90, 30)  : QColor(200, 245, 200);
-	const QColor older_bg      = dark ? QColor(90,  25, 25)  : QColor(255, 190, 190);
+	const QColor compatible_bg = dark ? QColor(30,  90, 30) : QColor(200, 245, 200);
+	const QColor older_bg      = dark ? QColor(90,  25, 25) : QColor(255, 190, 190);
 
-	auto *rootLayout = new QVBoxLayout(this);
-	rootLayout->setContentsMargins(6, 6, 6, 6);
-	rootLayout->setSpacing(4);
-
-	auto *searchRow = new QHBoxLayout();
-	m_searchEdit = new QLineEdit(this);
-	m_searchEdit->setPlaceholderText(tr("Filter events…"));
-	m_searchEdit->setClearButtonEnabled(true);
-	searchRow->addWidget(new QLabel(tr("Search:"), this));
-	searchRow->addWidget(m_searchEdit, 1);
-	rootLayout->addLayout(searchRow);
-
-	m_table = new QTableWidget(this);
-	m_table->setColumnCount(ColCount);
-	m_table->setHorizontalHeaderLabels({
+	// Build source model
+	m_model = new QStandardItemModel(events.count(), ColCount, this);
+	m_model->setHorizontalHeaderLabels({
 		tr("ID"), tr("Date"), tr("Name"),
 		tr("Sport"), tr("Discipline"), tr("DB version"), tr("Action")
 	});
-	m_table->setRowCount(events.count());
-	m_table->setSelectionBehavior(QAbstractItemView::SelectRows);
-	m_table->setSelectionMode(QAbstractItemView::SingleSelection);
-	m_table->setEditTriggers(QAbstractItemView::NoEditTriggers);
-	m_table->setAlternatingRowColors(false);
-	m_table->setSortingEnabled(true);
-	m_table->verticalHeader()->setVisible(false);
-	m_table->setShowGrid(false);
-
-	m_delegate = new RowColorDelegate(m_table);
-	m_table->setItemDelegate(m_delegate);
-
-	auto *hdr = m_table->horizontalHeader();
-	hdr->setSectionResizeMode(ColId,         QHeaderView::Interactive);
-	hdr->setSectionResizeMode(ColDate,        QHeaderView::Interactive);
-	hdr->setSectionResizeMode(ColName,        QHeaderView::Stretch);
-	hdr->setSectionResizeMode(ColSport,       QHeaderView::Interactive);
-	hdr->setSectionResizeMode(ColDiscipline,  QHeaderView::Interactive);
-	hdr->setSectionResizeMode(ColDbVersion,   QHeaderView::Interactive);
-	hdr->setSectionResizeMode(ColAction,      QHeaderView::Fixed);
-	hdr->setStretchLastSection(false);
-
-	hdr->setContextMenuPolicy(Qt::CustomContextMenu);
-	connect(hdr, &QWidget::customContextMenuRequested, this, [this](const QPoint &pos) {
-		auto *hdr = m_table->horizontalHeader();
-		const int col = hdr->logicalIndexAt(pos);
-		QMenu menu(this);
-		if (col >= 0 && col != ColAction) {
-			menu.addAction(tr("Resize section to contents"), [this, col]() {
-				m_table->resizeColumnToContents(col);
-			});
-		}
-		menu.addAction(tr("Resize all sections to contents"), [this]() {
-			m_table->resizeColumnsToContents();
-			m_table->setColumnWidth(ColAction, 110);
-		});
-		menu.exec(hdr->viewport()->mapToGlobal(pos));
-	});
-
-	m_table->setSortingEnabled(false);
-
-	const QIcon deleteIcon = qf::gui::Style::icon(QStringLiteral("delete"));
 
 	for (int row = 0; row < events.count(); ++row) {
 		const EventInfo &info = events[row];
 		const bool older = (info.dbVersion > 0 && info.dbVersion < appDbVersion);
-		const QColor bg = older ? older_bg : compatible_bg;
+		const QBrush bg(older ? older_bg : compatible_bg);
 
+		// TableViewProxyModel sorts via TableModel::SortRole; store text there so
+		// variantCmp() uses collator-aware string comparison for all string columns.
 		auto makeItem = [&](const QString &text, Qt::AlignmentFlag align = Qt::AlignLeft) {
-			auto *item = new QTableWidgetItem(text);
+			auto *item = new QStandardItem(text);
 			item->setTextAlignment(align | Qt::AlignVCenter);
 			item->setBackground(bg);
+			item->setFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable);
+			item->setData(text, qf::gui::model::TableModel::SortRole);
 			return item;
 		};
 
-		const QString dbVerStr = info.dbVersion > 0
+		const QString db_ver_str = info.dbVersion > 0
 			? qf::core::Utils::intToVersionString(info.dbVersion)
 			: tr("?");
 
-		m_table->setItem(row, ColId,        makeItem(info.id));
-		m_table->setItem(row, ColDate,       makeItem(
+		m_model->setItem(row, ColId,         makeItem(info.id));
+		m_model->setItem(row, ColDate,        makeItem(
 			info.date.isValid() ? info.date.toString(QStringLiteral("yyyy-MM-dd")) : QString(),
 			Qt::AlignCenter));
-		m_table->setItem(row, ColName,       makeItem(info.name));
-		m_table->setItem(row, ColSport,      makeItem(sportName(info.sportId),          Qt::AlignCenter));
-		m_table->setItem(row, ColDiscipline, makeItem(disciplineName(info.disciplineId), Qt::AlignCenter));
+		m_model->setItem(row, ColName,        makeItem(info.name));
+		m_model->setItem(row, ColSport,       makeItem(sportName(info.sportId),           Qt::AlignCenter));
+		m_model->setItem(row, ColDiscipline,  makeItem(disciplineName(info.disciplineId), Qt::AlignCenter));
 
-		auto *verItem = new IntSortItem(dbVerStr, info.dbVersion);
-		verItem->setBackground(bg);
-		m_table->setItem(row, ColDbVersion, verItem);
+		// Store integer in SortRole so variantCmp() uses QMetaType::Int comparison.
+		auto *ver_item = makeItem(db_ver_str, Qt::AlignCenter);
+		ver_item->setData(info.dbVersion, qf::gui::model::TableModel::SortRole);
+		m_model->setItem(row, ColDbVersion, ver_item);
 
-		const QString eventId = info.id;
-		auto *openConvertBtn = new QPushButton(older ? tr("Convert") : tr("Open"), this);
-		if (older) {
-			openConvertBtn->setToolTip(tr("Create a converted copy: version %1 → %2")
-			                           .arg(dbVerStr)
-			                           .arg(qf::core::Utils::intToVersionString(appDbVersion)));
-			connect(openConvertBtn, &QPushButton::clicked, this, [this, eventId]() {
-				onConvertClicked(eventId);
-			});
-		}
-		else {
-			connect(openConvertBtn, &QPushButton::clicked, this, [this, eventId]() {
-				onOpenClicked(eventId);
-			});
-		}
-
-		auto *deleteBtn = new QPushButton(this);
-		deleteBtn->setIcon(deleteIcon);
-		deleteBtn->setFlat(true);
-		deleteBtn->setToolTip(tr("Delete event permanently"));
-		connect(deleteBtn, &QPushButton::clicked, this, [this, eventId]() {
-			onDeleteClicked(eventId);
-		});
-
-		auto *cell = new QWidget(this);
-		auto *cellLayout = new QHBoxLayout(cell);
-		cellLayout->setContentsMargins(3, 1, 3, 1);
-		cellLayout->setSpacing(2);
-		cellLayout->addWidget(openConvertBtn);
-		cellLayout->addWidget(deleteBtn);
-		m_table->setCellWidget(row, ColAction, cell);
+		auto *action_item = new QStandardItem();
+		action_item->setBackground(bg);
+		action_item->setFlags(Qt::ItemIsEnabled);
+		action_item->setData(info.id, EventIdRole);
+		action_item->setData(older,   IsOlderRole);
+		m_model->setItem(row, ColAction, action_item);
 	}
 
-	m_table->setSortingEnabled(true);
+	// TableViewProxyModel: same collator filtering and highlighting used across the whole app.
+	m_proxy = new qf::gui::TableViewProxyModel(this);
+	m_proxy->setSourceModel(m_model);
 
-	m_table->setColumnWidth(ColId,        220);
-	m_table->setColumnWidth(ColDate,       90);
-	m_table->setColumnWidth(ColSport,      55);
-	m_table->setColumnWidth(ColDiscipline, 90);
-	m_table->setColumnWidth(ColDbVersion,  80);
-	m_table->setColumnWidth(ColAction,    110);
+	m_tableView = new QTableView(this);
+	m_tableView->setModel(m_proxy);
+	m_tableView->setSelectionBehavior(QAbstractItemView::SelectRows);
+	m_tableView->setSelectionMode(QAbstractItemView::SingleSelection);
+	m_tableView->setEditTriggers(QAbstractItemView::NoEditTriggers);
+	m_tableView->setAlternatingRowColors(false);
+	m_tableView->setSortingEnabled(true);
+	m_tableView->verticalHeader()->setVisible(false);
+	m_tableView->setShowGrid(false);
 
-	rootLayout->addWidget(m_table);
+	auto *action_delegate = new ActionDelegate(qf::gui::Style::icon(QStringLiteral("delete")), m_tableView);
+	m_tableView->setItemDelegateForColumn(ColAction, action_delegate);
+	connect(action_delegate, &ActionDelegate::openRequested,    this, &OpenEventDialog::onOpenClicked);
+	connect(action_delegate, &ActionDelegate::convertRequested, this, &OpenEventDialog::onConvertClicked);
+	connect(action_delegate, &ActionDelegate::deleteRequested,  this, &OpenEventDialog::onDeleteClicked);
+
+	auto *hdr = m_tableView->horizontalHeader();
+	hdr->setSectionResizeMode(ColId,        QHeaderView::Interactive);
+	hdr->setSectionResizeMode(ColDate,       QHeaderView::Interactive);
+	hdr->setSectionResizeMode(ColName,       QHeaderView::Stretch);
+	hdr->setSectionResizeMode(ColSport,      QHeaderView::Interactive);
+	hdr->setSectionResizeMode(ColDiscipline, QHeaderView::Interactive);
+	hdr->setSectionResizeMode(ColDbVersion,  QHeaderView::Interactive);
+	hdr->setSectionResizeMode(ColAction,     QHeaderView::Fixed);
+	hdr->setStretchLastSection(false);
+
+	hdr->setContextMenuPolicy(Qt::CustomContextMenu);
+	connect(hdr, &QWidget::customContextMenuRequested, this, [this](const QPoint &pos) {
+		const int col = m_tableView->horizontalHeader()->logicalIndexAt(pos);
+		QMenu menu(this);
+		if (col >= 0 && col != ColAction) {
+			menu.addAction(tr("Resize section to contents"), [this, col]() {
+				m_tableView->resizeColumnToContents(col);
+			});
+		}
+		menu.addAction(tr("Resize all sections to contents"), [this]() {
+			m_tableView->resizeColumnsToContents();
+			m_tableView->setColumnWidth(ColAction, 110);
+		});
+		menu.exec(m_tableView->horizontalHeader()->viewport()->mapToGlobal(pos));
+	});
+
+	m_tableView->setColumnWidth(ColId,        220);
+	m_tableView->setColumnWidth(ColDate,       90);
+	m_tableView->setColumnWidth(ColSport,      55);
+	m_tableView->setColumnWidth(ColDiscipline, 90);
+	m_tableView->setColumnWidth(ColDbVersion,  80);
+	m_tableView->setColumnWidth(ColAction,    110);
+	m_tableView->sortByColumn(ColDate, Qt::DescendingOrder);
+
+	// Search — delegates to TableViewProxyModel::setRowFilterString(), same as other tabs.
+	m_searchEdit = new QLineEdit(this);
+	m_searchEdit->setPlaceholderText(tr("Filter events…"));
+	m_searchEdit->setClearButtonEnabled(true);
+	connect(m_searchEdit, &QLineEdit::textChanged, m_proxy, &qf::gui::TableViewProxyModel::setRowFilterString);
+
+	auto *search_row = new QHBoxLayout();
+	search_row->addWidget(new QLabel(tr("Search:"), this));
+	search_row->addWidget(m_searchEdit, 1);
 
 	auto *legend = new QLabel(this);
 	legend->setText(
@@ -253,36 +281,17 @@ OpenEventDialog::OpenEventDialog(const QList<EventInfo> &events, int appDbVersio
 		.arg(compatible_bg.name(), tr("Compatible"),
 		     older_bg.name(),      tr("Older version (convert required)"))
 	);
-	rootLayout->addWidget(legend);
 
 	auto *buttons = new QDialogButtonBox(QDialogButtonBox::Cancel, this);
 	connect(buttons, &QDialogButtonBox::rejected, this, &QDialog::reject);
-	rootLayout->addWidget(buttons);
 
-	connect(m_searchEdit, &QLineEdit::textChanged, this, &OpenEventDialog::applyFilter);
-	connect(m_table->horizontalHeader(), &QHeaderView::sortIndicatorChanged,
-	        this, [this](int, Qt::SortOrder) {
-		QTimer::singleShot(0, this, &OpenEventDialog::applyFilter);
-	});
-}
-
-void OpenEventDialog::applyFilter()
-{
-	const QByteArray needle = qf::core::Collator::toAscii7(QLocale::Czech, m_searchEdit->text(), true);
-	m_delegate->setNeedle(needle);
-	for (int row = 0; row < m_table->rowCount(); ++row) {
-		bool visible = needle.isEmpty();
-		for (int col = 0; !visible && col < ColAction; ++col) {
-			const auto *item = m_table->item(row, col);
-			if (item) {
-				const QByteArray hay = qf::core::Collator::toAscii7(QLocale::Czech, item->text(), true);
-				if (hay.contains(needle))
-					visible = true;
-			}
-		}
-		m_table->setRowHidden(row, !visible);
-	}
-	m_table->viewport()->update();
+	auto *root_layout = new QVBoxLayout(this);
+	root_layout->setContentsMargins(6, 6, 6, 6);
+	root_layout->setSpacing(4);
+	root_layout->addLayout(search_row);
+	root_layout->addWidget(m_tableView);
+	root_layout->addWidget(legend);
+	root_layout->addWidget(buttons);
 }
 
 void OpenEventDialog::onOpenClicked(const QString &event_id)
@@ -296,30 +305,30 @@ void OpenEventDialog::onConvertClicked(const QString &event_id)
 {
 	const QString suffix = QStringLiteral("_db%1").arg(m_appDbVersion);
 	QString suggested = event_id + suffix;
-	while (m_existingNames.contains(suggested))
-		suggested += suffix;
+	for (int n = 2; m_existingNames.contains(suggested); ++n)
+		suggested = event_id + suffix + QString::number(n);
 
 	QDialog dlg(this);
 	dlg.setWindowTitle(tr("Convert event"));
 	auto *ly = new QVBoxLayout(&dlg);
 	ly->setSpacing(8);
 
-	auto *infoLabel = new QLabel(
+	auto *info_label = new QLabel(
 		tr("Convert event <b>%1</b> to the current version.<br>"
 		   "A new event will be created with the ID below.").arg(event_id), &dlg);
-	infoLabel->setWordWrap(true);
-	ly->addWidget(infoLabel);
+	info_label->setWordWrap(true);
+	ly->addWidget(info_label);
 
 	ly->addWidget(new QLabel(tr("New event ID:"), &dlg));
-	auto *idEdit = new QLineEdit(suggested, &dlg);
-	idEdit->setMinimumWidth(350);
-	idEdit->selectAll();
-	ly->addWidget(idEdit);
+	auto *id_edit = new QLineEdit(suggested, &dlg);
+	id_edit->setMinimumWidth(350);
+	id_edit->selectAll();
+	ly->addWidget(id_edit);
 
 	auto *btns = new QDialogButtonBox(QDialogButtonBox::Ok | QDialogButtonBox::Cancel, &dlg);
-	auto *okBtn = btns->button(QDialogButtonBox::Ok);
-	connect(idEdit, &QLineEdit::textChanged, okBtn, [okBtn](const QString &t) {
-		okBtn->setEnabled(!t.trimmed().isEmpty());
+	auto *ok_btn = btns->button(QDialogButtonBox::Ok);
+	connect(id_edit, &QLineEdit::textChanged, ok_btn, [ok_btn](const QString &t) {
+		ok_btn->setEnabled(!t.trimmed().isEmpty());
 	});
 	connect(btns, &QDialogButtonBox::accepted, &dlg, &QDialog::accept);
 	connect(btns, &QDialogButtonBox::rejected, &dlg, &QDialog::reject);
@@ -328,7 +337,7 @@ void OpenEventDialog::onConvertClicked(const QString &event_id)
 	if (dlg.exec() != QDialog::Accepted)
 		return;
 
-	const QString final_id = idEdit->text().trimmed();
+	const QString final_id = id_edit->text().trimmed();
 	if (final_id.isEmpty())
 		return;
 
@@ -352,3 +361,5 @@ void OpenEventDialog::onDeleteClicked(const QString &event_id)
 }
 
 } // namespace Event
+
+#include "openeventdialog.moc"
