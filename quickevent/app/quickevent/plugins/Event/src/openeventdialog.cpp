@@ -1,4 +1,5 @@
 #include "openeventdialog.h"
+#include "ui_openeventdialog.h"
 #include "eventconfig.h"
 #include "eventdialogwidget.h"
 
@@ -10,20 +11,15 @@
 #include <QApplication>
 #include <QCoreApplication>
 #include <QDialogButtonBox>
-#include <QHBoxLayout>
 #include <QHeaderView>
-#include <QLabel>
 #include <QLineEdit>
 #include <QMenu>
 #include <QMessageBox>
 #include <QMouseEvent>
 #include <QPainter>
-#include <QPushButton>
 #include <QStandardItemModel>
 #include <QStyleOptionButton>
 #include <QStyledItemDelegate>
-#include <QTableView>
-#include <QVBoxLayout>
 
 namespace Event {
 
@@ -123,8 +119,8 @@ OpenEventDialog::OpenEventDialog(const QList<EventInfo> &events, int appDbVersio
                                  const QStringList &existing_names, QWidget *parent)
 	: QDialog(parent), m_appDbVersion(appDbVersion), m_existingNames(existing_names)
 {
-	setWindowTitle(tr("Open event"));
-	resize(1000, 500);
+	ui = new Ui::OpenEventDialog();
+	ui->setupUi(this);
 
 	const bool dark = qf::gui::isDarkTheme();
 	const QColor compatible_bg = dark ? QColor(30,  90, 30) : QColor(200, 245, 200);
@@ -182,23 +178,22 @@ OpenEventDialog::OpenEventDialog(const QList<EventInfo> &events, int appDbVersio
 	m_proxy = new qf::gui::TableViewProxyModel(this);
 	m_proxy->setSourceModel(m_model);
 
-	m_tableView = new QTableView(this);
-	m_tableView->setModel(m_proxy);
-	m_tableView->setSelectionBehavior(QAbstractItemView::SelectRows);
-	m_tableView->setSelectionMode(QAbstractItemView::SingleSelection);
-	m_tableView->setEditTriggers(QAbstractItemView::NoEditTriggers);
-	m_tableView->setAlternatingRowColors(false);
-	m_tableView->setSortingEnabled(true);
-	m_tableView->verticalHeader()->setVisible(false);
-	m_tableView->setShowGrid(false);
+	ui->tableView->setModel(m_proxy);
+	ui->tableView->setSelectionBehavior(QAbstractItemView::SelectRows);
+	ui->tableView->setSelectionMode(QAbstractItemView::SingleSelection);
+	ui->tableView->setEditTriggers(QAbstractItemView::NoEditTriggers);
+	ui->tableView->setAlternatingRowColors(false);
+	ui->tableView->setSortingEnabled(true);
+	ui->tableView->verticalHeader()->setVisible(false);
+	ui->tableView->setShowGrid(false);
 
-	auto *action_delegate = new ActionDelegate(qf::gui::Style::icon(QStringLiteral("delete")), m_tableView);
-	m_tableView->setItemDelegateForColumn(ColAction, action_delegate);
+	auto *action_delegate = new ActionDelegate(qf::gui::Style::icon(QStringLiteral("delete")), ui->tableView);
+	ui->tableView->setItemDelegateForColumn(ColAction, action_delegate);
 	connect(action_delegate, &ActionDelegate::openRequested, this, &OpenEventDialog::onOpenClicked);
 	connect(action_delegate, &ActionDelegate::convertRequested, this, &OpenEventDialog::onConvertClicked);
 	connect(action_delegate, &ActionDelegate::deleteRequested, this, &OpenEventDialog::onDeleteClicked);
 
-	auto *hdr = m_tableView->horizontalHeader();
+	auto *hdr = ui->tableView->horizontalHeader();
 	hdr->setSectionResizeMode(ColId, QHeaderView::Interactive);
 	hdr->setSectionResizeMode(ColDate, QHeaderView::Interactive);
 	hdr->setSectionResizeMode(ColName, QHeaderView::Stretch);
@@ -210,51 +205,36 @@ OpenEventDialog::OpenEventDialog(const QList<EventInfo> &events, int appDbVersio
 
 	hdr->setContextMenuPolicy(Qt::CustomContextMenu);
 	connect(hdr, &QWidget::customContextMenuRequested, this, [this](const QPoint &pos) {
-		const int col = m_tableView->horizontalHeader()->logicalIndexAt(pos);
+		const int col = ui->tableView->horizontalHeader()->logicalIndexAt(pos);
 		QMenu menu(this);
 		if (col >= 0 && col != ColAction) {
 			menu.addAction(tr("Resize section to contents"), [this, col]() {
-				m_tableView->resizeColumnToContents(col);
+				ui->tableView->resizeColumnToContents(col);
 			});
 		}
 		menu.addAction(tr("Resize all sections to contents"), [this]() {
-			m_tableView->resizeColumnsToContents();
+			ui->tableView->resizeColumnsToContents();
 		});
-		menu.exec(m_tableView->horizontalHeader()->viewport()->mapToGlobal(pos));
+		menu.exec(ui->tableView->horizontalHeader()->viewport()->mapToGlobal(pos));
 	});
 
-	m_tableView->resizeColumnsToContents();
-	m_tableView->sortByColumn(ColDate, Qt::DescendingOrder);
+	ui->tableView->resizeColumnsToContents();
+	ui->tableView->sortByColumn(ColDate, Qt::DescendingOrder);
 
-	// Search — delegates to TableViewProxyModel::setRowFilterString(), same as other tabs.
-	m_searchEdit = new QLineEdit(this);
-	m_searchEdit->setPlaceholderText(tr("Filter events…"));
-	m_searchEdit->setClearButtonEnabled(true);
-	connect(m_searchEdit, &QLineEdit::textChanged, m_proxy, &qf::gui::TableViewProxyModel::setRowFilterString);
+	connect(ui->searchEdit, &QLineEdit::textChanged, m_proxy, &qf::gui::TableViewProxyModel::setRowFilterString);
 
-	auto *search_row = new QHBoxLayout();
-	search_row->addWidget(new QLabel(tr("Search:"), this));
-	search_row->addWidget(m_searchEdit, 1);
-
-	auto *legend = new QLabel(this);
-	legend->setText(
+	ui->legend->setText(
 		QStringLiteral("<span style='background:%1;border:1px solid gray'>&nbsp;&nbsp;&nbsp;</span> %2"
 		               "&nbsp;&nbsp;&nbsp;"
 		               "<span style='background:%3;border:1px solid gray'>&nbsp;&nbsp;&nbsp;</span> %4")
 		.arg(compatible_bg.name(), tr("Compatible"),
 		     older_bg.name(),      tr("Older version (convert required)"))
 	);
+}
 
-	auto *buttons = new QDialogButtonBox(QDialogButtonBox::Cancel, this);
-	connect(buttons, &QDialogButtonBox::rejected, this, &QDialog::reject);
-
-	auto *root_layout = new QVBoxLayout(this);
-	root_layout->setContentsMargins(6, 6, 6, 6);
-	root_layout->setSpacing(4);
-	root_layout->addLayout(search_row);
-	root_layout->addWidget(m_tableView);
-	root_layout->addWidget(legend);
-	root_layout->addWidget(buttons);
+OpenEventDialog::~OpenEventDialog()
+{
+	delete ui;
 }
 
 void OpenEventDialog::onOpenClicked(const QString &event_id)

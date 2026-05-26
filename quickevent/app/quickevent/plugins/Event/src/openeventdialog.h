@@ -5,10 +5,9 @@
 #include <QString>
 #include <QStringList>
 
-class QLineEdit;
 class QStandardItemModel;
-class QTableView;
 
+namespace Ui { class OpenEventDialog; }
 namespace qf::gui { class TableViewProxyModel; }
 
 namespace Event {
@@ -30,6 +29,7 @@ public:
 
 	OpenEventDialog(const QList<EventInfo> &events, int appDbVersion,
 	                const QStringList &existing_names, QWidget *parent = nullptr);
+	~OpenEventDialog() override;
 
 	QString selectedEventId() const { return m_selectedEventId; }
 	QString convertedEventId() const { return m_convertedEventId; }
@@ -40,10 +40,9 @@ private:
 	void onConvertClicked(const QString &event_id);
 	void onDeleteClicked(const QString &event_id);
 
-	QTableView *m_tableView = nullptr;
+	Ui::OpenEventDialog *ui = nullptr;
 	QStandardItemModel *m_model = nullptr;
 	qf::gui::TableViewProxyModel *m_proxy = nullptr;
-	QLineEdit *m_searchEdit = nullptr;
 	QString m_selectedEventId;
 	QString m_convertedEventId;
 	RowAction m_selectedAction = RowAction::Open;
