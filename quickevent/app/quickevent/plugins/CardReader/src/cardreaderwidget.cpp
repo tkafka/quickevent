@@ -260,7 +260,7 @@ CardReaderWidget::CardReaderWidget(QWidget *parent)
 		}
 	}, Qt::QueuedConnection);
 
-	connect(qf::gui::framework::Application::instance(), &qf::gui::framework::Application::dbRecChng, this, &CardReaderWidget::onDbRecChng, Qt::QueuedConnection);
+	connect(qf::gui::framework::Application::instance(), &qf::gui::framework::Application::qxRecChng, this, &CardReaderWidget::onQxRecChng, Qt::QueuedConnection);
 }
 
 CardReaderWidget::~CardReaderWidget()
@@ -511,7 +511,7 @@ void CardReaderWidget::reload()
 	m_cardsModel->reload();
 }
 
-void CardReaderWidget::onDbRecChng(const qf::core::sql::RecChng &recchng)
+void CardReaderWidget::onQxRecChng(const qf::core::sql::QxRecChng &recchng)
 {
 	if(isVisible()) {
 		if (recchng.table == "cards" && recchng.op == qf::core::sql::RecOp::Update) {
@@ -818,7 +818,7 @@ void CardReaderWidget::assignRunnerToSelectedCard()
 				QVariantMap rec {
 					{"isRunning", true},
 				};
-				app->updateDbRecord("runs", run_id, rec);
+				app->updateDbRecord("runs", run_id, rec, this);
 				// QString qs = "UPDATE runs SET isRunning=true WHERE competitorId=" QF_IARG(competitor_id) " AND stageId=" QF_IARG(stage_id);
 				// q.execThrow(qs);
 			}
@@ -835,7 +835,7 @@ void CardReaderWidget::assignRunnerToSelectedCard()
 				QVariantMap rec { {"siId", si_id}, };
 				auto run_id = q.value(0).toInt();
 				if (n++ == 0 || use_si_in_next_stages) {
-					app->updateDbRecord("runs", run_id, rec);
+					app->updateDbRecord("runs", run_id, rec, this);
 				}
 			}
 			// QString qs = "UPDATE runs SET siId=" QF_IARG(si_id) " WHERE competitorId=" QF_IARG(competitor_id) " AND stageId=" QF_IARG(stage_id);

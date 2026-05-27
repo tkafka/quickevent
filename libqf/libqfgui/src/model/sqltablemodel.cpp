@@ -249,7 +249,7 @@ bool SqlTableModel::postRow(int row_no, bool throw_exc)
 						row_ref.setValue(serial_ix, v);
 						row_ref.setDirty(serial_ix, false);
 						if (auto *app = qobject_cast<qf::gui::framework::Application*>(QApplication::instance()); app) {
-							app->emitDbRecInserted(table_id, v.value<qint64>(), record_to_map(rec));
+							app->emitDbRecInserted(table_id, v.value<qint64>(), record_to_map(rec), this);
 						}
 					}
 					else {
@@ -348,7 +348,7 @@ bool SqlTableModel::postRow(int row_no, bool throw_exc)
 				if (num_rows_affected == 1) {
 					if (where_rec.count() == 1) {
 						if (auto *app = qobject_cast<qf::gui::framework::Application*>(QApplication::instance()); app) {
-							app->emitDbRecUpdated(table_id, where_rec.value(0).value<qint64>(), record_to_map(edit_rec));
+							app->emitDbRecUpdated(table_id, where_rec.value(0).value<qint64>(), record_to_map(edit_rec), this);
 						}
 					}
 				}
@@ -457,7 +457,7 @@ bool SqlTableModel::removeTableRow(int row_no, bool throw_exc)
 			if (num_rows_affected == 1) {
 				if (where_rec.count() == 1) {
 					if (auto *app = qobject_cast<qf::gui::framework::Application*>(QApplication::instance()); app) {
-						app->emitDbRecDeleted(table_id, where_rec.value(0).value<qint64>());
+						app->emitDbRecDeleted(table_id, where_rec.value(0).value<qint64>(), this);
 					}
 				}
 			} else {

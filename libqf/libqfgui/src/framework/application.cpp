@@ -9,6 +9,7 @@
 #include <QQmlContext>
 #include <QFile>
 #include <QJsonParseError>
+#include <QUuid>
 
 namespace qfu = qf::core::utils;
 using namespace qf::gui::framework;
@@ -18,12 +19,12 @@ Application::Application(int &argc, char **argv) :
 {
 }
 
-qint64 Application::createDbRecord(const QString &table, const QVariantMap &record) const
+qint64 Application::createDbRecord(const QString &table, const QVariantMap &record, QObject *source)
 {
 	using namespace qf::core::sql;
 	QxSql sql;
-	connect(&sql, &QxSql::dbRecChng, this, &Application::dbRecChng);
-	return sql.createRecord(table, record);
+	connect(&sql, &QxSql::dbRecChng, this, [this, source](const qf::core::sql::QxRecChng &recchng) { emit qxRecChng(recchng, source); });
+	return sql.createRecord(table, record, uuidString());
 }
 
 std::optional<QVariantMap> Application::readDbRecord(const QString &table, qint64 id, const std::optional<QStringList> &fields) const
@@ -33,20 +34,20 @@ std::optional<QVariantMap> Application::readDbRecord(const QString &table, qint6
 	return sql.readRecord(table, id, fields);
 }
 
-bool Application::updateDbRecord(const QString &table, qint64 id, const QVariantMap &record) const
+bool Application::updateDbRecord(const QString &table, qint64 id, const QVariantMap &record, QObject *source)
 {
 	using namespace qf::core::sql;
 	QxSql sql;
-	connect(&sql, &QxSql::dbRecChng, this, &Application::dbRecChng);
-	return sql.updateRecord(table, id, record);
+	connect(&sql, &QxSql::dbRecChng, this, [this, source](const qf::core::sql::QxRecChng &recchng) { emit qxRecChng(recchng, source); });
+	return sql.updateRecord(table, id, record, uuidString());
 }
 
-bool Application::deleteDbRecord(const QString &table, qint64 id) const
+bool Application::deleteDbRecord(const QString &table, qint64 id, QObject *source)
 {
 	using namespace qf::core::sql;
 	QxSql sql;
-	connect(&sql, &QxSql::dbRecChng, this, &Application::dbRecChng);
-	return sql.deleteRecord(table, id);
+	connect(&sql, &QxSql::dbRecChng, this, [this, source](const qf::core::sql::QxRecChng &recchng) { emit qxRecChng(recchng, source); });
+	return sql.deleteRecord(table, id, uuidString());
 }
 
 QString Application::versionString() const
@@ -54,37 +55,42 @@ QString Application::versionString() const
 	return QCoreApplication::applicationVersion();
 }
 
-void Application::emitDbRecInserted(const QString &table, qint64 id, const QVariantMap &record, const QString &issuer)
+void Application::emitDbRecInserted(const QString &table, qint64 id, const QVariantMap &record, QObject *source)
 {
-	emit dbRecChng(qf::core::sql::RecChng{
+	emit qxRecChng(qf::core::sql::QxRecChng{
 		.table = table,
 		.id = id,
 		.record = record,
 		.op = qf::core::sql::RecOp::Insert,
-		.issuer = issuer
-	});
+		.issuer = uuidString()
+	}, source);
 }
 
-void Application::emitDbRecUpdated(const QString &table, qint64 id, const QVariantMap &record, const QString &issuer)
+void Application::emitDbRecUpdated(const QString &table, qint64 id, const QVariantMap &record, QObject *source)
 {
-	emit dbRecChng(qf::core::sql::RecChng{
+	emit qxRecChng(qf::core::sql::QxRecChng{
 		.table = table,
 		.id = id,
 		.record = record,
 		.op = qf::core::sql::RecOp::Update,
-		.issuer = issuer
-	});
+		.issuer = uuidString()
+	}, source);
 }
 
-void Application::emitDbRecDeleted(const QString &table, qint64 id, const QString &issuer)
+void Application::emitDbRecDeleted(const QString &table, qint64 id, QObject *source)
 {
-	emit dbRecChng(qf::core::sql::RecChng{
+	emit qxRecChng(qf::core::sql::QxRecChng{
 		.table = table,
 		.id = id,
 		.record = {},
 		.op = qf::core::sql::RecOp::Delete,
-		.issuer = issuer
-	});
+		.issuer = uuidString()
+	}, source);
+}
+
+void Application::emitQxRecChng(const core::sql::QxRecChng &recchng, QObject *source)
+{
+	emit qxRecChng(recchng, source);
 }
 
 Application *Application::instance(bool must_exist)
@@ -117,6 +123,18 @@ QStringList Application::arguments()
 	return QCoreApplication::arguments();
 }
 
+QUuid Application::uuid()
+{
+	static auto uuid = QUuid::createUuid();
+	return uuid;
+}
+
+QString Application::uuidString()
+{
+	static auto s = uuid().toString(QUuid::WithoutBraces);
+	return s;
+}
+
 void Application::loadStyleSheet(const QString &file)
 {
 	QString css_file_name = file;
@@ -137,4 +155,3 @@ void Application::loadStyleSheet(const QString &file)
 		qfWarning() << "Cannot open style sheet:" << css_file_name;
 	}
 }
-

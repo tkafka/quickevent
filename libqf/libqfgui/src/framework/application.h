@@ -3,10 +3,11 @@
 
 #include "../guiglobal.h"
 
-#include <qf/core/sql/recchng.h>
+#include <qf/core/sql/qxrecchng.h>
 
 #include <QApplication>
 #include <QJsonDocument>
+#include <QObject>
 #include <QQmlError>
 
 class QQmlEngine;
@@ -27,14 +28,15 @@ public:
 	explicit Application(int & argc, char ** argv);
 	~Application() override = default;
 
-	Q_SIGNAL void dbRecChng(const qf::core::sql::RecChng &recchng);
-	qint64 createDbRecord(const QString &table, const QVariantMap &record) const;
+	Q_SIGNAL void qxRecChng(const qf::core::sql::QxRecChng &recchng, QObject *source);
+	qint64 createDbRecord(const QString &table, const QVariantMap &record, QObject *source);
 	std::optional<QVariantMap> readDbRecord(const QString &table, qint64 id, const std::optional<QStringList> &fields = std::nullopt) const;
-	bool updateDbRecord(const QString &table, qint64 id, const QVariantMap &record) const;
-	bool deleteDbRecord(const QString &table, qint64 id) const;
-	void emitDbRecInserted(const QString &table, qint64 id, const QVariantMap &record, const QString &issuer = {});
-	void emitDbRecUpdated(const QString &table, qint64 id, const QVariantMap &record, const QString &issuer = {});
-	void emitDbRecDeleted(const QString &table, qint64 id, const QString &issuer = {});
+	bool updateDbRecord(const QString &table, qint64 id, const QVariantMap &record, QObject *source);
+	bool deleteDbRecord(const QString &table, qint64 id, QObject *source);
+	void emitDbRecInserted(const QString &table, qint64 id, const QVariantMap &record, QObject *source);
+	void emitDbRecUpdated(const QString &table, qint64 id, const QVariantMap &record, QObject *source);
+	void emitDbRecDeleted(const QString &table, qint64 id, QObject *source);
+	void emitQxRecChng(const qf::core::sql::QxRecChng &recchng, QObject *source);
 
 	Q_INVOKABLE QString versionString() const;
 public:
@@ -46,6 +48,9 @@ public:
 	QString applicationDirPath();
 	QString applicationName();
 	QStringList arguments();
+
+	static QUuid uuid();
+	static QString uuidString();
 protected:
 	MainWindow* m_frameWork = nullptr;
 };

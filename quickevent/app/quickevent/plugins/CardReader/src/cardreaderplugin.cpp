@@ -280,7 +280,7 @@ int CardReaderPlugin::saveCardToSql(const quickevent::core::si::ReadCard &read_c
 			{"runIdAssignError", read_card.runIdAssignError()},
 			{"data", qf::core::Utils::qvariantToJson(read_card.data())},
 		};
-		auto id = app->createDbRecord("cards", rec);
+		auto id = app->createDbRecord("cards", rec, this);
 		return id;
 	}
 	catch (const std::exception &e) {
@@ -333,7 +333,7 @@ int CardReaderPlugin::savePunchRecordToSql(const quickevent::core::si::PunchReco
 			{"timeMs", punch.timems()},
 			{"runTimeMs", punch.runtimems_isset()? punch.runtimems(): QVariant()},
 		};
-		auto id = app->createDbRecord("punches", rec);
+		auto id = app->createDbRecord("punches", rec, this);
 		return id;
 	}
 	catch (const std::exception &e) {
@@ -406,7 +406,7 @@ void CardReaderPlugin::updateCheckedCardValuesSql(int card_id, const quickevent:
 				{"notStart", false},
 				{"penaltyTimeMs", {}},
 			};
-			app->updateDbRecord("runs", run_id, rec);
+			app->updateDbRecord("runs", run_id, rec, this);
 		}
 		if (auto missing_codes = checked_card.missingCodes(); !missing_codes.isEmpty()) {
 			QStringList missing_str;
@@ -417,7 +417,7 @@ void CardReaderPlugin::updateCheckedCardValuesSql(int card_id, const quickevent:
 			QVariantMap rec {
 				{"runIdAssignError", missing_str.join(',')},
 			};
-			app->updateDbRecord("cards", card_id, rec);
+			app->updateDbRecord("cards", card_id, rec, this);
 		}
 	}
 	catch (const std::exception &e) {
@@ -463,7 +463,7 @@ bool CardReaderPlugin::saveCardAssignedRunnerIdSql(int card_id, int run_id)
 			{"runId", run_id},
 			{"runIdAssignTS", QDateTime::currentDateTime()},
 		};
-		app->updateDbRecord("cards", card_id, rec);
+		app->updateDbRecord("cards", card_id, rec, this);
 		return true;
 	}
 	catch (const std::exception &e) {
@@ -540,7 +540,7 @@ void CardReaderPlugin::setStartTime(int relay_id, int leg, int start_time) {
 				{"startTimeMs", start_time},
 			};
 			auto run_id = q.value(0).toInt();
-			app->updateDbRecord("runs", run_id, rec);
+			app->updateDbRecord("runs", run_id, rec, this);
 		}
 		catch (const std::exception &e) {
 			qfError() << "setStartTime(): Update runs error, query:" << e.what();

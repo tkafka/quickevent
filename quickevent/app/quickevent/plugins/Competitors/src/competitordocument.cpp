@@ -92,7 +92,7 @@ bool CompetitorDocument::saveData()
 					getPlugin<EventPlugin>()->emitDbEvent(Event::EventPlugin::DBEVENT_RUN_CHANGED, QVariantList {run_id, rec});
 					// new update API
 					auto *app = qf::gui::framework::Application::instance();
-					app->emitDbRecInserted( "runs", run_id, rec);
+					app->emitDbRecInserted( "runs", run_id, rec, this);
 				}
 			}
 		}
@@ -103,7 +103,7 @@ bool CompetitorDocument::saveData()
 				auto *app = qf::gui::framework::Application::instance();
 				QVariantMap rec { {"siId", siid()}, };
 				for (const auto &[run_id, _] : old_records.asKeyValueRange()) {
-					app->updateDbRecord("runs", run_id, rec);
+					app->updateDbRecord("runs", run_id, rec, this);
 				}
 				// int competitor_id = dataId().toInt();
 				// qf::core::sql::Query q(sqlModel()->connectionName());
@@ -171,7 +171,7 @@ bool CompetitorDocument::dropData()
 				getPlugin<EventPlugin>()->emitDbEvent(Event::EventPlugin::DBEVENT_RUN_CHANGED, QVariantList {run_id, {}});
 				// new update API
 				auto *app = qf::gui::framework::Application::instance();
-				app->emitDbRecDeleted("runs", run_id);
+				app->emitDbRecDeleted("runs", run_id, this);
 			}
 		}
 	}

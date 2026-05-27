@@ -17,7 +17,7 @@ namespace Ui {
 }
 
 namespace quickevent::gui::og { class SqlTableModel; }
-namespace qf::core::sql { struct RecChng; }
+namespace qf::core::sql { struct QxRecChng; }
 
 namespace qf::gui {
 class Action;
@@ -68,7 +68,7 @@ public:
 	Q_SLOT void reload();
 
 private:
-	void onDbRecChng(const qf::core::sql::RecChng &recchng);
+	void onQxRecChng(const qf::core::sql::QxRecChng &recchng);
 	void onDbEventNotify(const QString &domain, int connection_id, const QVariant &data);
 	void appendLog(NecroLog::Level level, const QString &msg);
 	void processDriverInfo(NecroLog::Level level, const QString &msg);
