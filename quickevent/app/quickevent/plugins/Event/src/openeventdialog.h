@@ -5,6 +5,7 @@
 #include <QString>
 #include <QStringList>
 
+class QSortFilterProxyModel;
 class QStandardItemModel;
 
 namespace Ui { class OpenEventDialog; }
@@ -41,6 +42,7 @@ private:
 
 	Ui::OpenEventDialog *ui = nullptr;
 	QStandardItemModel *m_model = nullptr;
+	QSortFilterProxyModel *m_proxy = nullptr;
 	QString m_selectedEventId;
 	QString m_convertedEventId;
 	RowAction m_selectedAction = RowAction::Open;

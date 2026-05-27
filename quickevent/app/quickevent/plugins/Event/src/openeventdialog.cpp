@@ -3,10 +3,10 @@
 #include "eventconfig.h"
 #include "eventdialogwidget.h"
 
+#include <qf/core/collator.h>
 #include <qf/core/utils.h>
 #include <qf/gui/model/tablemodel.h>
 #include <qf/gui/style.h>
-#include <qf/gui/tableview.h>
 
 #include <QApplication>
 #include <QCoreApplication>
@@ -34,6 +34,36 @@ constexpr int EventIdRole = qf::gui::model::TableModel::FirstUnusedRole;
 constexpr int IsOlderRole = qf::gui::model::TableModel::FirstUnusedRole + 1;
 
 } // namespace
+
+// Extends QSortFilterProxyModel with per-cell yellow highlighting for matching text.
+class EventFilterProxy : public QSortFilterProxyModel
+{
+public:
+	using QSortFilterProxyModel::QSortFilterProxyModel;
+
+	void setFilter(const QString &text)
+	{
+		m_filter = qf::core::Collator::toAscii7(QLocale::Czech, text, true);
+		setFilterFixedString(text);
+	}
+
+	QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const override
+	{
+		if (role == Qt::BackgroundRole && !m_filter.isEmpty()) {
+			const QString cell = Super::data(index, Qt::DisplayRole).toString();
+			const QByteArray hay = qf::core::Collator::toAscii7(QLocale::Czech, cell, true);
+			if (hay.contains(m_filter)) {
+				static const QBrush highlight = qf::gui::isDarkTheme() ? QColor("olive") : QColor(Qt::yellow);
+				return highlight;
+			}
+		}
+		return Super::data(index, role);
+	}
+
+private:
+	using Super = QSortFilterProxyModel;
+	QByteArray m_filter;
+};
 
 // Draws Open/Convert + Delete buttons inside the action column cell; emits signals on click.
 class ActionDelegate : public QStyledItemDelegate
@@ -176,8 +206,13 @@ OpenEventDialog::OpenEventDialog(const QList<EventInfo> &events, int appDbVersio
 		m_model->setItem(row, ColAction, action_item);
 	}
 
-	// TableViewProxyModel: same collator filtering and highlighting used across the whole app.
-	ui->tableView->sortFilterProxyModel()->setSourceModel(m_model);
+	auto *proxy = new EventFilterProxy(this);
+	proxy->setSourceModel(m_model);
+	proxy->setSortRole(qf::gui::model::TableModel::SortRole);
+	proxy->setFilterKeyColumn(-1);
+	proxy->setFilterCaseSensitivity(Qt::CaseInsensitive);
+	m_proxy = proxy;
+	ui->tableView->setModel(m_proxy);
 	ui->tableView->setSelectionBehavior(QAbstractItemView::SelectRows);
 	ui->tableView->setSelectionMode(QAbstractItemView::SingleSelection);
 	ui->tableView->setEditTriggers(QAbstractItemView::NoEditTriggers);
@@ -220,7 +255,7 @@ OpenEventDialog::OpenEventDialog(const QList<EventInfo> &events, int appDbVersio
 	ui->tableView->resizeColumnsToContents();
 	ui->tableView->sortByColumn(ColDate, Qt::DescendingOrder);
 
-	connect(ui->searchEdit, &QLineEdit::textChanged, ui->tableView, &qf::gui::TableView::filterByString);
+	connect(ui->searchEdit, &QLineEdit::textChanged, proxy, &EventFilterProxy::setFilter);
 
 	ui->legend->setText(
 		QStringLiteral("<span style='background:%1;border:1px solid gray'>&nbsp;&nbsp;&nbsp;</span> %2"

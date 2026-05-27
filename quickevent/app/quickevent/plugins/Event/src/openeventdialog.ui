@@ -49,7 +49,7 @@
     </layout>
    </item>
    <item>
-    <widget class="qf::gui::TableView" name="tableView"/>
+    <widget class="QTableView" name="tableView"/>
    </item>
    <item>
     <widget class="QLabel" name="legend"/>
@@ -63,13 +63,6 @@
    </item>
   </layout>
  </widget>
- <customwidgets>
-  <customwidget>
-   <class>qf::gui::TableView</class>
-   <extends>QTableView</extends>
-   <header location="global">qf/gui/tableview.h</header>
-  </customwidget>
- </customwidgets>
  <resources/>
  <connections>
   <connection>
