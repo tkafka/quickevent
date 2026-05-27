@@ -1,4 +1,4 @@
-#include "recchng.h"
+#include "qxrecchng.h"
 
 #include "../core/log.h"
 
@@ -13,7 +13,7 @@ RecOp recopFromString(const QString &s)
 	return RecOp::Update;
 }
 }
-QVariantMap RecChng::toVariantMap() const
+QVariantMap QxRecChng::toVariantMap() const
 {
 	QVariantMap ret;
 	ret["table"] = table;
@@ -28,9 +28,10 @@ QVariantMap RecChng::toVariantMap() const
 	return ret;
 }
 
-RecChng RecChng::fromVariantMap(const QVariantMap &m)
+QxRecChng QxRecChng::fromVariantMap(const QVariantMap &m)
 {
-	RecChng ret;
+	QxRecChng ret;
+	ret.table = m.value("table").toString();
 	ret.op = recopFromString(m.value("op").toString());
 	ret.id = m.value("id").value<qint64>();
 	if (ret.op != RecOp::Delete) {
@@ -40,7 +41,7 @@ RecChng RecChng::fromVariantMap(const QVariantMap &m)
 	return ret;
 }
 
-QString RecChng::recopToString(RecOp op)
+QString QxRecChng::recopToString(RecOp op)
 {
 	switch (op) {
 	case RecOp::Insert: return "Insert";

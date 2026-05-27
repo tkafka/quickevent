@@ -13,7 +13,8 @@ enum class RecOp {
 	Delete,
 };
 
-struct QFCORE_DECL_EXPORT RecChng {
+struct QFCORE_DECL_EXPORT QxRecChng
+{
 	QString table;
 	qint64 id = 0;
 	QVariantMap record;
@@ -21,7 +22,7 @@ struct QFCORE_DECL_EXPORT RecChng {
 	QString issuer;
 
 	QVariantMap toVariantMap() const;
-	static RecChng fromVariantMap(const QVariantMap &m);
+	static QxRecChng fromVariantMap(const QVariantMap &m);
 	static QString recopToString(RecOp op);
 };
 }

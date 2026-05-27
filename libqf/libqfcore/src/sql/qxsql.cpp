@@ -11,8 +11,9 @@ namespace qf::core::sql {
 //================================================================
 // QxSqlApi
 //================================================================
-qint64 QxSqlApi::createRecord(const QString &table, const Record &record)
+qint64 QxSqlApi::createRecord(const QString &table, const Record &record, const QString &issuer)
 {
+	Q_UNUSED(issuer)
 	QStringList keys;
 	QStringList vals;
 
@@ -49,8 +50,9 @@ std::optional<Record> QxSqlApi::readRecord(const QString &table, qint64 id, cons
 	return std::nullopt;
 }
 
-bool QxSqlApi::updateRecord(const QString &table, qint64 id, const Record &record)
+bool QxSqlApi::updateRecord(const QString &table, qint64 id, const Record &record, const QString &issuer)
 {
+	Q_UNUSED(issuer)
 	QStringList keyVals;
 
 	for (auto it = record.begin(); it != record.end(); ++it) {
@@ -64,10 +66,10 @@ bool QxSqlApi::updateRecord(const QString &table, qint64 id, const Record &recor
 	return res.rowsAffected == 1;
 }
 
-bool QxSqlApi::deleteRecord(const QString &table, qint64 id)
+bool QxSqlApi::deleteRecord(const QString &table, qint64 id, const QString &issuer)
 {
-	QString qs =
-			QString("DELETE FROM %1 WHERE id = %2").arg(table, QString::number(id));
+	Q_UNUSED(issuer)
+	QString qs = QString("DELETE FROM %1 WHERE id = %2").arg(table, QString::number(id));
 
 	ExecResult res = exec(qs, {});
 	return res.rowsAffected == 1;
@@ -151,39 +153,39 @@ ExecResult QxSql::exec(const QString &query, const QVariantMap &params)
 	return result;
 }
 
-qint64 QxSql::createRecord(const QString &table, const Record &record)
+qint64 QxSql::createRecord(const QString &table, const Record &record, const QString &issuer)
 {
-	auto id = QxSqlApi::createRecord(table, record);
-	emit dbRecChng(qf::core::sql::RecChng{.table = table,
+	auto id = QxSqlApi::createRecord(table, record, issuer);
+	emit dbRecChng(qf::core::sql::QxRecChng{.table = table,
 										  .id = id,
 										  .record = record,
 										  .op = qf::core::sql::RecOp::Insert,
-										  .issuer = {}});
+										  .issuer = issuer});
 	return id;
 }
 
-bool QxSql::updateRecord(const QString &table, qint64 id, const Record &record)
+bool QxSql::updateRecord(const QString &table, qint64 id, const Record &record, const QString &issuer)
 {
-	auto ok = QxSqlApi::updateRecord(table, id, record);
+	auto ok = QxSqlApi::updateRecord(table, id, record, issuer);
 	if (ok) {
-		emit dbRecChng(qf::core::sql::RecChng{.table = table,
+		emit dbRecChng(qf::core::sql::QxRecChng{.table = table,
 											  .id = id,
 											  .record = record,
 											  .op = qf::core::sql::RecOp::Update,
-											  .issuer = {}});
+											  .issuer = issuer});
 	}
 	return ok;
 }
 
-bool QxSql::deleteRecord(const QString &table, qint64 id)
+bool QxSql::deleteRecord(const QString &table, qint64 id, const QString &issuer)
 {
-	auto ok = QxSqlApi::deleteRecord(table, id);
+	auto ok = QxSqlApi::deleteRecord(table, id, issuer);
 	if (ok) {
-		emit dbRecChng(qf::core::sql::RecChng{.table = table,
+		emit dbRecChng(qf::core::sql::QxRecChng{.table = table,
 											  .id = id,
 											  .record = {},
 											  .op = qf::core::sql::RecOp::Delete,
-											  .issuer = {}});
+											  .issuer = issuer});
 	}
 	return ok;
 }

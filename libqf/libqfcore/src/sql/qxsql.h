@@ -1,6 +1,6 @@
 #pragma once
 
-#include "recchng.h"
+#include "qxrecchng.h"
 
 #include <QList>
 #include <QMap>
@@ -55,10 +55,10 @@ public:
 		return listOneOrMoreRecords(table, fields, fromId, limit);
 	}
 
-	virtual qint64 createRecord(const QString &table, const Record &record);
+	virtual qint64 createRecord(const QString &table, const Record &record, const QString &issuer);
 	virtual std::optional<Record> readRecord(const QString &table, qint64 id, const std::optional<QStringList> &fields = std::nullopt);
-	virtual bool updateRecord(const QString &table, qint64 id, const Record &record);
-	virtual bool deleteRecord(const QString &table, qint64 id);
+	virtual bool updateRecord(const QString &table, qint64 id, const Record &record, const QString &issuer);
+	virtual bool deleteRecord(const QString &table, qint64 id, const QString &issuer);
 protected:
 	QList<Record> listOneOrMoreRecords(
 			const QString &table,
@@ -74,14 +74,14 @@ public:
 	QxSql(const QSqlDatabase &db = QSqlDatabase());
 	~QxSql() override = default;
 
-	Q_SIGNAL void dbRecChng(const qf::core::sql::RecChng &recchng);
+	Q_SIGNAL void dbRecChng(const qf::core::sql::QxRecChng &recchng);
 
 	QueryResult query(const QString &query, const QVariantMap &params) override;
 	ExecResult exec(const QString &query, const QVariantMap &params) override;
 
-	qint64 createRecord(const QString &table, const Record &record) override;
-	bool updateRecord(const QString &table, qint64 id, const Record &record) override;
-	bool deleteRecord(const QString &table, qint64 id) override;
+	qint64 createRecord(const QString &table, const Record &record, const QString &issuer) override;
+	bool updateRecord(const QString &table, qint64 id, const Record &record, const QString &issuer) override;
+	bool deleteRecord(const QString &table, qint64 id, const QString &issuer) override;
 private:
 	QSqlDatabase m_db;
 };
