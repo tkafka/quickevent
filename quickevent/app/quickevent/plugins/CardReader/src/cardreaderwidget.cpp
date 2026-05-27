@@ -511,17 +511,10 @@ void CardReaderWidget::reload()
 	m_cardsModel->reload();
 }
 
-void CardReaderWidget::onQxRecChng(const qf::core::sql::QxRecChng &recchng)
+void CardReaderWidget::onQxRecChng(const qf::core::sql::QxRecChng &recchng, QObject *source)
 {
 	if(isVisible()) {
-		if (recchng.table == "cards" && recchng.op == qf::core::sql::RecOp::Update) {
-			for (int i = 0; i < m_cardsModel->rowCount(); ++i) {
-				if (m_cardsModel->value(i, "cards.id").toInt() == recchng.id) {
-					m_cardsModel->reloadRow(i);
-					break;
-				}
-			}
-		}
+		m_cardsModel->handleQxRecChng(recchng, source);
 	}
 }
 
@@ -873,14 +866,14 @@ CardReaderSettings::ReaderMode CardReaderWidget::currentReaderMode() const
 	CardReaderSettings s;
 	return s.readerModeEnum();
 }
-
-static int msecToSISec(int msec)
+namespace {
+int msecToSISec(int msec)
 {
 	//static constexpr int secs_to_noon = 12 * 60 * 60;
 	return (msec / 1000);// % secs_to_noon;
 }
 
-static int obStringTosec(const QString &time_str)
+int obStringTosec(const QString &time_str)
 {
 	bool ok;
 	int min = time_str.section('.', 0, 0).toInt(&ok);
@@ -896,7 +889,7 @@ static int obStringTosec(const QString &time_str)
 	return (60 * min + sec) * 1000;
 }
 
-static QList<int> codesForClassName(const QString &class_name, int stage_id)
+QList<int> codesForClassName(const QString &class_name, int stage_id)
 {
 	QList<int> ret;
 	int course_id = 0;
@@ -931,7 +924,7 @@ static QList<int> codesForClassName(const QString &class_name, int stage_id)
 	QF_ASSERT_EX(ret.count() > 0, QString("Cannot load codes for class %1 and stage %2").arg(class_name).arg(stage_id));
 	return ret;
 }
-
+}
 void CardReaderWidget::importCards_lapsOnlyCsv()
 {
 	// CSV record must have format:
