@@ -2645,52 +2645,52 @@ Použij: Soubor --&gt; Importovat --&gt; Závod (*.qbe) pro konverzi dat do aktu
         <translation type="obsolete">Hledat:</translation>
     </message>
     <message>
-        <location filename="plugins/Event/src/openeventdialog.cpp" line="134"/>
+        <location filename="plugins/Event/src/openeventdialog.cpp" line="164"/>
         <source>ID</source>
         <translation type="unfinished">ID</translation>
     </message>
     <message>
-        <location filename="plugins/Event/src/openeventdialog.cpp" line="134"/>
+        <location filename="plugins/Event/src/openeventdialog.cpp" line="164"/>
         <source>Date</source>
         <translation type="unfinished">Datum</translation>
     </message>
     <message>
-        <location filename="plugins/Event/src/openeventdialog.cpp" line="134"/>
+        <location filename="plugins/Event/src/openeventdialog.cpp" line="164"/>
         <source>Name</source>
         <translation type="unfinished">Název</translation>
     </message>
     <message>
-        <location filename="plugins/Event/src/openeventdialog.cpp" line="135"/>
+        <location filename="plugins/Event/src/openeventdialog.cpp" line="165"/>
         <source>Sport</source>
         <translation type="unfinished">Sport</translation>
     </message>
     <message>
-        <location filename="plugins/Event/src/openeventdialog.cpp" line="135"/>
+        <location filename="plugins/Event/src/openeventdialog.cpp" line="165"/>
         <source>Discipline</source>
         <translation type="unfinished">Disciplína</translation>
     </message>
     <message>
-        <location filename="plugins/Event/src/openeventdialog.cpp" line="135"/>
+        <location filename="plugins/Event/src/openeventdialog.cpp" line="165"/>
         <source>DB version</source>
         <translation type="unfinished">Verze DB</translation>
     </message>
     <message>
-        <location filename="plugins/Event/src/openeventdialog.cpp" line="135"/>
+        <location filename="plugins/Event/src/openeventdialog.cpp" line="165"/>
         <source>Action</source>
         <translation type="unfinished">Akce</translation>
     </message>
     <message>
-        <location filename="plugins/Event/src/openeventdialog.cpp" line="210"/>
+        <location filename="plugins/Event/src/openeventdialog.cpp" line="245"/>
         <source>Resize section to contents</source>
         <translation type="unfinished">Přizpůsobit šířku obsahu sekce</translation>
     </message>
     <message>
-        <location filename="plugins/Event/src/openeventdialog.cpp" line="214"/>
+        <location filename="plugins/Event/src/openeventdialog.cpp" line="249"/>
         <source>Resize all sections to contents</source>
         <translation type="unfinished">Přizpůsobit šířku všech sekcí obsahu</translation>
     </message>
     <message>
-        <location filename="plugins/Event/src/openeventdialog.cpp" line="156"/>
+        <location filename="plugins/Event/src/openeventdialog.cpp" line="186"/>
         <source>?</source>
         <translation type="unfinished">?</translation>
     </message>
@@ -2711,39 +2711,39 @@ Použij: Soubor --&gt; Importovat --&gt; Závod (*.qbe) pro konverzi dat do aktu
         <translation type="obsolete">Smazat závod</translation>
     </message>
     <message>
-        <location filename="plugins/Event/src/openeventdialog.cpp" line="229"/>
+        <location filename="plugins/Event/src/openeventdialog.cpp" line="264"/>
         <source>Compatible</source>
         <translation type="unfinished">Kompatibilní</translation>
     </message>
     <message>
-        <location filename="plugins/Event/src/openeventdialog.cpp" line="230"/>
+        <location filename="plugins/Event/src/openeventdialog.cpp" line="265"/>
         <source>Older version (convert required)</source>
         <translation type="unfinished">Starší verze (potřeba převést)</translation>
     </message>
     <message>
-        <location filename="plugins/Event/src/openeventdialog.cpp" line="254"/>
+        <location filename="plugins/Event/src/openeventdialog.cpp" line="289"/>
         <source>Convert event</source>
         <translation type="unfinished">Převést závod</translation>
     </message>
     <message>
-        <location filename="plugins/Event/src/openeventdialog.cpp" line="259"/>
+        <location filename="plugins/Event/src/openeventdialog.cpp" line="294"/>
         <source>Convert event &lt;b&gt;%1&lt;/b&gt; to the current version.&lt;br&gt;A new event will be created with the ID below.</source>
         <translation type="unfinished">Převést závod &lt;b&gt;%1&lt;/b&gt; do aktuální verze.&lt;br&gt;Nový závod bude vytvořen s id uvedeným níže.</translation>
     </message>
     <message>
-        <location filename="plugins/Event/src/openeventdialog.cpp" line="264"/>
+        <location filename="plugins/Event/src/openeventdialog.cpp" line="299"/>
         <source>New event ID:</source>
         <translation type="unfinished">ID nového závodu:</translation>
     </message>
     <message>
-        <location filename="plugins/Event/src/openeventdialog.cpp" line="294"/>
+        <location filename="plugins/Event/src/openeventdialog.cpp" line="329"/>
         <source>Delete event</source>
         <translation type="unfinished">Smazat závod</translation>
     </message>
     <message>
-        <location filename="plugins/Event/src/openeventdialog.cpp" line="295"/>
+        <location filename="plugins/Event/src/openeventdialog.cpp" line="330"/>
         <source>Permanently delete event &lt;b&gt;%1&lt;/b&gt;?&lt;br&gt;This action cannot be undone.</source>
-        <translation type="unfinished">Trvae smazat závod &lt;b&gt;%1&lt;/b&gt;?&lt;br&gt;Operaci nejde vrátit.</translation>
+        <translation type="unfinished">Trvale smazat závod &lt;b&gt;%1&lt;/b&gt;?&lt;br&gt;Operaci nejde vrátit.</translation>
     </message>
 </context>
 <context>
@@ -4585,12 +4585,12 @@ zdroj - ORIS-&gt;Závod-&gt;Informace-&gt;Bezpečnostní klíč závodu</transla
         <translation type="unfinished">Filtrovat závody...</translation>
     </message>
     <message>
-        <location filename="plugins/Event/src/openeventdialog.cpp" line="64"/>
+        <location filename="plugins/Event/src/openeventdialog.cpp" line="94"/>
         <source>Convert</source>
         <translation type="unfinished">Převést</translation>
     </message>
     <message>
-        <location filename="plugins/Event/src/openeventdialog.cpp" line="65"/>
+        <location filename="plugins/Event/src/openeventdialog.cpp" line="95"/>
         <source>Open</source>
         <translation type="unfinished">Otevřít</translation>
     </message>

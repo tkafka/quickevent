@@ -2388,87 +2388,87 @@ Use: File --&gt; Import --&gt; Event (*.qbe) to convert event to current version
 <context>
     <name>Event::OpenEventDialog</name>
     <message>
-        <location filename="plugins/Event/src/openeventdialog.cpp" line="134"/>
+        <location filename="plugins/Event/src/openeventdialog.cpp" line="164"/>
         <source>ID</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="plugins/Event/src/openeventdialog.cpp" line="134"/>
+        <location filename="plugins/Event/src/openeventdialog.cpp" line="164"/>
         <source>Date</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="plugins/Event/src/openeventdialog.cpp" line="134"/>
+        <location filename="plugins/Event/src/openeventdialog.cpp" line="164"/>
         <source>Name</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="plugins/Event/src/openeventdialog.cpp" line="135"/>
+        <location filename="plugins/Event/src/openeventdialog.cpp" line="165"/>
         <source>Sport</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="plugins/Event/src/openeventdialog.cpp" line="135"/>
+        <location filename="plugins/Event/src/openeventdialog.cpp" line="165"/>
         <source>Discipline</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="plugins/Event/src/openeventdialog.cpp" line="135"/>
+        <location filename="plugins/Event/src/openeventdialog.cpp" line="165"/>
         <source>DB version</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="plugins/Event/src/openeventdialog.cpp" line="135"/>
+        <location filename="plugins/Event/src/openeventdialog.cpp" line="165"/>
         <source>Action</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="plugins/Event/src/openeventdialog.cpp" line="210"/>
+        <location filename="plugins/Event/src/openeventdialog.cpp" line="245"/>
         <source>Resize section to contents</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="plugins/Event/src/openeventdialog.cpp" line="214"/>
+        <location filename="plugins/Event/src/openeventdialog.cpp" line="249"/>
         <source>Resize all sections to contents</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="plugins/Event/src/openeventdialog.cpp" line="156"/>
+        <location filename="plugins/Event/src/openeventdialog.cpp" line="186"/>
         <source>?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="plugins/Event/src/openeventdialog.cpp" line="229"/>
+        <location filename="plugins/Event/src/openeventdialog.cpp" line="264"/>
         <source>Compatible</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="plugins/Event/src/openeventdialog.cpp" line="230"/>
+        <location filename="plugins/Event/src/openeventdialog.cpp" line="265"/>
         <source>Older version (convert required)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="plugins/Event/src/openeventdialog.cpp" line="254"/>
+        <location filename="plugins/Event/src/openeventdialog.cpp" line="289"/>
         <source>Convert event</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="plugins/Event/src/openeventdialog.cpp" line="259"/>
+        <location filename="plugins/Event/src/openeventdialog.cpp" line="294"/>
         <source>Convert event &lt;b&gt;%1&lt;/b&gt; to the current version.&lt;br&gt;A new event will be created with the ID below.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="plugins/Event/src/openeventdialog.cpp" line="264"/>
+        <location filename="plugins/Event/src/openeventdialog.cpp" line="299"/>
         <source>New event ID:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="plugins/Event/src/openeventdialog.cpp" line="294"/>
+        <location filename="plugins/Event/src/openeventdialog.cpp" line="329"/>
         <source>Delete event</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="plugins/Event/src/openeventdialog.cpp" line="295"/>
+        <location filename="plugins/Event/src/openeventdialog.cpp" line="330"/>
         <source>Permanently delete event &lt;b&gt;%1&lt;/b&gt;?&lt;br&gt;This action cannot be undone.</source>
         <translation type="unfinished"></translation>
     </message>
@@ -4164,12 +4164,12 @@ In case of unexpected errors, contact support@oresults.eu</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="plugins/Event/src/openeventdialog.cpp" line="64"/>
+        <location filename="plugins/Event/src/openeventdialog.cpp" line="94"/>
         <source>Convert</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="plugins/Event/src/openeventdialog.cpp" line="65"/>
+        <location filename="plugins/Event/src/openeventdialog.cpp" line="95"/>
         <source>Open</source>
         <translation type="unfinished"></translation>
     </message>
