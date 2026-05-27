@@ -111,7 +111,7 @@
     <message>
         <location filename="src/exporters/stageresultshtmlexporter.cpp" line="66"/>
         <source>Registration</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Registro</translation>
     </message>
     <message>
         <location filename="src/exporters/stageresultshtmlexporter.cpp" line="67"/>

@@ -18,20 +18,16 @@ EventDialogWidget::EventDialogWidget(QWidget *parent) :
 	connect(ui->ed_orisRace, &QAbstractButton::toggled, ui->frameOrisRace, &QWidget::setVisible);
 	ui->frameOrisRace->hide();
 
-	ui->cbxDisciplineId->addItem(tr("Long distance"), static_cast<int>(Event::EventConfig::Discipline::LongDistance));
-	ui->cbxDisciplineId->addItem(tr("Middle distance"), static_cast<int>(Event::EventConfig::Discipline::ShortDistance));
-	ui->cbxDisciplineId->addItem(tr("Ultralong distance"), static_cast<int>(Event::EventConfig::Discipline::UltralongDistance));
-	ui->cbxDisciplineId->addItem(tr("Sprint"), static_cast<int>(Event::EventConfig::Discipline::Sprint));
-	ui->cbxDisciplineId->addItem(tr("Relays"), static_cast<int>(Event::EventConfig::Discipline::Relays));
-	ui->cbxDisciplineId->addItem(tr("Teams"), static_cast<int>(Event::EventConfig::Discipline::Teams));
-	ui->cbxDisciplineId->addItem(tr("Free order"), static_cast<int>(Event::EventConfig::Discipline::FreeOrder));
-	ui->cbxDisciplineId->addItem(tr("Night"), static_cast<int>(Event::EventConfig::Discipline::NightRace));
-	ui->cbxDisciplineId->addItem(tr("Sprint relays"), static_cast<int>(Event::EventConfig::Discipline::SprintRelays));
-	ui->cbxDisciplineId->addItem(tr("Knock-out sprint"), static_cast<int>(Event::EventConfig::Discipline::KnocOutSprint));
-	ui->cbxDisciplineId->addItem(tr("TempO"), static_cast<int>(Event::EventConfig::Discipline::TempO));
-	ui->cbxDisciplineId->addItem(tr("Multi stages"), static_cast<int>(Event::EventConfig::Discipline::MultiStages));
-	ui->cbxDisciplineId->addItem(tr("Indoor"), static_cast<int>(Event::EventConfig::Discipline::Indoor));
-	ui->cbxDisciplineId->addItem(tr("Mass start"), static_cast<int>(Event::EventConfig::Discipline::MassStart));
+	using S = Event::EventConfig::Sport;
+	for (S sport : {S::OB, S::LOB, S::MTBO, S::TRAIL})
+		ui->cbxSportId->addItem(sportName(static_cast<int>(sport)), static_cast<int>(sport));
+
+	using D = Event::EventConfig::Discipline;
+	for (D disc : {D::LongDistance, D::ShortDistance, D::UltralongDistance, D::Sprint,
+	               D::Relays, D::Teams, D::FreeOrder, D::NightRace, D::SprintRelays,
+	               D::KnocOutSprint, D::TempO, D::MultiStages, D::Indoor, D::MassStart}) {
+		ui->cbxDisciplineId->addItem(disciplineName(static_cast<int>(disc)), static_cast<int>(disc));
+	}
 
 
 	ui->ed_oneTenthSecResults->setDisabled(true);
@@ -81,9 +77,10 @@ void EventDialogWidget::loadParams(const QVariantMap &params)
 	ui->ed_mainReferee->setText(params.value("mainReferee").toString());
 	ui->ed_director->setText(params.value("director").toString());
 	ui->ed_handicapLength->setValue(params.value("handicapLength").toInt());
-	ui->cbxSportId->setCurrentIndex(params.value("sportId").toInt() - 1);
-	if(ui->cbxSportId->currentIndex() < 0) {
+	if (auto ix = ui->cbxSportId->findData(params.value("sportId").toInt()); ix < 0) {
 		ui->cbxSportId->setCurrentIndex(0);
+	} else {
+		ui->cbxSportId->setCurrentIndex(ix);
 	}
 	if (auto ix = ui->cbxDisciplineId->findData(params.value("disciplineId").toInt()); ix < 0) {
 		ui->cbxDisciplineId->setCurrentIndex(0);
@@ -112,7 +109,7 @@ QVariantMap EventDialogWidget::saveParams()
 	ret["mainReferee"] = ui->ed_mainReferee->text();
 	ret["director"] = ui->ed_director->text();
 	ret["handicapLength"] = ui->ed_handicapLength->value();
-	ret["sportId"] = (ui->cbxSportId->currentIndex() <= 0) ? 1 : ui->cbxSportId->currentIndex() + 1;
+	ret["sportId"] = ui->cbxSportId->currentData().isNull() ? static_cast<int>(Event::EventConfig::Sport::OB) : ui->cbxSportId->currentData().toInt();
 	ret["disciplineId"] = (ui->cbxDisciplineId->currentIndex() <= 0) ? static_cast<int>(Event::EventConfig::Discipline::LongDistance) : ui->cbxDisciplineId->currentData();
 	ret["importId"] = ui->ed_orisImportId->text().toInt();
 	ret["orisEventKey"] = ui->ed_orisEventKey->text();
@@ -121,4 +118,38 @@ QVariantMap EventDialogWidget::saveParams()
 	ret["iofRace"] = (int)ui->ed_iofRace->isChecked();
 	ret["iofXmlRaceNumber"] = ui->ed_xmlRaceNumber->value();
 	return ret;
+}
+
+QString EventDialogWidget::disciplineName(int disc_id)
+{
+	using D = Event::EventConfig::Discipline;
+	switch (static_cast<D>(disc_id)) {
+	case D::LongDistance:      return tr("Long distance");
+	case D::ShortDistance:     return tr("Middle distance");
+	case D::UltralongDistance: return tr("Ultralong distance");
+	case D::Sprint:            return tr("Sprint");
+	case D::Relays:            return tr("Relays");
+	case D::Teams:             return tr("Teams");
+	case D::FreeOrder:         return tr("Free order");
+	case D::NightRace:         return tr("Night");
+	case D::SprintRelays:      return tr("Sprint relays");
+	case D::KnocOutSprint:     return tr("Knock-out sprint");
+	case D::TempO:             return tr("TempO");
+	case D::MultiStages:       return tr("Multi stages");
+	case D::MassStart:         return tr("Mass start");
+	case D::Indoor:            return tr("Indoor");
+	}
+	return {};
+}
+
+QString EventDialogWidget::sportName(int sport_id)
+{
+	using S = Event::EventConfig::Sport;
+	switch (static_cast<S>(sport_id)) {
+	case S::OB:    return QStringLiteral("OB");
+	case S::LOB:   return QStringLiteral("LOB");
+	case S::MTBO:  return QStringLiteral("MTBO");
+	case S::TRAIL: return QStringLiteral("TRAIL");
+	}
+	return {};
 }
