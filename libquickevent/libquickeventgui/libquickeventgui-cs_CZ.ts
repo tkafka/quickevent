@@ -110,6 +110,21 @@
         <translation>Tisknout vakanty</translation>
     </message>
     <message>
+        <location filename="src/reportoptionsdialog.ui" line="0"/>
+        <source>Only runners</source>
+        <translation>Jen běžci</translation>
+    </message>
+    <message>
+        <location filename="src/reportoptionsdialog.ui" line="0"/>
+        <source>Regular vacants</source>
+        <translation>Běžné vakanty</translation>
+    </message>
+    <message>
+        <location filename="src/reportoptionsdialog.ui" line="0"/>
+        <source>All vacants</source>
+        <translation>Všechny vakanty</translation>
+    </message>
+    <message>
         <location filename="src/reportoptionsdialog.ui" line="361"/>
         <source>Print start numbers</source>
         <translation>Tisknout startovní čísla</translation>

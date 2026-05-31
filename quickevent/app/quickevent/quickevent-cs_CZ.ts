@@ -6901,8 +6901,13 @@ Stskněte tlačítko pro obnovení pro zobrazení importovaných dat.</translati
     </message>
     <message>
         <location filename="plugins/Runs/src/runswidget.cpp" line="291"/>
-        <source>IOF-XML 3.0 with &amp;vacants</source>
-        <translation>IOF XML 3.0 s &amp;vakanty</translation>
+        <source>IOF-XML 3.0 with &amp;regular vacants</source>
+        <translation>IOF XML 3.0 s &amp;běžnými vakanty</translation>
+    </message>
+    <message>
+        <location filename="plugins/Runs/src/runswidget.cpp" line="296"/>
+        <source>IOF-XML 3.0 with &amp;all vacants</source>
+        <translation>IOF XML 3.0 se &amp;všemi vakanty</translation>
     </message>
     <message>
         <location filename="plugins/Runs/src/runswidget.cpp" line="296"/>

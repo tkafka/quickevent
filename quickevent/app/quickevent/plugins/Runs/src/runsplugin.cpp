@@ -1413,7 +1413,7 @@ qf::core::utils::TreeTable RunsPlugin::startListClassesTable(const QString &wher
 
 	qfs::QueryBuilder qb;
 	qb.select2("classes", "id, name")
-		.select2("classdefs", "startTimeMin, lastStartTimeMin, startIntervalMin, vacantsBefore, vacantEvery, vacantsAfter")
+		.select2("classdefs", "startTimeMin, lastStartTimeMin, startIntervalMin, vacantsBefore, vacantEvery, vacantsAfter, mapCount")
 		.select2("courses", "length, climb, id")
 		.from("classes")
 		.joinRestricted("classes.id", "classdefs.classId", "classdefs.stageId={{stage_id}}")
@@ -1538,7 +1538,7 @@ void RunsPlugin::appendVacantsToClassTable(qf::core::utils::TreeTable &tt2, cons
 		int mapCount = tt_row.value(QStringLiteral("mapCount")).toInt();
 		int cnt = tt2.rowCount();
 		int total_vacants = mapCount - cnt;
-			if (total_vacants < 0) total_vacants = 0;
+		if (total_vacants < 0) total_vacants = 0;
 		for (int k = 0; k < total_vacants; ++k) {
 			int ix = tt2.appendRow();
 			qf::core::utils::TreeTableRow tt2_row = tt2.row(ix);
@@ -1660,18 +1660,21 @@ qf::core::utils::TreeTable RunsPlugin::startListStartersTable(const QString &whe
 			qf::core::utils::TreeTableRow tt2_row = tt2.row(j);
 			QVariantMap rowMap;
 			
-			rowMap["competitors.registration"] = tt2_row.value("registration");
-			rowMap["competitors.id"] = tt2_row.value("competitors.id");
-			rowMap["competitors.startNumber"] = tt2_row.value("competitors.startNumber");
-			rowMap["competitors.country"] = tt2_row.value("competitors.country");
+			auto val = [tt2_row](const char* key1, const char* key2) {
+				QVariant v = tt2_row.value(key1);
+				if (v.isValid()) return v;
+				return tt2_row.value(key2);
+			};
+
+			rowMap["competitors.registration"] = val("competitors.registration", "registration");
+			rowMap["competitors.id"] = val("competitors.id", "id");
+			rowMap["competitors.startNumber"] = val("competitors.startNumber", "startNumber");
+			rowMap["competitors.country"] = val("competitors.country", "country");
 			rowMap["competitorName"] = tt2_row.value("competitorName");
 
-			QVariant startTimeMsVar = tt2_row.value("startTimeMs");
-			if (!startTimeMsVar.isNull())
-				rowMap["startTimeMin"] = startTimeMsVar.toInt() / 1000 / 60;
-			else
-				rowMap["startTimeMin"] = QVariant();
-			rowMap["runs.siId"] = tt2_row.value("runs.siId");
+			QVariant startTimeMsVar = val("runs.startTimeMs", "startTimeMs");
+			rowMap["startTimeMin"] = startTimeMsVar.toInt() / 1000 / 60;
+			rowMap["runs.siId"] = val("runs.siId", "siId");
 			rowMap["startTimeMs"] = startTimeMsVar;
 			rowMap["classes.name"] = class_name;
 			rowMap["startTimeText"] = tt2_row.value("startTimeText");
