@@ -119,7 +119,9 @@ ReportOptionsDialog::BreakType ReportOptionsDialog::breakType() const
 
 ReportOptionsDialog::VacantsOption ReportOptionsDialog::startListPrintVacantsOption() const
 {
-	return static_cast<ReportOptionsDialog::VacantsOption>(ui->cbxStartOpts_PrintVacants->currentIndex());
+	int ix = ui->cbxStartOpts_PrintVacants->currentIndex();
+	if (ix < 0) ix = 0;
+	return static_cast<ReportOptionsDialog::VacantsOption>(ix);
 }
 
 bool ReportOptionsDialog::isStartListPrintStartNumbers() const
