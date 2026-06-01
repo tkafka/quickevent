@@ -283,12 +283,12 @@ void RunsWidget::settleDownInPartWidget(::PartWidget *part_widget)
 	auto *m_export_stlist_xml = m_stlist->addMenuInto("xml", tr("&XML"));
 	{
 		{
-			auto *a = new qfw::Action(tr("&IOF-XML 3.0"));
+			auto *a = new qfw::Action(tr("&IOF-XML 3.0 only runners"));
 			connect(a, &qfw::Action::triggered, this, [this]() { export_startList_stage_iofxml30(quickevent::gui::ReportOptionsDialog::VacantsOption::OnlyRunners); });
 			m_export_stlist_xml->addActionInto(a);
 		}
 		{
-			auto *a = new qfw::Action(tr("IOF-XML 3.0 with &regular vacants"));
+			auto *a = new qfw::Action(tr("IOF-XML 3.0 with &vacants with time"));
 			connect(a, &qfw::Action::triggered, this, [this]() { export_startList_stage_iofxml30(quickevent::gui::ReportOptionsDialog::VacantsOption::RegularVacants); });
 			m_export_stlist_xml->addActionInto(a);
 		}

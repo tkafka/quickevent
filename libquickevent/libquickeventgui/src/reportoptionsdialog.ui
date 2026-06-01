@@ -357,12 +357,12 @@
         </item>
         <item>
          <property name="text">
-          <string>Regular vacants</string>
+          <string>Include vacants with time</string>
          </property>
         </item>
         <item>
          <property name="text">
-          <string>All vacants</string>
+          <string>Include all vacants</string>
          </property>
         </item>
        </widget>

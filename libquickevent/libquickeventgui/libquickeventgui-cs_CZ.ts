@@ -112,17 +112,17 @@
     <message>
         <location filename="src/reportoptionsdialog.ui" line="0"/>
         <source>Only runners</source>
-        <translation>Jen běžci</translation>
+        <translation>Pouze závodníci</translation>
     </message>
     <message>
         <location filename="src/reportoptionsdialog.ui" line="0"/>
-        <source>Regular vacants</source>
-        <translation>Běžné vakanty</translation>
+        <source>Include vacants with time</source>
+        <translation>Včetně vakantů s časem</translation>
     </message>
     <message>
         <location filename="src/reportoptionsdialog.ui" line="0"/>
-        <source>All vacants</source>
-        <translation>Všechny vakanty</translation>
+        <source>Include all vacants</source>
+        <translation>Včetně všech vakantů</translation>
     </message>
     <message>
         <location filename="src/reportoptionsdialog.ui" line="361"/>
@@ -187,7 +187,7 @@
     <message>
         <location filename="src/reportoptionsdialog.ui" line="368"/>
         <source>Use only class from selected start</source>
-        <translation>Pooužít pouze kategorie z vybraného startu</translation>
+        <translation>Použít pouze kategorie z vybraného startu</translation>
     </message>
     <message>
         <location filename="src/reportoptionsdialog.ui" line="97"/>
