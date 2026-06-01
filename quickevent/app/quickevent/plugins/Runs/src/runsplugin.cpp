@@ -1488,59 +1488,57 @@ qf::core::utils::TreeTable RunsPlugin::startListClassesTable(const QString &wher
 		m2.setQueryParameters(qpm);
 		m2.reload();
 		auto tt2 = m2.toTreeTable();
-		// // TODO: extract to method
-		{
-			int start_time_0 = tt_row.value(QStringLiteral("startTimeMin")).toInt() * 60 * 1000;
-			int start_time_last = tt_row.value(QStringLiteral("lastStartTimeMin")).toInt() * 60 * 1000;
-			int start_interval = tt_row.value(QStringLiteral("startIntervalMin")).toInt() * 60 * 1000;
-			if(start_interval > 0 && vacants_option != quickevent::gui::ReportOptionsDialog::VacantsOption::OnlyRunners) {
-				for(int j=0; j<tt2.rowCount(); j++) {
-					qf::core::utils::TreeTableRow tt2_row = tt2.row(j);
-					int start_time = tt2_row.value(QStringLiteral("startTimeMs")).toInt();
-					//console.info(j, "t0:", start_time_0, start_time_0/60/1000, "start:", start_time, start_time/60/1000)
-					while(start_time_0 < start_time) {
-						// insert vakant row
-						//qfInfo() << "adding row:" << j << (start_time_0 / 60 / 1000);
-						tt2.insertRow(j);
-						qf::core::utils::TreeTableRow n_row = tt2.row(j);
-						n_row.setValue(QStringLiteral("startTimeMs"), start_time_0);
-						n_row.setValue(QStringLiteral("competitorName"), vacant_name_sentinel);
-						n_row.setValue(QStringLiteral("registration"), QString());
-						n_row.setValue(QStringLiteral("siId"), 0);
-						n_row.setValue(QStringLiteral("startNumber"), 0);
-						start_time_0 += start_interval;
-						tt2.setRow(j, n_row);
-						j++;
-					}
+		// TODO: extract to method (leaving here to minimize PR diffs).
+		int start_time_0 = tt_row.value(QStringLiteral("startTimeMin")).toInt() * 60 * 1000;
+		int start_time_last = tt_row.value(QStringLiteral("lastStartTimeMin")).toInt() * 60 * 1000;
+		int start_interval = tt_row.value(QStringLiteral("startIntervalMin")).toInt() * 60 * 1000;
+		if(start_interval > 0 && vacants_option != quickevent::gui::ReportOptionsDialog::VacantsOption::OnlyRunners) {
+			for(int j=0; j<tt2.rowCount(); j++) {
+				qf::core::utils::TreeTableRow tt2_row = tt2.row(j);
+				int start_time = tt2_row.value(QStringLiteral("startTimeMs")).toInt();
+				//console.info(j, "t0:", start_time_0, start_time_0/60/1000, "start:", start_time, start_time/60/1000)
+				while(start_time_0 < start_time) {
+					// insert vakant row
+					//qfInfo() << "adding row:" << j << (start_time_0 / 60 / 1000);
+					tt2.insertRow(j);
+					qf::core::utils::TreeTableRow n_row = tt2.row(j);
+					n_row.setValue(QStringLiteral("startTimeMs"), start_time_0);
+					n_row.setValue(QStringLiteral("competitorName"), vacant_name_sentinel);
+					n_row.setValue(QStringLiteral("registration"), QString());
+					n_row.setValue(QStringLiteral("siId"), 0);
+					n_row.setValue(QStringLiteral("startNumber"), 0);
 					start_time_0 += start_interval;
+					tt2.setRow(j, n_row);
+					j++;
 				}
-				while(start_time_0 <= start_time_last) {
-					// insert vakants after
-					int ix = tt2.appendRow();
-					qf::core::utils::TreeTableRow tt2_row = tt2.row(ix);
-					tt2_row.setValue(QStringLiteral("startTimeMs"), start_time_0);
-					tt2_row.setValue(QStringLiteral("competitorName"), vacant_name_sentinel);
-					tt2_row.setValue(QStringLiteral("registration"), QString());
-					tt2_row.setValue(QStringLiteral("siId"), 0);
-					tt2_row.setValue(QStringLiteral("startNumber"), 0);
-					tt2.setRow(ix, tt2_row);
-					start_time_0 += start_interval;
-				}
-			} else if (start_interval == 0 && vacants_option == quickevent::gui::ReportOptionsDialog::VacantsOption::AllVacants) {
-				int mapCount = tt_row.value(QStringLiteral("mapCount")).toInt();
-				int cnt = tt2.rowCount();
-				int total_vacants = mapCount - cnt;
-				if (total_vacants < 0) total_vacants = 0;
-				for (int k = 0; k < total_vacants; ++k) {
-					int ix = tt2.appendRow();
-					qf::core::utils::TreeTableRow tt2_row = tt2.row(ix);
-					tt2_row.setValue(QStringLiteral("startTimeMs"), start_time_0);
-					tt2_row.setValue(QStringLiteral("competitorName"), vacant_name_sentinel);
-					tt2_row.setValue(QStringLiteral("registration"), QString());
-					tt2_row.setValue(QStringLiteral("siId"), 0);
-					tt2_row.setValue(QStringLiteral("startNumber"), 0);
-					tt2.setRow(ix, tt2_row);
-				}
+				start_time_0 += start_interval;
+			}
+			while(start_time_0 <= start_time_last) {
+				// insert vakants after
+				int ix = tt2.appendRow();
+				qf::core::utils::TreeTableRow tt2_row = tt2.row(ix);
+				tt2_row.setValue(QStringLiteral("startTimeMs"), start_time_0);
+				tt2_row.setValue(QStringLiteral("competitorName"), vacant_name_sentinel);
+				tt2_row.setValue(QStringLiteral("registration"), QString());
+				tt2_row.setValue(QStringLiteral("siId"), 0);
+				tt2_row.setValue(QStringLiteral("startNumber"), 0);
+				tt2.setRow(ix, tt2_row);
+				start_time_0 += start_interval;
+			}
+		} else if (start_interval == 0 && vacants_option == quickevent::gui::ReportOptionsDialog::VacantsOption::AllVacants) {
+			int mapCount = tt_row.value(QStringLiteral("mapCount")).toInt();
+			int cnt = tt2.rowCount();
+			int total_vacants = mapCount - cnt;
+			if (total_vacants < 0) total_vacants = 0;
+			for (int k = 0; k < total_vacants; ++k) {
+				int ix = tt2.appendRow();
+				qf::core::utils::TreeTableRow tt2_row = tt2.row(ix);
+				tt2_row.setValue(QStringLiteral("startTimeMs"), start_time_0);
+				tt2_row.setValue(QStringLiteral("competitorName"), vacant_name_sentinel);
+				tt2_row.setValue(QStringLiteral("registration"), QString());
+				tt2_row.setValue(QStringLiteral("siId"), 0);
+				tt2_row.setValue(QStringLiteral("startNumber"), 0);
+				tt2.setRow(ix, tt2_row);
 			}
 		}
 		addStartTimeTextToClass(tt2,start00_epoch_sec, start_time_format);
