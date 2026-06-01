@@ -3,6 +3,7 @@
 #include "cardreadersettings.h"
 
 #include "cardreaderplugin.h"
+#include "testcardreader.h"
 
 #include <quickevent/gui/og/itemdelegate.h>
 #include <quickevent/gui/audio/player.h>
@@ -222,7 +223,7 @@ CardReaderWidget::CardReaderWidget(QWidget *parent)
 	ui->lblConnectionInfo->setText(tr("SI station not connected"));
 #ifdef QT_DEBUG
 	{
-		connect(ui->btTest, &QPushButton::clicked, this, &CardReaderWidget::onTestButtonClicked);
+		connect(ui->btTest, &QPushButton::clicked, this, &CardReaderWidget::onTestButtonClicked2);
 		connect(ui->btTestSound, &QPushButton::clicked, this, [this]() {
 			audioPlayer()->playAlert(quickevent::gui::audio::Player::AlertKind::OperatorWakeUp);
 		});
@@ -314,6 +315,11 @@ void CardReaderWidget::onTestButtonClicked()
 	count++;
 	count %= lst.size();
 	ui->btTest->setText("Send packet #" + QString::number(count));
+}
+
+void CardReaderWidget::onTestButtonClicked2()
+{
+	CardReader::TestCardReader::testReadCard_8063069();
 }
 
 void CardReaderWidget::onCustomContextMenuRequest(const QPoint & pos)
