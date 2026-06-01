@@ -107,6 +107,7 @@ private:
 	CardReaderSettings::ReaderMode currentReaderMode() const;
 
 	void onTestButtonClicked();
+	void onTestButtonClicked2();
 private:
 	Ui::CardReaderWidget *ui;
 	qf::gui::Action *m_actAssignCard = nullptr;
