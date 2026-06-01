@@ -60,6 +60,7 @@ QString datetime_to_string(const QDateTime &dt)
 {
 	return quickevent::core::Utils::dateTimeToIsoStringWithUtcOffset(dt);
 }
+const auto vacant_name_sentinel = QStringLiteral("---");
 }
 RunsPlugin::RunsPlugin(QObject *parent)
 	: Super("Runs", parent)
@@ -1512,28 +1513,28 @@ void RunsPlugin::appendVacantsToClassTable(qf::core::utils::TreeTable &tt2, cons
 				tt2.insertRow(j);
 				qf::core::utils::TreeTableRow n_row = tt2.row(j);
 				n_row.setValue(QStringLiteral("startTimeMs"), start_time_0);
-				n_row.setValue(QStringLiteral("competitorName"), "---");
-				n_row.setValue(QStringLiteral("registration"), "");
+				n_row.setValue(QStringLiteral("competitorName"), vacant_name_sentinel);
+				n_row.setValue(QStringLiteral("registration"), QString());
 				n_row.setValue(QStringLiteral("siId"), 0);
 				n_row.setValue(QStringLiteral("startNumber"), 0);
 				start_time_0 += start_interval;
 				tt2.setRow(j, n_row);
 				j++;
-				}
-			start_time_0 += start_interval;
 			}
+			start_time_0 += start_interval;
+		}
 		while(start_time_0 <= start_time_last) {
-				// insert vakants after
+			// insert vakants after
 			int ix = tt2.appendRow();
 			qf::core::utils::TreeTableRow tt2_row = tt2.row(ix);
 			tt2_row.setValue(QStringLiteral("startTimeMs"), start_time_0);
-			tt2_row.setValue(QStringLiteral("competitorName"), "---");
+			tt2_row.setValue(QStringLiteral("competitorName"), vacant_name_sentinel);
 			tt2_row.setValue(QStringLiteral("registration"), QString());
 			tt2_row.setValue(QStringLiteral("siId"), 0);
 			tt2_row.setValue(QStringLiteral("startNumber"), 0);
 			tt2.setRow(ix, tt2_row);
 			start_time_0 += start_interval;
-			}
+		}
 	} else if (start_interval == 0 && vacants_option == quickevent::gui::ReportOptionsDialog::VacantsOption::AllVacants) {
 		int mapCount = tt_row.value(QStringLiteral("mapCount")).toInt();
 		int cnt = tt2.rowCount();
@@ -1542,14 +1543,14 @@ void RunsPlugin::appendVacantsToClassTable(qf::core::utils::TreeTable &tt2, cons
 		for (int k = 0; k < total_vacants; ++k) {
 			int ix = tt2.appendRow();
 			qf::core::utils::TreeTableRow tt2_row = tt2.row(ix);
-			tt2_row.setValue(QStringLiteral("startTimeMs"), QVariant());
-			tt2_row.setValue(QStringLiteral("competitorName"), "---");
+			tt2_row.setValue(QStringLiteral("startTimeMs"), start_time_0);
+			tt2_row.setValue(QStringLiteral("competitorName"), vacant_name_sentinel);
 			tt2_row.setValue(QStringLiteral("registration"), QString());
 			tt2_row.setValue(QStringLiteral("siId"), 0);
 			tt2_row.setValue(QStringLiteral("startNumber"), 0);
 			tt2.setRow(ix, tt2_row);
-			}
 		}
+	}
 }
 
 qf::core::utils::TreeTable RunsPlugin::startListClubsTable(const quickevent::gui::ReportOptionsDialog::StartTimeFormat start_time_format,
@@ -1650,6 +1651,7 @@ qf::core::utils::TreeTable RunsPlugin::startListStartersTable(const QString &whe
 	tt.appendColumn("startTimeMsText", QMetaType(QMetaType::QString));
 
 	QList<QVariantMap> rowsData;
+	rowsData.reserve(tt_classes.rowCount() * 20);
 
 	for(int i=0; i<tt_classes.rowCount(); i++) {
 		qf::core::utils::TreeTableRow tt_class_row = tt_classes.row(i);
@@ -1685,8 +1687,10 @@ qf::core::utils::TreeTable RunsPlugin::startListStartersTable(const QString &whe
 	}
 	
 	std::sort(rowsData.begin(), rowsData.end(), [](const QVariantMap &a, const QVariantMap &b) {
-		int tA = a["startTimeMs"].toInt();
-		int tB = b["startTimeMs"].toInt();
+		QVariant vA = a["startTimeMs"];
+		QVariant vB = b["startTimeMs"];
+		int tA = vA.isValid() && !vA.isNull() ? vA.toInt() : std::numeric_limits<int>::max();
+		int tB = vB.isValid() && !vB.isNull() ? vB.toInt() : std::numeric_limits<int>::max();
 		if (tA != tB) return tA < tB;
 		QString cA = a["classes.name"].toString();
 		QString cB = b["classes.name"].toString();
@@ -2526,7 +2530,7 @@ void RunsPlugin::export_resultsHtmlNStages()
 		append_list(table, trr);
 		auto time_to_str = [](int msec) {
 			if(msec == UNREAL_TIME_MSEC)
-				return QStringLiteral("---");
+				return vacant_name_sentinel;
 			quickevent::core::og::TimeMs t(msec);
 			return t.toString();
 		};
@@ -2805,7 +2809,7 @@ QString RunsPlugin::startListStageIofXml30(int stage_id, quickevent::gui::Report
 			auto tt2_row = tt2.row(j);
 			QVariantList xml_person{"PersonStart"};
 			
-			bool is_vacant = tt2_row.value(QStringLiteral("competitorName")).toString() == "---";
+			bool is_vacant = tt2_row.value(QStringLiteral("competitorName")).toString() == vacant_name_sentinel;
 			
 			if (!is_vacant) {
 				QVariantList person{"Person"};
@@ -2829,9 +2833,9 @@ QString RunsPlugin::startListStageIofXml30(int stage_id, quickevent::gui::Report
 
 			QVariantList xml_start{"Start", (iof_xml_race_number != 0) ? QVariantMap{{"raceNumber", iof_xml_race_number}} : QVariantMap{}};
 			auto bib_number = tt2_row.value(QStringLiteral("competitors.startNumber"));
-			if(!bib_number.isNull())
+			if(!is_vacant && !bib_number.isNull())
 				append_list(xml_start, QVariantList{"BibNumber", bib_number});
-			if (has_fixed_start_time) {
+			if (has_fixed_start_time || is_vacant) {
 				int stime_msec = tt2_row.value("startTimeMs").toInt();
 				append_list(xml_start, QVariantList{"StartTime", datetime_to_string(start00.addMSecs(stime_msec))});
 			}

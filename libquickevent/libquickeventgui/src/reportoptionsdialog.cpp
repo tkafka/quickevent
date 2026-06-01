@@ -379,7 +379,7 @@ void ReportOptionsDialog::setStartListForRelays()
 void ReportOptionsDialog::setCurrentStageId(int stageId)
 {
 	ui->cbxStartNumber->clear();
-	ui->cbxStartNumber->addItem(QString("All"), 0);
+	ui->cbxStartNumber->addItem(tr("All"), 0);
 	QString query_str;
 	if (stageId > 0) {
 		query_str = QString("SELECT DISTINCT codes.code FROM codes, coursecodes, classdefs"
@@ -394,7 +394,7 @@ void ReportOptionsDialog::setCurrentStageId(int stageId)
 	while (q.next()) {
 		auto code = q.value(0).toInt();
 		if(auto n = core::CodeDef::codeToStartNumber(code); n.has_value()) {
-			ui->cbxStartNumber->addItem(QString("Start %1").arg(n.value()), n.value());
+			ui->cbxStartNumber->addItem(tr("Start %1").arg(n.value()), n.value());
 		}
 	}
 }
