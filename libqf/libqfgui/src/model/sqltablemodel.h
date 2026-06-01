@@ -27,7 +27,7 @@ private:
 	typedef TableModel Super;
 public:
 	SqlTableModel(QObject *parent = nullptr);
-	~SqlTableModel() Q_DECL_OVERRIDE;
+	~SqlTableModel() override;
 
 	QF_PROPERTY_IMPL(QVariant, q, Q, ueryParameters)
 	QF_PROPERTY_BOOL_IMPL(i, I, ncludeJoinedTablesIdsToReloadRowQuery)
@@ -42,14 +42,14 @@ public:
 		DbEnumCastProperties(const QVariantMap &m = QVariantMap()) : QVariantMap(m) {}
 };
 public:
-	QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const Q_DECL_OVERRIDE;
+	QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const override;
 
 	Q_INVOKABLE QString effectiveQuery();
-	bool reload() Q_DECL_OVERRIDE;
-	bool postRow(int row_no, bool throw_exc) Q_DECL_OVERRIDE;
-	void revertRow(int row_no) Q_DECL_OVERRIDE;
-	int reloadRow(int row_no) Q_DECL_OVERRIDE;
-	int reloadInserts(const QString &id_column_name) Q_DECL_OVERRIDE;
+	bool reload() override;
+	bool postRow(int row_no, bool throw_exc) override;
+	void revertRow(int row_no) override;
+	int reloadRow(int row_no) override;
+	int reloadInserts(const QString &id_column_name) override;
 	QString reloadRowQuery(const QVariant &record_id);
 public:
 	void setQueryBuilder(const qf::core::sql::QueryBuilder &qb, bool clear_columns = false);
@@ -88,7 +88,7 @@ protected:
 	QSet<QString> referencedForeignTables();
 	QStringList tableIdsSortedAccordingToForeignKeys();
 
-	bool removeTableRow(int row_no, bool throw_exc = false) Q_DECL_OVERRIDE;
+	bool removeTableRow(int row_no, bool throw_exc = false) override;
 protected:
 	qf::core::sql::QueryBuilder m_queryBuilder;
 	QString m_query;

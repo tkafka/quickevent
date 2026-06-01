@@ -189,6 +189,20 @@ int main(int argc, char *argv[])
 	main_window.show();
 	emit main_window.applicationLaunched();
 
+	QObject::connect(&app, &Application::qxRecChng, &app, [](const qf::core::sql::QxRecChng &recchng) {
+		auto dump_map = [](const QVariantMap &m) {
+			QStringList rows;
+			for (const auto &[k, v] : m.asKeyValueRange()) {
+				rows << QStringLiteral("%1 -> %2").arg(k).arg(v.toString());
+			}
+			return rows.join('\n');
+		};
+		qfInfo() << "REC-CHNG table:" << recchng.table
+				 << "op:" << qf::core::sql::QxRecChng::recopToString(recchng.op)
+				 << "id:" << recchng.id
+				 << "record:" << dump_map(recchng.record);
+	});
+
 	int ret = Application::exec();
 
 	return ret;

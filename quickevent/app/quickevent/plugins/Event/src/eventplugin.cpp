@@ -194,6 +194,7 @@ EventPlugin::EventPlugin(QObject *parent)
 		setEventOpen(!event_name.isEmpty());
 	});
 	connect(this, &Event::EventPlugin::dbEventNotify, this, &Event::EventPlugin::onDbEventNotify, Qt::QueuedConnection);
+	connect(qf::gui::framework::Application::instance(), &qf::gui::framework::Application::qxRecChng, this, &EventPlugin::onRecChng);
 }
 
 void EventPlugin::initEventConfig()
@@ -533,11 +534,11 @@ void EventPlugin::emitDbEvent(const QString &domain, const QVariant &data, bool 
 	if(payload_str.length() > 4000) {
 		int len = payload_str.toUtf8().length();
 		if(len > 8000) {
-			qfInfo() << payload_str;
 			qfError() << "Payload of size" << len << "is too long. Max Postgres payload length is 8000 bytes.";
 			return;
 		}
 	}
+	qfMessage() << "to postgres:" << payload_str;
 	payload_str = qf::core::sql::Connection::escapeJsonForSql(payload_str);
 	qf::core::sql::Connection conn = qf::core::sql::Connection::forName();
 	QString qs = QString("NOTIFY ") + DBEVENT_NOTIFY_NAME + ", '" + payload_str + "'";
@@ -661,7 +662,17 @@ void EventPlugin::onDbEvent(const QString &name, QSqlDriver::NotificationSource 
 			}
 			if(event_name == eventName()) {
 				QVariant data = dbpl.data();
-				qfDebug() << "emitting domain:" << domain << "data:" << data;
+				if (dbpl.domain() == DBEVENT_QX_RECCHNG) {
+					qfMessage() << "from postgres:" << data;
+					auto recchng = qf::core::sql::QxRecChng::fromVariantMap(data.toMap());
+					if (recchng.issuer == qf::gui::framework::Application::uuidString()) {
+						qfWarning() << "RecChng loopback detected, issuer:" << recchng.issuer;
+						return;
+					}
+					qf::gui::framework::Application::instance()->emitQxRecChng(recchng, this);
+					return;
+				}
+				qfMessage() << "emitting domain:" << domain << "data:" << data;
 				emit dbEventNotify(domain, dbpl.connectionId(), data);
 			}
 		}
@@ -1535,6 +1546,14 @@ void EventPlugin::onDbEventNotify(const QString &domain, int connection_id, cons
 	else if(domain == QLatin1String(Event::EventPlugin::DBEVENT_REGISTRATIONS_IMPORTED)) {
 		reloadRegistrationsModel();
 	}
+}
+
+void EventPlugin::onRecChng(const qf::core::sql::QxRecChng &recchng)
+{
+	if (recchng.issuer != qf::gui::framework::Application::uuidString()) {
+		return;
+	}
+	emitDbEvent(DBEVENT_QX_RECCHNG, recchng.toVariantMap(), false);
 }
 
 void EventPlugin::reloadRegistrationsModel()

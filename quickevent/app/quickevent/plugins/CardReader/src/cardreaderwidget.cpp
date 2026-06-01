@@ -46,7 +46,6 @@
 #include <plugins/Receipts/src/receiptsplugin.h>
 #include <plugins/Event/src/eventplugin.h>
 #include <plugins/Runs/src/findrunnerwidget.h>
-// #include <plugins/Competitors/src/competitorsplugin.h>
 #include <plugins/Runs/src/runflagsdialog.h>
 #include <plugins/Runs/src/runsplugin.h>
 
@@ -69,7 +68,6 @@ using qf::gui::framework::getPlugin;
 using Event::EventPlugin;
 using CardReader::CardReaderPlugin;
 using Receipts::ReceiptsPlugin;
-// using Competitors::CompetitorsPlugin;
 using Runs::RunsPlugin;
 
 namespace {
@@ -261,6 +259,8 @@ CardReaderWidget::CardReaderWidget(QWidget *parent)
 			}
 		}
 	}, Qt::QueuedConnection);
+
+	connect(qf::gui::framework::Application::instance(), &qf::gui::framework::Application::qxRecChng, this, &CardReaderWidget::onQxRecChng, Qt::QueuedConnection);
 }
 
 CardReaderWidget::~CardReaderWidget()
@@ -509,6 +509,13 @@ void CardReaderWidget::reload()
 	qfDebug() << qb.toString();
 	m_cardsModel->setQueryBuilder(qb, false);
 	m_cardsModel->reload();
+}
+
+void CardReaderWidget::onQxRecChng(const qf::core::sql::QxRecChng &recchng, QObject *source)
+{
+	if(isVisible()) {
+		m_cardsModel->handleQxRecChng(recchng, source);
+	}
 }
 
 void CardReaderWidget::onDbEventNotify(const QString &domain, int connection_id, const QVariant &data)
@@ -797,19 +804,38 @@ void CardReaderWidget::assignRunnerToSelectedCard()
 								   "is currently flagged \"not running\" for this stage (race).\n"
 								   "If you continue, this flag will be removed"),
 								QMessageBox::Ok | QMessageBox::Cancel);
-				if (ret == QMessageBox::Cancel)
+				if (ret == QMessageBox::Cancel) {
 					return;
-				QString qs = "UPDATE runs SET isRunning=true WHERE competitorId=" QF_IARG(competitor_id) " AND stageId=" QF_IARG(stage_id);
-				q.execThrow(qs);
+				}
+				auto *app = qf::gui::framework::Application::instance();
+				QVariantMap rec {
+					{"isRunning", true},
+				};
+				app->updateDbRecord("runs", run_id, rec, this);
+				// QString qs = "UPDATE runs SET isRunning=true WHERE competitorId=" QF_IARG(competitor_id) " AND stageId=" QF_IARG(stage_id);
+				// q.execThrow(qs);
 			}
 		}
 		{
 			getPlugin<CardReaderPlugin>()->assignCardToRun(card_id, run_id);
-			QString qs = "UPDATE runs SET siId=" QF_IARG(si_id) " WHERE competitorId=" QF_IARG(competitor_id) " AND stageId=" QF_IARG(stage_id);
-			if(values.value(Runs::FindRunnerWidget::UseSIInNextStages).toBool()) {
-				qs = "UPDATE runs SET siId=" QF_IARG(si_id) " WHERE competitorId=" QF_IARG(competitor_id) " AND stageId>=" QF_IARG(stage_id);
+			q.execThrow("SELECT id FROM runs WHERE competitorId=" QF_IARG(competitor_id)
+						" AND stageId>=" QF_IARG(stage_id)
+						" ORDER BY stageId");
+			int n = 0;
+			auto *app = qf::gui::framework::Application::instance();
+			bool use_si_in_next_stages = values.value(Runs::FindRunnerWidget::UseSIInNextStages).toBool();
+			while (q.next()) {
+				QVariantMap rec { {"siId", si_id}, };
+				auto run_id = q.value(0).toInt();
+				if (n++ == 0 || use_si_in_next_stages) {
+					app->updateDbRecord("runs", run_id, rec, this);
+				}
 			}
-			q.execThrow(qs);
+			// QString qs = "UPDATE runs SET siId=" QF_IARG(si_id) " WHERE competitorId=" QF_IARG(competitor_id) " AND stageId=" QF_IARG(stage_id);
+			// if(values.value(Runs::FindRunnerWidget::UseSIInNextStages).toBool()) {
+			// 	qs = "UPDATE runs SET siId=" QF_IARG(si_id) " WHERE competitorId=" QF_IARG(competitor_id) " AND stageId>=" QF_IARG(stage_id);
+			// }
+			// q.execThrow(qs);
 		}
 
 		this->ui->tblCards->reloadRow();
@@ -840,14 +866,14 @@ CardReaderSettings::ReaderMode CardReaderWidget::currentReaderMode() const
 	CardReaderSettings s;
 	return s.readerModeEnum();
 }
-
-static int msecToSISec(int msec)
+namespace {
+int msecToSISec(int msec)
 {
 	//static constexpr int secs_to_noon = 12 * 60 * 60;
 	return (msec / 1000);// % secs_to_noon;
 }
 
-static int obStringTosec(const QString &time_str)
+int obStringTosec(const QString &time_str)
 {
 	bool ok;
 	int min = time_str.section('.', 0, 0).toInt(&ok);
@@ -863,7 +889,7 @@ static int obStringTosec(const QString &time_str)
 	return (60 * min + sec) * 1000;
 }
 
-static QList<int> codesForClassName(const QString &class_name, int stage_id)
+QList<int> codesForClassName(const QString &class_name, int stage_id)
 {
 	QList<int> ret;
 	int course_id = 0;
@@ -898,7 +924,7 @@ static QList<int> codesForClassName(const QString &class_name, int stage_id)
 	QF_ASSERT_EX(ret.count() > 0, QString("Cannot load codes for class %1 and stage %2").arg(class_name).arg(stage_id));
 	return ret;
 }
-
+}
 void CardReaderWidget::importCards_lapsOnlyCsv()
 {
 	// CSV record must have format:
