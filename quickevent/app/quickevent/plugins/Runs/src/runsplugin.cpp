@@ -2803,8 +2803,6 @@ QString RunsPlugin::startListStageIofXml30(int stage_id, quickevent::gui::Report
 		qf::core::utils::TreeTable tt2 = tt1_row.table();
 		if (tt2.rowCount() == 0 && is_iof_race)
 			continue; // not save empty class
-		bool has_fixed_start_time = tt1_row.value(QStringLiteral("classdefs.startIntervalMin")).toInt() > 0
-				|| event_config->discipline() == Event::EventConfig::Discipline::MassStart;
 		for(int j=0; j<tt2.rowCount(); j++) {
 			auto tt2_row = tt2.row(j);
 			QVariantList xml_person{"PersonStart"};
