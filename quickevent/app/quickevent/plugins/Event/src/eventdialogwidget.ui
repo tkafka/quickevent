@@ -84,28 +84,8 @@
       </widget>
      </item>
      <item row="7" column="1">
-      <widget class="QComboBox" name="cbxSportId">
-       <item>
-        <property name="text">
-         <string>OB</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>LOB</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>MTBO</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>TRAIL</string>
-        </property>
-       </item>
-      </widget>
+      <widget class="QComboBox" name="cbxSportId"/>
+
      </item>
      <item row="6" column="1">
       <widget class="QLineEdit" name="ed_mainReferee"/>
@@ -151,38 +131,8 @@
       </widget>
      </item>
      <item row="7" column="3">
-      <widget class="QComboBox" name="cbxDisciplineId">
-       <item>
-        <property name="text">
-         <string>Long distance</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>Middle distance</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>Sprint</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>Ultralong distance</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>Relay</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>Teams</string>
-        </property>
-       </item>
-      </widget>
+      <widget class="QComboBox" name="cbxDisciplineId"/>
+
      </item>
      <item row="7" column="0">
       <widget class="QLabel" name="label_11">

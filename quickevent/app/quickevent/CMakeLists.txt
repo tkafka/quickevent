@@ -17,6 +17,7 @@ add_executable(quickevent
 	plugins/CardReader/src/services/qropunch.cpp
 	plugins/CardReader/src/services/qropunchwidget.cpp
 	plugins/CardReader/src/services/qropunchwidget.ui
+	plugins/CardReader/src/testcardreader.h plugins/CardReader/src/testcardreader.cpp
 
 	plugins/Classes/src/classdefdocument.cpp
 	plugins/Classes/src/classdefwidget.cpp
@@ -67,6 +68,8 @@ add_executable(quickevent
 	plugins/Event/src/eventdialogwidget.cpp
 	plugins/Event/src/eventdialogwidget.ui
 	plugins/Event/src/eventplugin.cpp
+	plugins/Event/src/openeventdialog.cpp
+	plugins/Event/src/openeventdialog.ui
 	plugins/Event/src/stage.cpp
 	plugins/Event/src/stagedocument.cpp
 	plugins/Event/src/stagewidget.cpp
@@ -85,6 +88,13 @@ add_executable(quickevent
 	plugins/Event/src/services/ofeed/ofeedclient.cpp
 	plugins/Event/src/services/ofeed/ofeedclientwidget.cpp
 	plugins/Event/src/services/ofeed/ofeedclientwidget.ui
+	plugins/Event/src/services/ofeed/ofeedwelcomedialog.h
+	plugins/Event/src/services/ofeed/ofeedwelcomedialog.cpp
+	plugins/Event/src/services/ofeed/ofeedwelcomedialog.ui
+	plugins/Event/src/services/ofeed/toggleswitch.h
+	plugins/Event/src/services/ofeed/toggleswitch.cpp
+	plugins/Event/src/services/ofeed/circulartimerwidget.h
+	plugins/Event/src/services/ofeed/circulartimerwidget.cpp
 	plugins/Event/src/services/service.cpp
 	plugins/Event/src/services/serviceswidget.cpp
 	plugins/Event/src/services/servicewidget.cpp

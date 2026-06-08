@@ -1,5 +1,7 @@
 #include "sqltablemodel.h"
 
+#include <qf/gui/framework/application.h>
+
 #include <qf/core/assert.h>
 #include <qf/core/utils.h>
 #include <qf/core/exception.h>
@@ -125,7 +127,17 @@ bool SqlTableModel::reloadQuery(const QString &query_str)
 	emit reloaded();
 	return ok;
 }
-
+namespace {
+QVariantMap record_to_map(const QSqlRecord &rec)
+{
+	QVariantMap m;
+	for (int i = 0; i < rec.count(); ++i) {
+		const auto &fld = rec.field(i);
+		m[fld.name().toLower()] = fld.value();
+	}
+	return m;
+}
+}
 bool SqlTableModel::postRow(int row_no, bool throw_exc)
 {
 	qfLogFuncFrame() << row_no;
@@ -152,7 +164,7 @@ bool SqlTableModel::postRow(int row_no, bool throw_exc)
 			int primary_ix = -1;
 			//QSqlIndex pri_ix = ti.primaryIndex();
 			//bool has_blob_field = false;
-			Q_FOREACH(const qf::core::utils::Table::Field &fld, row_ref.fields()) {
+			for (const auto &fld : row_ref.fields()) {
 				i++;
 				if(fld.tableId() != table_id)
 					continue;
@@ -236,6 +248,9 @@ bool SqlTableModel::postRow(int row_no, bool throw_exc)
 					if(v.isValid()) {
 						row_ref.setValue(serial_ix, v);
 						row_ref.setDirty(serial_ix, false);
+						if (auto *app = qobject_cast<qf::gui::framework::Application*>(QApplication::instance()); app) {
+							app->emitDbRecInserted(table_id, v.value<qint64>(), record_to_map(rec), this);
+						}
 					}
 					else {
 						qfWarning() << "Serial field will not be initialized properly. This can make current transaction aborted.";
@@ -266,12 +281,12 @@ bool SqlTableModel::postRow(int row_no, bool throw_exc)
 		qfDebug() << "\tEDIT";
 		qf::core::sql::Connection sql_conn = sqlConnection();
 		QSqlDriver *sqldrv = sql_conn.driver();
-		Q_FOREACH(QString table_id, tableIds(m_table.fields())) {
+		for (const auto &table_id : tableIds(m_table.fields())) {
 			qfDebug() << "\ttableid:" << table_id;
 			//table = conn.fullTableNameToQtDriverTableName(table);
 			QSqlRecord edit_rec;
 			int i = -1;
-			Q_FOREACH(qfu::Table::Field fld, row_ref.fields()) {
+			for (const auto &fld : row_ref.fields()) {
 				i++;
 				//qfDebug() << "\t\tfield:" << fld.toString();
 				if(fld.tableId() != table_id)
@@ -300,7 +315,7 @@ bool SqlTableModel::postRow(int row_no, bool throw_exc)
 				query_str += " ";
 				QSqlRecord where_rec;
 				qfDebug() << "looking for primary index of table:" << table_id;
-				Q_FOREACH(auto fld_name, sql_conn.primaryIndexFieldNames(table_id)) {
+				for(const auto &fld_name : sql_conn.primaryIndexFieldNames(table_id)) {
 					QString full_fld_name = table_id + '.' + fld_name;
 					qfDebug() << "\t checking value of field:" << full_fld_name;
 					int fld_ix = m_table.fields().fieldIndex(full_fld_name);
@@ -330,7 +345,14 @@ bool SqlTableModel::postRow(int row_no, bool throw_exc)
 				qfDebug() << "\tnum rows affected:" << num_rows_affected;
 				/// if update command does not really change data for ex. (UPDATE woffice.kontakty SET id=8 WHERE id = 8)
 				/// numRowsAffected() returns 0.
-				if(num_rows_affected > 1) {
+				if (num_rows_affected == 1) {
+					if (where_rec.count() == 1) {
+						if (auto *app = qobject_cast<qf::gui::framework::Application*>(QApplication::instance()); app) {
+							app->emitDbRecUpdated(table_id, where_rec.value(0).value<qint64>(), record_to_map(edit_rec), this);
+						}
+					}
+				}
+				else if (num_rows_affected > 1) {
 					qfError() << QString("numRowsAffected() = %1, sholuld be 1 or 0\n%2").arg(num_rows_affected).arg(query_str);
 					ret = false;
 					break;
@@ -359,7 +381,7 @@ bool SqlTableModel::removeTableRow(int row_no, bool throw_exc)
 		QStringList table_ids = tableIdsSortedAccordingToForeignKeys();
 		QSet<QString> referenced_foreign_tables = referencedForeignTables();
 		int table_id_cnt = 0;
-		Q_FOREACH(const QString &table_id, table_ids) {
+		for (const auto &table_id : table_ids) {
 			/// Allways delete in first table
 			if(table_id_cnt++ > 0) {
 				/// delete in rest of the tables only if they are implicitly referenced, see: addForeignKeyDependency(...)
@@ -376,7 +398,7 @@ bool SqlTableModel::removeTableRow(int row_no, bool throw_exc)
 			query_str += sqldrv->sqlStatement(QSqlDriver::DeleteStatement, table, rec, false);
 			query_str += " ";
 			QSqlRecord where_rec;
-			Q_FOREACH(QString fld_name, sql_conn.primaryIndexFieldNames(table_id)) {
+			for (const auto &fld_name : sql_conn.primaryIndexFieldNames(table_id)) {
 				QString full_fld_name = table_id + '.' + fld_name;
 				int fld_ix = m_table.fields().fieldIndex(full_fld_name);
 				QF_ASSERT(fld_ix >= 0,
@@ -432,7 +454,13 @@ bool SqlTableModel::removeTableRow(int row_no, bool throw_exc)
 			int num_rows_affected = q.numRowsAffected();
 			/// if update command does not really change data for ex. (UPDATE woffice.kontakty SET id=8 WHERE id = 8)
 			/// numRowsAffected() returns 0.
-			if(num_rows_affected != 1) {
+			if (num_rows_affected == 1) {
+				if (where_rec.count() == 1) {
+					if (auto *app = qobject_cast<qf::gui::framework::Application*>(QApplication::instance()); app) {
+						app->emitDbRecDeleted(table_id, where_rec.value(0).value<qint64>(), this);
+					}
+				}
+			} else {
 				qfError() << QString("numRowsAffected() = %1, sholuld be 1\n%2").arg(num_rows_affected).arg(query_str);
 				ret = false;
 				break;

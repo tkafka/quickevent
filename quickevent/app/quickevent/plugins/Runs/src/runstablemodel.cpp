@@ -6,7 +6,9 @@
 
 #include <qf/gui/log.h>
 #include <qf/gui/framework/mainwindow.h>
+#include <qf/gui/framework/application.h>
 
+#include <qf/core/sql/qxrecchng.h>
 #include <qf/core/sql/query.h>
 #include <qf/core/sql/connection.h>
 #include <qf/core/sql/transaction.h>
@@ -35,7 +37,7 @@ RunsTableModel::RunsTableModel(QObject *parent)
 	setColumn(col_registration, ColumnDefinition("registration", tr("Reg")));
 	setColumn(col_runs_license, ColumnDefinition("licence", tr("Lic")).setToolTip(tr("License")));
 	setColumn(col_runs_siId, ColumnDefinition("runs.siId", tr("SI")).setToolTip(tr("Actual SI")).setCastType(qMetaTypeId<quickevent::core::si::SiId>()));
-	setColumn(col_runs_corridorTime, ColumnDefinition("runs.corridorTime", tr("Corridor")).setToolTip(tr("Time when the competitor entered start corridor")));
+	setColumn(col_runs_corridorTime, ColumnDefinition("runs.corridorTime", tr("Corridor")).setToolTip(tr("Time when the competitor entered start corridor")).setFormat(QStringLiteral("dd.MM.yyyy hh:mm:ss")));
 	setColumn(col_runs_checkTimeMs, ColumnDefinition("runs.checkTimeMs", tr("Check")).setCastType(qMetaTypeId<quickevent::core::og::TimeMs>()));
 	setColumn(col_runs_startTimeMs, ColumnDefinition("runs.startTimeMs", tr("Start")).setCastType(qMetaTypeId<quickevent::core::og::TimeMs>()));
 	setColumn(col_runs_timeMs, ColumnDefinition("runs.timeMs", tr("Time")).setCastType(qMetaTypeId<quickevent::core::og::TimeMs>()));
@@ -48,6 +50,7 @@ RunsTableModel::RunsTableModel(QObject *parent)
 	setColumn(col_competitors_note, ColumnDefinition("competitors.note", tr("Note")));
 
 	connect(this, &RunsTableModel::dataChanged, this, &RunsTableModel::onDataChanged, Qt::QueuedConnection);
+	connect(qf::gui::framework::Application::instance(), &qf::gui::framework::Application::qxRecChng, this, &RunsTableModel::onQxRecChng, Qt::QueuedConnection);
 }
 
 Qt::ItemFlags RunsTableModel::flags(const QModelIndex &index) const
@@ -74,6 +77,23 @@ QVariant RunsTableModel::data(const QModelIndex &index, int role) const
 			auto leg = value(index.row(), "runs.leg").toInt();
 			return QStringLiteral("%1.%2").arg(start_number).arg(leg);
 		}
+	}
+
+	if(index.column() == col_runs_corridorTime && role == Qt::DisplayRole) {
+		QVariant raw = Super::data(index, Qt::EditRole);
+		if(raw.isNull() || !raw.isValid())
+			return QVariant();
+		QDateTime corridor_dt = raw.toDateTime();
+		if(!corridor_dt.isValid())
+			return QVariant();
+		int stage_id = getPlugin<EventPlugin>()->currentStageId();
+		QDateTime stage_start = getPlugin<EventPlugin>()->stageStartDateTime(stage_id);
+		if(!stage_start.isValid())
+			return QVariant();
+		qint64 offset_ms = stage_start.msecsTo(corridor_dt);
+		if(offset_ms < 0)
+			return QVariant();
+		return quickevent::core::og::TimeMs(static_cast<int>(offset_ms)).toString();
 	}
 
 	return Super::data(index, role);
@@ -331,6 +351,11 @@ void RunsTableModel::onDataChanged(const QModelIndex &top_left, const QModelInde
 	Q_UNUSED(roles)
 	if(top_left.column() <= RunsTableModel::col_runs_siId && bottom_right.column() >= RunsTableModel::col_runs_siId)
 		emit runnerSiIdEdited();
+}
+
+void RunsTableModel::onQxRecChng(const qf::core::sql::QxRecChng &recchng, QObject *source)
+{
+	handleQxRecChng(recchng, source);
 }
 
 bool RunsTableModel::postRow(int row_no, bool throw_exc)
