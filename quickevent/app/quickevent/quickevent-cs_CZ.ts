@@ -7568,6 +7568,15 @@ Změníš ho kolečkem myši, hodnota se nastaví všem kategoriím v řádku.</
         <translation>Zvětší startovní interval o 1 minutu</translation>
     </message>
     <message>
+        <location filename="plugins/Classes/src/drawing/startslotheader.cpp" line="375"/>
+        <source>Classes in this slot have different start intervals (%1),
+editing is disabled.</source>
+        <oldsource>Classes in this slot have different start intervals,
+editing is disabled.</oldsource>
+        <translation>Kategorie v tomto řádku mají různé startovní intervaly (%1),
+úprava je vypnutá.</translation>
+    </message>
+    <message>
         <location filename="plugins/Classes/src/drawing/startslotheader.cpp" line="161"/>
         <source>Append start slot</source>
         <translation>Přidat další řádek</translation>

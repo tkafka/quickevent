@@ -14,6 +14,7 @@
 #include <QJsonDocument>
 #include <QMimeData>
 #include <QPainter>
+#include <QPainterPath>
 #include <QCursor>
 #include <QGraphicsSceneMouseEvent>
 #include <QWidget>
@@ -98,6 +99,26 @@ QColor ClassItem::color() const
 	return c;
 }
 
+int ClassItem::markerWidth() const
+{
+	return qMax(ganttScene()->displayUnit() / 2, 4);
+}
+
+QRectF ClassItem::boundingRect() const
+{
+	QRectF r = Super::boundingRect();
+	if(r.width() < markerWidth())
+		r.setWidth(markerWidth());
+	return r;
+}
+
+QPainterPath ClassItem::shape() const
+{
+	QPainterPath p;
+	p.addRect(boundingRect());
+	return p;
+}
+
 const StartSlotItem *ClassItem::startSlotItem() const
 {
 	return const_cast<ClassItem*>(this)->startSlotItem(); // NOLINT(cppcoreguidelines-pro-type-const-cast)
@@ -135,14 +156,19 @@ void ClassItem::paint(QPainter *painter, const QStyleOptionGraphicsItem *option,
 	QColor c_free = c_runner;
 	c_free.setAlpha(64);
 	auto r = rect();
+	bool is_zero_width = r.width() < markerWidth();
+	if(is_zero_width) {
+		// paint zero duration classes as a narrow solid flag, see boundingRect()
+		r.setWidth(markerWidth());
+	}
 	QRectF r1 = r;
 	r1.setWidth(minToPx(1));
 	r1.setHeight(r.height() / 8);
 	painter->save();
-	painter->fillRect(r, c_free);
+	painter->fillRect(r, is_zero_width? c_runner: c_free);
 	auto dt = data();
 	int interval = dt.startIntervalMin();
-	for (int i = 0; i < runsAndVacantCount(); ++i) {
+	for (int i = 0; !is_zero_width && i < runsAndVacantCount(); ++i) {
 		r1.moveLeft(minToPx(i * interval));
 		//QColor c = (i == 0)? c_first: c_runner;
 		painter->fillRect(r1, c_runner);
@@ -221,6 +247,10 @@ void ClassItem::updateGeometry()
 	r.setWidth(minToPx(durationMin()));
 	setRect(r);
 	//setBrush(color());
+	bool has_width = durationMin() > 0;
+	m_classText->setVisible(has_width);
+	m_courseText->setVisible(has_width);
+	m_classdefsText->setVisible(has_width);
 	m_classText->setHtml(QString("<b>%1</b> %2+%3").arg(dt.className()).arg(dt.runsCount()).arg(runsAndVacantCount() - dt.runsCount()));
 	m_courseText->setHtml(QString("<b>%1</b> (%2)").arg(dt.firstCode()).arg(dt.courseId()));
 	dt.setStartTimeMin(pxToMin(pos().x()));

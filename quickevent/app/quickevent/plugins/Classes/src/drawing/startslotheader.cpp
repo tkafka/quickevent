@@ -176,7 +176,7 @@ public:
 		painter->save();
 		painter->setRenderHint(QPainter::Antialiasing);
 		painter->setPen(Qt::NoPen);
-		painter->setBrush(QColor(Qt::darkGray));
+		painter->setBrush(QColor(isEnabled()? Qt::darkGray: Qt::lightGray));
 		painter->drawPolygon(arrow);
 		painter->restore();
 	}
@@ -238,6 +238,8 @@ public:
 		Q_UNUSED(widget)
 		if(m_hover)
 			painter->fillRect(rect(), hoverColor());
+		if(!isEnabled())
+			painter->setPen(Qt::gray);
 		painter->drawText(rect(), Qt::AlignCenter, m_text);
 	}
 
@@ -302,6 +304,24 @@ public:
 	void setValue(const QString &s)
 	{
 		m_value->setText(s);
+	}
+
+	void setSpinnerEnabled(bool b)
+	{
+		if(isEnabled() == b)
+			return;
+		setEnabled(b); // propagates to the children
+		if(b) {
+			m_btnDec->setCursor(Qt::PointingHandCursor);
+			m_btnInc->setCursor(Qt::PointingHandCursor);
+		}
+		else {
+			m_btnDec->unsetCursor();
+			m_btnInc->unsetCursor();
+		}
+		m_btnDec->update();
+		m_value->update();
+		m_btnInc->update();
 	}
 private:
 	SpinButton *m_btnDec;
@@ -371,8 +391,26 @@ void StartSlotHeader::updateGeometry()
 	start_spinner->setValue(QString::number(slot_it->data().startOffset()));
 	auto *interval_spinner = static_cast<SpinnerItem*>(m_intervalSpinner);
 	interval_spinner->setGeometry(QRectF(col1_w, row_h, 2 * row_h, row_h));
-	int interval = slot_it->startInterval();
-	interval_spinner->setValue(interval < 0? QString(): QString::number(interval));
+	if(slot_it->isStartIntervalUniform()) {
+		int interval = slot_it->startInterval();
+		interval_spinner->setValue(interval < 0? QString(): QString::number(interval));
+		interval_spinner->setToolTips(
+					tr("Start interval of classes in this slot [min].\nUse mouse wheel to change it, the value is set to all classes in the slot."),
+					tr("Decrease the start interval by 1 minute"),
+					tr("Increase the start interval by 1 minute"));
+		interval_spinner->setSpinnerEnabled(true);
+	}
+	else {
+		interval_spinner->setValue(QStringLiteral("≠")); // not-equal sign
+		QStringList class_intervals;
+		for(int i = 0; i < slot_it->classItemCount(); ++i) {
+			const ClassData &cd = slot_it->classItemAt(i)->data();
+			class_intervals << QStringLiteral("%1: %2").arg(cd.className()).arg(cd.startIntervalMin());
+		}
+		const QString tool_tip = tr("Classes in this slot have different start intervals (%1),\nediting is disabled.").arg(class_intervals.join(QStringLiteral(", ")));
+		interval_spinner->setToolTips(tool_tip, tool_tip, tool_tip);
+		interval_spinner->setSpinnerEnabled(false);
+	}
 	interval_spinner->setVisible(slot_it->classItemCount() > 0);
 }
 

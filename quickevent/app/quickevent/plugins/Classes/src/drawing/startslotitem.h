@@ -46,6 +46,7 @@ public:
 
 	void setStartInterval(int interval_min);
 	int startInterval() const; ///< interval of the slot's first class, -1 when the slot is empty
+	bool isStartIntervalUniform() const; ///< all classes in the slot share the same start interval
 
 	//void setLocked(bool b);
 	//bool isLocked() const;

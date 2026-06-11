@@ -70,6 +70,11 @@ public:
 
 	int durationMin() const;
 
+	/// zero duration classes (no start interval) keep zero layout width,
+	/// but are painted and hit-tested as a narrow flag so they stay visible
+	QRectF boundingRect() const Q_DECL_OVERRIDE;
+	QPainterPath shape() const Q_DECL_OVERRIDE;
+
 	void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget = nullptr) Q_DECL_OVERRIDE;
 
 	void mousePressEvent(QGraphicsSceneMouseEvent *event) Q_DECL_OVERRIDE;
@@ -84,6 +89,7 @@ public:
 	void contextMenuEvent(QGraphicsSceneContextMenuEvent *event) Q_DECL_OVERRIDE;
 protected:
 	int runsAndVacantCount() const;
+	int markerWidth() const;
 	QColor color() const;
 	const StartSlotItem* startSlotItem() const;
 	StartSlotItem* startSlotItem();

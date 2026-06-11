@@ -101,6 +101,15 @@ int StartSlotItem::startInterval() const
 	return m_classItems.value(0)->data().startIntervalMin();
 }
 
+bool StartSlotItem::isStartIntervalUniform() const
+{
+	for(int i = 1; i < m_classItems.count(); ++i) {
+		if(m_classItems[i]->data().startIntervalMin() != m_classItems[0]->data().startIntervalMin())
+			return false;
+	}
+	return true;
+}
+
 bool StartSlotItem::isIgnoreClassClashCheck() const
 {
 	return data().isIgnoreClassClashCheck();
