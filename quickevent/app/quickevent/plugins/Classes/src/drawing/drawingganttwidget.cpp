@@ -29,8 +29,8 @@ DrawingGanttWidget::DrawingGanttWidget(QWidget *parent) :
 	connect(ui->actSave, &QAction::triggered, this, &DrawingGanttWidget::onActSaveTriggered);
 	connect(ui->actFind, &QAction::triggered, this, &DrawingGanttWidget::onActFindTriggered);
 
-	ui->actSave->setIcon(qf::gui::Style::instance()->icon("save"));
-	ui->actFind->setIcon(qf::gui::Style::instance()->icon("find"));
+	ui->actSave->setIcon(qf::gui::Style::icon("save"));
+	ui->actFind->setIcon(qf::gui::Style::icon("find"));
 
 	ui->actSave->setToolTip(tr("Write start times and start slots of all classes back to the Classes table\naccording to the current layout."));
 	ui->actFind->setToolTip(tr("Find class by name"));

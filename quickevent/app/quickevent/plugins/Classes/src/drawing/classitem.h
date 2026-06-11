@@ -61,7 +61,7 @@ public:
 	void updateGeometry();
 	void updateToolTip();
 	QList<ClassItem*> findClashes(const QSet<ClashType> &clash_types);
-	ClashType clashWith(ClassItem *other);
+	ClashType clashWith(ClassItem *other) const;
 	QList<ClassItem *> clashingClasses() const;
 	void setClashingClasses(const QList<ClassItem *> &clashing_classes);
 

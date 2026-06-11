@@ -488,8 +488,7 @@ void StartSlotHeader::mouseMoveEvent(QGraphicsSceneMouseEvent *event)
 		drag->setPixmap(pixmap);
 		drag->setHotSpot(QPoint(ganttScene()->displayUnit(), 0));
 	}
-	Qt::DropAction act = drag->exec();
-	qfDebug() << "drag exit:" << act;
+	drag->exec();
 	setCursor(Qt::ArrowCursor);
 }
 

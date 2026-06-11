@@ -303,7 +303,7 @@ int gcd(int a, int b)
 }
 }
 
-ClassItem::ClashType ClassItem::clashWith(ClassItem *other)
+ClassItem::ClashType ClassItem::clashWith(ClassItem *other) const
 {
 	qfLogFuncFrame() << data().className() << "vs" << other->data().className();
 	auto dt = data();
