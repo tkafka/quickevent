@@ -262,6 +262,7 @@ void ClassItem::updateToolTip()
 		}
 		tool_tip += tr(", clash with: %1<br/>").arg(sl.join(", "));
 	}
+	tool_tip += "<br/><i>" + tr("Drag the class to move it to another slot,<br/>right-click to edit its definition.") + "</i>";
 	tool_tip += "</body></html>";
 	tool_tip.replace(' ', "&nbsp;");
 	setToolTip(tool_tip);
@@ -471,7 +472,16 @@ void ClassItem::contextMenuEvent(QGraphicsSceneContextMenuEvent *event)
 			dt.setVacantsAfter(doc->value("vacantsAfter").toInt());
 			dt.setMapCount(doc->value("mapCount").toInt());
 			setData(dt);
-			startSlotItem()->updateGeometry();
+			auto *slot_it = startSlotItem();
+			if(slot_it->classItemIndex(this) == 0) {
+				// the edited start time was written to the database by the dialog,
+				// move the whole slot to keep the layout consistent with a reload
+				StartSlotData sd = slot_it->data();
+				sd.setStartOffset(qMax(dt.startTimeMin(), 0));
+				slot_it->setData(sd);
+			}
+			ganttItem()->updateGeometry();
+			ganttItem()->checkClassClash();
 		}
 	}
 }

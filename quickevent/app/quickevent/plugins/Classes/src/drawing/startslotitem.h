@@ -44,6 +44,9 @@ public:
 	void setStartOffset(int start_offset);
 	int startOffset() const;
 
+	void setStartInterval(int interval_min);
+	int startInterval() const; ///< interval of the slot's first class, -1 when the slot is empty
+
 	//void setLocked(bool b);
 	//bool isLocked() const;
 

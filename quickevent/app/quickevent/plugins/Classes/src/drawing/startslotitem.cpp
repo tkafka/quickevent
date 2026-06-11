@@ -76,6 +76,27 @@ int StartSlotItem::startOffset() const
 	return dt.startOffset();
 }
 
+void StartSlotItem::setStartInterval(int interval_min)
+{
+	if(m_classItems.isEmpty())
+		return;
+	interval_min = std::max(interval_min, 1);
+	for(ClassItem *it : m_classItems) {
+		ClassData dt = it->data();
+		dt.setStartIntervalMin(interval_min);
+		it->setData(dt);
+	}
+	ganttItem()->updateGeometry();
+	ganttItem()->checkClassClash();
+}
+
+int StartSlotItem::startInterval() const
+{
+	if(m_classItems.isEmpty())
+		return -1;
+	return m_classItems.value(0)->data().startIntervalMin();
+}
+
 bool StartSlotItem::isIgnoreClassClashCheck() const
 {
 	return data().isIgnoreClassClashCheck();

@@ -31,6 +31,9 @@ DrawingGanttWidget::DrawingGanttWidget(QWidget *parent) :
 	ui->actSave->setIcon(qf::gui::Style::instance()->icon("save"));
 	ui->actFind->setIcon(qf::gui::Style::instance()->icon("find"));
 
+	ui->actSave->setToolTip(tr("Write start times and start slots of all classes back to the Classes table\naccording to the current layout."));
+	ui->actFind->setToolTip(tr("Find class by name"));
+
 	m_ganttScene = new GanttScene(this);
 	ui->ganttView->setScene(m_ganttScene);
 }
@@ -46,12 +49,16 @@ void DrawingGanttWidget::settleDownInDialog(qf::gui::dialogs::Dialog *dlg)
 	tb->addAction(ui->actSave);
 	m_edFind = new QLineEdit();
 	m_edFind->setMaximumWidth(QFontMetrics(font()).horizontalAdvance('X') * 8);
+	m_edFind->setPlaceholderText(tr("Class"));
+	m_edFind->setToolTip(tr("Find class by name"));
 	connect(m_edFind, &QLineEdit::textEdited, this, &DrawingGanttWidget::onActFindTriggered);
 	tb->addWidget(m_edFind);
 	tb->addAction(ui->actFind);
 
 	auto *cb_check_runners = new QCheckBox(tr("Runners clash"));
+	cb_check_runners->setToolTip(tr("Highlight classes overlapping in time which share the first control\nand whose start intervals would let two runners punch it at the same moment."));
 	auto *cb_check_courses = new QCheckBox(tr("Courses clash"));
+	cb_check_courses->setToolTip(tr("Highlight classes overlapping in time which run on the same course."));
 	auto update_class_check = [this, cb_check_runners, cb_check_courses]() {
 		QSet<ClassItem::ClashType> checks;
 		if (cb_check_runners->isChecked()) {
@@ -99,7 +106,7 @@ void DrawingGanttWidget::load(int stage_id)
 void drawing::DrawingGanttWidget::onActSaveTriggered()
 {
 	if(QMessageBox::information(this, tr("Save classes start times"),
-								tr("All the user edited classes start times will be overridden.\n"
+								tr("All the user edited classes start times and start intervals will be overridden.\n"
 								   "Do you want to save your changes?"),
 								QMessageBox::Save | QMessageBox::Cancel,
 								QMessageBox::Save))

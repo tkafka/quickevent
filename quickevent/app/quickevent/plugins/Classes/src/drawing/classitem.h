@@ -68,6 +68,8 @@ public:
 	const ClassData& data() const;
 	void setData(const ClassData &data);
 
+	int durationMin() const;
+
 	void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget = nullptr) Q_DECL_OVERRIDE;
 
 	void mousePressEvent(QGraphicsSceneMouseEvent *event) Q_DECL_OVERRIDE;
@@ -82,7 +84,6 @@ public:
 	void contextMenuEvent(QGraphicsSceneContextMenuEvent *event) Q_DECL_OVERRIDE;
 protected:
 	int runsAndVacantCount() const;
-	int durationMin() const;
 	QColor color() const;
 	const StartSlotItem* startSlotItem() const;
 	StartSlotItem* startSlotItem();

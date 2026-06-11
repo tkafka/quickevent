@@ -93,30 +93,54 @@ void GanttItem::load(int stage_id)
 			.orderBy("startSlotIndex, startTimeMin, firstCode, classdefs.courseId");
 	int curr_course_id = -1;
 	int curr_slot_ix = -1;
+	bool curr_slot_is_drawn = false;
+	int curr_slot_end_min = 0;
 	StartSlotItem *slot_item = nullptr;
 	QString qs = qb.toString();
 	qfDebug() << qs;
 	q.exec(qs);
 	while(q.next()) {
 		ClassData cd(q);
+		// classdefs.startTimeMin is authoritative, it can be edited in the classes
+		// table between the draw tool sessions, slot offsets stored in drawingConfig
+		// can be stale, so the layout is always positioned by the class start times
+		int start_time_min = cd.startTimeMin();
 		int slot_ix = cd.startSlotIndex();
 		if(slot_ix >= 0) {
 			if(slot_ix > curr_slot_ix) {
 				slot_item = addStartSlotItem();
 				curr_slot_ix = slot_ix;
 				StartSlotData sd(start_slot_list.value(slot_ix).toMap());
+				if(!cd.value(QStringLiteral("startTimeMin")).isNull())
+					sd.setStartOffset(start_time_min);
 				slot_item->setData(sd);
+				curr_slot_end_min = sd.startOffset();
+				curr_slot_is_drawn = true;
+				curr_course_id = -1;
 			}
 		}
 		else {
-			if(cd.courseId() != curr_course_id) {
-				curr_course_id = cd.courseId();
+			// class was never laid out by the draw tool, place it to its start time,
+			// chain it to the previous class only if it continues the same course
+			// without a gap (or has no start time set yet)
+			bool chains_to_curr_slot = !curr_slot_is_drawn
+					&& slot_item != nullptr
+					&& cd.courseId() == curr_course_id
+					&& (start_time_min == 0 || start_time_min == curr_slot_end_min);
+			if(!chains_to_curr_slot) {
 				slot_item = addStartSlotItem();
+				StartSlotData sd;
+				sd.setStartOffset(start_time_min);
+				slot_item->setData(sd);
+				curr_slot_end_min = start_time_min;
+				curr_slot_is_drawn = false;
 			}
+			curr_course_id = cd.courseId();
 		}
 		if (slot_item) {
 			auto *class_it = slot_item->addClassItem();
 			class_it->setData(cd);
+			curr_slot_end_min += class_it->durationMin();
 		}
 		else {
 			QF_EXCEPTION("internal error");
@@ -152,7 +176,8 @@ void GanttItem::save(int stage_id)
 	{
 		QString qs = "UPDATE classdefs SET"
 					 "  startSlotIndex=:startSlotIndex,"
-					 "  startTimeMin=:startTimeMin"
+					 "  startTimeMin=:startTimeMin,"
+					 "  startIntervalMin=:startIntervalMin"
 					 " WHERE classdefs.id=:id AND stageId=:stageId";
 		qfs::Query q(qfs::Connection::forName());
 		q.prepare(qs, qf::core::Exception::Throw);
@@ -164,6 +189,7 @@ void GanttItem::save(int stage_id)
 				qfDebug() << dt.id() << dt.className() << "slot:" << dt.startSlotIndex() << "start time:" << dt.startTimeMin();
 				q.bindValue(":startSlotIndex", dt.startSlotIndex());
 				q.bindValue(":startTimeMin", dt.startTimeMin());
+				q.bindValue(":startIntervalMin", dt.startIntervalMin());
 				//q.bindValue(":isDrawnIn", dt.isDrawnIn());
 				q.bindValue(":id", dt.id());
 				q.bindValue(":stageId", stage_id);
