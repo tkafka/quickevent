@@ -342,8 +342,7 @@ StartSlotHeader::StartSlotHeader(StartSlotItem *parent)
 
 int StartSlotHeader::minHeight()
 {
-	int du_px = ganttScene()->displayUnit();
-	return 5 * du_px;
+	return ganttScene()->rowHeight();
 }
 
 static constexpr int LABEL_WIDTH_DU = 10;
@@ -413,6 +412,7 @@ void StartSlotHeader::contextMenuEvent(QGraphicsSceneContextMenuEvent *event)
 	if(a == a_append_start_slot) {
 		auto *gi = ganttItem();
 		gi->insertStartSlotItem(gi->startSlotItemIndex(startSlotItem()) + 1, new StartSlotItem(gi));
+		ganttScene()->setDirty(true);
 		gi->updateGeometry();
 	}
 	else if(a == a_set_start) {
@@ -431,11 +431,9 @@ void StartSlotHeader::contextMenuEvent(QGraphicsSceneContextMenuEvent *event)
 		}
 	}
 	else if(a == a_clash) {
-		dt.setIgnoreClassClashCheck(a_clash->isChecked());
-		startSlotItem()->setData(dt);
+		startSlotItem()->setIgnoreClassClashCheck(a_clash->isChecked());
 		static_cast<LockItem*>(m_lockItem)->updateToolTip();
 		update();
-		startSlotItem()->ganttItem()->checkClassClash();
 	}
 	//else if(a == a_locked) {
 	//	startSlotItem()->setLocked(!startSlotItem()->isLocked());

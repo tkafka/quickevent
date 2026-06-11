@@ -232,6 +232,28 @@ void GanttItem::updateGeometry()
 
 void GanttItem::checkClassClash()
 {
+	QList<ClassClash> clashes;
+	for (int i = 0; i < startSlotItemCount(); ++i) {
+		StartSlotItem *slot_it = startSlotItemAt(i);
+		if(slot_it->data().isIgnoreClassClashCheck())
+			continue;
+		for (int j = 0; j < slot_it->classItemCount(); ++j) {
+			ClassItem *class_it = slot_it->classItemAt(j);
+			const auto clashing_class_list = class_it->findClashes(m_clashTypesToCheck);
+			for(ClassItem *other : clashing_class_list) {
+				// every pair is found from both sides, record it once
+				if(quintptr(class_it) < quintptr(other))
+					clashes << ClassClash{class_it, other, class_it->clashWith(other)};
+			}
+		}
+	}
+	// the visualization marks just one selected clash, the widget picks it
+	// from this list and calls highlightClash()
+	ganttScene()->notifyClashesChanged(clashes);
+}
+
+void GanttItem::highlightClash(const ClassClash &clash)
+{
 	for (int i = 0; i < startSlotItemCount(); ++i) {
 		StartSlotItem *slot_it = startSlotItemAt(i);
 		for (int j = 0; j < slot_it->classItemCount(); ++j) {
@@ -239,21 +261,9 @@ void GanttItem::checkClassClash()
 			class_it->setClashingClasses({});
 		}
 	}
-	for (int i = 0; i < startSlotItemCount(); ++i) {
-		StartSlotItem *slot_it = startSlotItemAt(i);
-		if(slot_it->data().isIgnoreClassClashCheck())
-			continue;
-		for (int j = 0; j < slot_it->classItemCount(); ++j) {
-			ClassItem *class_it = slot_it->classItemAt(j);
-			auto clashing_class_list = class_it->findClashes(m_clashTypesToCheck);
-			if(!clashing_class_list.isEmpty()) {
-				class_it->setClashingClasses(clashing_class_list);
-				for(auto *cl : clashing_class_list) {
-					cl->setClashingClasses(QList<ClassItem*>{class_it});
-				}
-				return;
-			}
-		}
+	if(clash.class1 && clash.class2) {
+		clash.class1->setClashingClasses({clash.class2});
+		clash.class2->setClashingClasses({clash.class1});
 	}
 }
 
@@ -275,6 +285,7 @@ void GanttItem::moveClassItem(int from_slot_ix, int from_class_ix, int to_slot_i
 		return;
 	auto *slot2 = startSlotItemAt(to_slot_ix);
 	slot2->insertClassItem(to_class_ix, class_it);
+	ganttScene()->setDirty(true);
 	updateGeometry();
 	checkClassClash();
 }
@@ -288,6 +299,7 @@ void GanttItem::moveStartSlotItem(int from_slot_ix, int to_slot_ix)
 		if(from_slot_ix < to_slot_ix)
 			to_slot_ix--;
 		insertStartSlotItem(to_slot_ix, slot);
+		ganttScene()->setDirty(true);
 		updateGeometry();
 		checkClassClash();
 	}

@@ -97,6 +97,13 @@ private:
 	QList<ClassItem*> m_clashingClasses;
 };
 
+struct ClassClash
+{
+	ClassItem *class1 = nullptr;
+	ClassItem *class2 = nullptr;
+	ClassItem::ClashType type = ClassItem::ClashType::None;
+};
+
 }
 
 #endif // DRAWING_CLASSITEM_H

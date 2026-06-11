@@ -7475,6 +7475,53 @@ a jejichž startovní intervaly by dovolily, aby na ní razili dva závodníci s
         <source>Highlight classes overlapping in time which run on the same course.</source>
         <translation>Zvýrazní kategorie překrývající se v čase, které běží na stejné trati.</translation>
     </message>
+    <message>
+        <location filename="plugins/Classes/src/drawing/drawingganttwidget.cpp" line="95"/>
+        <source>Show all conflicts</source>
+        <translation>Zobrazit všechny konflikty</translation>
+    </message>
+    <message>
+        <location filename="plugins/Classes/src/drawing/drawingganttwidget.cpp" line="120"/>
+        <source>Unsaved changes</source>
+        <translation>Neuložené změny</translation>
+    </message>
+    <message>
+        <location filename="plugins/Classes/src/drawing/drawingganttwidget.cpp" line="121"/>
+        <source>The start times layout has unsaved changes.
+Do you want to save them before closing?</source>
+        <translation>Rozvržení startů má neuložené změny.
+Přejete si je před zavřením uložit?</translation>
+    </message>
+    <message>
+        <location filename="plugins/Classes/src/drawing/drawingganttwidget.cpp" line="195"/>
+        <source>Show all conflicts (%1)</source>
+        <translation>Zobrazit všechny konflikty (%1)</translation>
+    </message>
+    <message>
+        <location filename="plugins/Classes/src/drawing/drawingganttwidget.cpp" line="175"/>
+        <source>No conflicts</source>
+        <translation>Žádné konflikty</translation>
+    </message>
+    <message>
+        <location filename="plugins/Classes/src/drawing/drawingganttwidget.cpp" line="48"/>
+        <source>Show the list of start time conflicts</source>
+        <translation>Zobrazit seznam konfliktů startů</translation>
+    </message>
+    <message>
+        <location filename="plugins/Classes/src/drawing/drawingganttwidget.cpp" line="49"/>
+        <source>Click a conflict to highlight it in the layout</source>
+        <translation>Kliknutím na konflikt ho zvýrazníš v rozvržení</translation>
+    </message>
+    <message>
+        <location filename="plugins/Classes/src/drawing/drawingganttwidget.cpp" line="166"/>
+        <source>%1 × %2 — same course %3</source>
+        <translation>%1 × %2 — stejná trať %3</translation>
+    </message>
+    <message>
+        <location filename="plugins/Classes/src/drawing/drawingganttwidget.cpp" line="168"/>
+        <source>%1 × %2 — first control %3</source>
+        <translation>%1 × %2 — první kontrola %3</translation>
+    </message>
 </context>
 <context>
     <name>drawing::StartSlotHeader</name>

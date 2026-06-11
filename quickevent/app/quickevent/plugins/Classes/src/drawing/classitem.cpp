@@ -69,7 +69,7 @@ ClassItem::ClassItem(QGraphicsItem *parent)
 	m_classdefsText = new QGraphicsTextItem(this);
 	m_classdefsText->setPos(0, 4 * du_px);
 	QRect r;
-	r.setHeight((6 * du_px) + (du_px/2));
+	r.setHeight(ganttScene()->rowHeight());
 	setRect(r);
 
 	setCursor(Qt::ArrowCursor);
@@ -148,18 +148,6 @@ void ClassItem::paint(QPainter *painter, const QStyleOptionGraphicsItem *option,
 		painter->fillRect(r1, c_runner);
 		painter->drawRect(r1);
 	}
-	if(isSelected()) {
-		painter->save();
-		qreal w = r.height() / 15;
-		QPen p;
-		p.setColor(QColor(Qt::blue).lighter());
-		p.setWidthF(w);
-		painter->setPen(p);
-		w /= 2;
-		QRectF r2 = r.adjusted(w, w, -w, -w);
-		painter->drawRect(r2);
-		painter->restore();
-	}
 	if(clashingClasses().count()) {
 		painter->save();
 		qreal w = r.height() / 15;
@@ -169,6 +157,20 @@ void ClassItem::paint(QPainter *painter, const QStyleOptionGraphicsItem *option,
 		painter->setPen(p);
 		w /= 2;
 		QRectF r2 = r.adjusted(w, w, -w, -w);
+		painter->drawRect(r2);
+		painter->restore();
+	}
+	if(isSelected()) {
+		painter->save();
+		qreal w = r.height() / 15;
+		QPen p;
+		p.setColor(QColor(Qt::blue).lighter());
+		p.setWidthF(w);
+		painter->setPen(p);
+		w /= 2;
+		// keep the selection visible inside the clash border
+		qreal inset = clashingClasses().count()? 5 * w: w;
+		QRectF r2 = r.adjusted(inset, inset, -inset, -inset);
 		painter->drawRect(r2);
 		painter->restore();
 	}
@@ -479,6 +481,10 @@ void ClassItem::contextMenuEvent(QGraphicsSceneContextMenuEvent *event)
 				StartSlotData sd = slot_it->data();
 				sd.setStartOffset(qMax(dt.startTimeMin(), 0));
 				slot_it->setData(sd);
+			}
+			if(slot_it->classItemCount() > 1) {
+				// start times of the classes chained after this one shift with its new size
+				ganttScene()->setDirty(true);
 			}
 			ganttItem()->updateGeometry();
 			ganttItem()->checkClassClash();

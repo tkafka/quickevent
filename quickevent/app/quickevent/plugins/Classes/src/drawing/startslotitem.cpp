@@ -65,6 +65,7 @@ void StartSlotItem::setStartOffset(int start_offset)
 	if(dt.startOffset() != start_offset) {
 		dt.setStartOffset(start_offset);
 		setData(dt);
+		ganttScene()->setDirty(true);
 		updateGeometry();
 		ganttItem()->checkClassClash();
 	}
@@ -81,11 +82,14 @@ void StartSlotItem::setStartInterval(int interval_min)
 	if(m_classItems.isEmpty())
 		return;
 	interval_min = std::max(interval_min, 1);
+	if(startInterval() == interval_min)
+		return;
 	for(ClassItem *it : m_classItems) {
 		ClassData dt = it->data();
 		dt.setStartIntervalMin(interval_min);
 		it->setData(dt);
 	}
+	ganttScene()->setDirty(true);
 	ganttItem()->updateGeometry();
 	ganttItem()->checkClassClash();
 }
@@ -105,8 +109,11 @@ bool StartSlotItem::isIgnoreClassClashCheck() const
 void StartSlotItem::setIgnoreClassClashCheck(bool b)
 {
 	auto dt = data();
+	if(dt.isIgnoreClassClashCheck() == b)
+		return;
 	dt.setIgnoreClassClashCheck(b);
 	setData(dt);
+	ganttScene()->setDirty(true);
 	updateGeometry();
 	ganttItem()->checkClassClash();
 }
