@@ -1488,7 +1488,7 @@ qf::core::utils::TreeTable RunsPlugin::startListClassesTable(const QString &wher
 		m2.setQueryParameters(qpm);
 		m2.reload();
 		auto tt2 = m2.toTreeTable();
-		// TODO: extract to method (leaving here to minimize PR diffs).
+		// TODO(ljezek): extract to method (leaving here to minimize PR diffs).
 		int start_time_0 = tt_row.value(QStringLiteral("startTimeMin")).toInt() * 60 * 1000;
 		int start_time_last = tt_row.value(QStringLiteral("lastStartTimeMin")).toInt() * 60 * 1000;
 		int start_interval = tt_row.value(QStringLiteral("startIntervalMin")).toInt() * 60 * 1000;
@@ -1529,7 +1529,9 @@ qf::core::utils::TreeTable RunsPlugin::startListClassesTable(const QString &wher
 			int mapCount = tt_row.value(QStringLiteral("mapCount")).toInt();
 			int cnt = tt2.rowCount();
 			int total_vacants = mapCount - cnt;
-			if (total_vacants < 0) total_vacants = 0;
+			if (total_vacants < 0) {
+				total_vacants = 0;
+			}
 			for (int k = 0; k < total_vacants; ++k) {
 				int ix = tt2.appendRow();
 				qf::core::utils::TreeTableRow tt2_row = tt2.row(ix);
@@ -1624,6 +1626,8 @@ qf::core::utils::TreeTable RunsPlugin::startListClubsTable(const quickevent::gui
 	return tt;
 }
 
+// Reuses the startListClassesTable to get list of runners (optionally with vacants) and flattens
+// all classes into a list sorted by start time (within single minute by class & name).
 qf::core::utils::TreeTable RunsPlugin::startListStartersTable(const QString &where_expr, quickevent::gui::ReportOptionsDialog::VacantsOption vacants_option)
 {
 	int stage_id = selectedStageId();
@@ -1646,7 +1650,7 @@ qf::core::utils::TreeTable RunsPlugin::startListStartersTable(const QString &whe
 	tt.appendColumn("startTimeText", QMetaType(QMetaType::QString));
 	tt.appendColumn("startTimeMsText", QMetaType(QMetaType::QString));
 
-	QList<QVariantMap> rowsData;
+	QList<QVariantMap> start_list;
 
 	for(int i=0; i<tt_classes.rowCount(); i++) {
 		qf::core::utils::TreeTableRow tt_class_row = tt_classes.row(i);
@@ -1655,7 +1659,7 @@ qf::core::utils::TreeTable RunsPlugin::startListStartersTable(const QString &whe
 
 		for(int j=0; j<tt2.rowCount(); j++) {
 			qf::core::utils::TreeTableRow tt2_row = tt2.row(j);
-			QVariantMap rowMap;
+			QVariantMap competitor_info;
 			
 			auto val = [tt2_row](const char* key1, const char* key2) {
 				QVariant v = tt2_row.value(key1);
@@ -1663,42 +1667,52 @@ qf::core::utils::TreeTable RunsPlugin::startListStartersTable(const QString &whe
 				return tt2_row.value(key2);
 			};
 
-			rowMap["competitors.registration"] = val("competitors.registration", "registration");
-			rowMap["competitors.id"] = val("competitors.id", "id");
-			rowMap["competitors.startNumber"] = val("competitors.startNumber", "startNumber");
-			rowMap["competitors.country"] = val("competitors.country", "country");
-			rowMap["competitorName"] = tt2_row.value("competitorName");
+			competitor_info["competitors.registration"] = val("competitors.registration", "registration");
+			competitor_info["competitors.id"] = val("competitors.id", "id");
+			competitor_info["competitors.startNumber"] = val("competitors.startNumber", "startNumber");
+			competitor_info["competitors.country"] = val("competitors.country", "country");
+			competitor_info["competitorName"] = tt2_row.value("competitorName");
 
 			QVariant startTimeMsVar = val("runs.startTimeMs", "startTimeMs");
-			rowMap["startTimeMin"] = startTimeMsVar.toInt() / 1000 / 60;
-			rowMap["runs.siId"] = val("runs.siId", "siId");
-			rowMap["startTimeMs"] = startTimeMsVar;
-			rowMap["classes.name"] = class_name;
-			rowMap["startTimeText"] = tt2_row.value("startTimeText");
-			rowMap["startTimeMsText"] = tt2_row.value("startTimeMsText");
+			competitor_info["startTimeMin"] = startTimeMsVar.toInt() / 1000 / 60;
+			competitor_info["runs.siId"] = val("runs.siId", "siId");
+			competitor_info["startTimeMs"] = startTimeMsVar;
+			competitor_info["classes.name"] = class_name;
+			competitor_info["startTimeText"] = tt2_row.value("startTimeText");
+			competitor_info["startTimeMsText"] = tt2_row.value("startTimeMsText");
 
-			rowsData.append(rowMap);
+			start_list.append(competitor_info);
 		}
 	}
 	
-	std::sort(rowsData.begin(), rowsData.end(), [](const QVariantMap &a, const QVariantMap &b) {
-		// // TODO: improve it
-		int tA = a["startTimeMs"].toInt();
-		int tB = b["startTimeMs"].toInt();
-		if (tA == 0) tA = std::numeric_limits<int>::max();
-		if (tB == 0) tB = std::numeric_limits<int>::max();
-		if (tA != tB) return tA < tB;
-		QString cA = a["classes.name"].toString();
-		QString cB = b["classes.name"].toString();
-		if (cA != cB) return cA < cB;
-		return a["competitorName"].toString() < b["competitorName"].toString();
+	std::ranges::sort(start_list, [](const QVariantMap &competitor_a, const QVariantMap &competitor_b) {
+		int time_a = competitor_a["startTimeMs"].toInt();
+		int time_b = competitor_b["startTimeMs"].toInt();
+		if (time_a != time_b) {
+			return time_a < time_b;
+		}
+		// Within the minute sort by class name and by competitor name, leaving vacants at the end of every class.
+		QString class_a = competitor_a["classes.name"].toString();
+		QString class_b = competitor_b["classes.name"].toString();
+		if (class_a != class_b) {
+			return class_a < class_b;
+		}
+		QString name_a = competitor_a["competitorName"].toString();
+		QString name_b = competitor_b["competitorName"].toString();
+		if (name_a == vacant_name_sentinel) {
+			return false;
+		}
+		if (name_b == vacant_name_sentinel) {
+			return true;
+		}
+		return name_a < name_b;
 	});
 
-	for(const QVariantMap &rowMap : std::as_const(rowsData)) {
+	for(const auto &competitor : start_list) {
 		int ix = tt.appendRow();
 		qf::core::utils::TreeTableRow tt_row = tt.row(ix);
-		for(auto it = rowMap.constBegin(); it != rowMap.constEnd(); ++it) {
-			tt_row.setValue(it.key(), it.value());
+		for(const auto &[key, val] : competitor.asKeyValueRange()) {
+			tt_row.setValue(key, val);
 		}
 		tt.setRow(ix, tt_row);
 	}
