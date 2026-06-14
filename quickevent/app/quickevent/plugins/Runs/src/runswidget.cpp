@@ -36,6 +36,7 @@
 #include <QLabel>
 #include <QInputDialog>
 #include <QTimer>
+#include <QToolButton>
 #include <QRandomGenerator>
 
 #include <algorithm>
@@ -377,6 +378,23 @@ void RunsWidget::settleDownInPartWidget(::PartWidget *part_widget)
 		main_tb->addWidget(m_cbxClasses);
 	}
 	lbl_classes->setBuddy(m_cbxClasses);
+	{
+		// Quick jump to the previous/next class for visual checking.
+		m_btPrevClass = new QToolButton();
+		m_btPrevClass->setArrowType(Qt::LeftArrow);
+		m_btPrevClass->setToolTip(tr("Previous class"));
+		connect(m_btPrevClass, &QToolButton::clicked, this, [this]() { stepClass(-1); });
+		main_tb->addWidget(m_btPrevClass);
+
+		m_btNextClass = new QToolButton();
+		m_btNextClass->setArrowType(Qt::RightArrow);
+		m_btNextClass->setToolTip(tr("Next class"));
+		connect(m_btNextClass, &QToolButton::clicked, this, [this]() { stepClass(1); });
+		main_tb->addWidget(m_btNextClass);
+
+		connect(m_cbxClasses, QOverload<int>::of(&QComboBox::currentIndexChanged), this, &RunsWidget::updateClassNavButtons);
+		updateClassNavButtons(); // start disabled until classes are loaded
+	}
 	{
 		auto *lbl_leg = new QLabel(tr("&Leg "));
 		m_toolbarActionLabelLeg = main_tb->addWidget(lbl_leg);
@@ -1219,6 +1237,30 @@ void RunsWidget::updateClassComboBox()
 	m_cbxClasses->insertItem(0, tr("--- all ---"), 0);
 	m_cbxClasses->setCurrentIndex(0);
 	m_cbxClasses->blockSignals(false);
+	updateClassNavButtons();
+}
+
+void RunsWidget::stepClass(int step)
+{
+	int cnt = m_cbxClasses->count();
+	if(cnt <= 1)
+		return; // only the "--- all ---" pseudo-item is present
+	int ix = m_cbxClasses->currentIndex();
+	// index 0 is "--- all ---", step only through real classes (indices 1 .. cnt-1)
+	int new_ix = qBound(1, ix + step, cnt - 1);
+	if(new_ix != ix)
+		m_cbxClasses->setCurrentIndex(new_ix); // triggers currentDataChanged -> reload()
+}
+
+void RunsWidget::updateClassNavButtons()
+{
+	if(!m_btPrevClass || !m_btNextClass)
+		return;
+	int cnt = m_cbxClasses->count();
+	int ix = m_cbxClasses->currentIndex();
+	// real classes live at indices 1 .. cnt-1 (index 0 is "--- all ---")
+	m_btPrevClass->setEnabled(ix > 1);
+	m_btNextClass->setEnabled(cnt > 1 && ix < cnt - 1);
 }
 
 void RunsWidget::updateLegsComboBox()

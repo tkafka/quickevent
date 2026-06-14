@@ -6691,6 +6691,16 @@ Stskněte tlačítko pro obnovení pro zobrazení importovaných dat.</translati
         <translation>Metoda</translation>
     </message>
     <message>
+        <location filename="plugins/Runs/src/runswidget.cpp" line="380"/>
+        <source>Previous class</source>
+        <translation>Předchozí kategorie</translation>
+    </message>
+    <message>
+        <location filename="plugins/Runs/src/runswidget.cpp" line="386"/>
+        <source>Next class</source>
+        <translation>Další kategorie</translation>
+    </message>
+    <message>
         <location filename="plugins/Runs/src/runswidget.ui" line="101"/>
         <source>Remove all start times and unlock drawing for this class.</source>
         <oldsource>Draw selected  class or all classes when all the clases are selected.</oldsource>
