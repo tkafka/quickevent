@@ -24,7 +24,7 @@ public:
 
 	GanttItem *ganttItem() { return m_ganttItem; }
 
-	void notifyClashesChanged(const QList<ClassClash> &clashes) { emit clashesChanged(clashes); }
+	void emitClashesChanged(const QList<ClassClash> &clashes) { emit clashesChanged(clashes); }
 
 	/**
 	 * @brief displayUnit

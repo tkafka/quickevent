@@ -249,7 +249,7 @@ void GanttItem::checkClassClash()
 	}
 	// the visualization marks just one selected clash, the widget picks it
 	// from this list and calls highlightClash()
-	ganttScene()->notifyClashesChanged(clashes);
+	ganttScene()->emitClashesChanged(clashes);
 }
 
 void GanttItem::highlightClash(const ClassClash &clash)

@@ -101,7 +101,9 @@ void DrawingGanttWidget::settleDownInDialog(qf::gui::dialogs::Dialog *dlg)
 #endif
 	}
 	{
-		// push the conflict list checkbox to the right, above the conflicts sidebar
+		// QToolBar has no addStretch(), so an expanding empty widget is the
+		// idiomatic spacer that pushes the conflict checkbox to the right end,
+		// above the conflicts sidebar
 		auto *spacer = new QWidget();
 		spacer->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Preferred);
 		tb->addWidget(spacer);
