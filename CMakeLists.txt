@@ -11,7 +11,23 @@ set(CMAKE_VISIBILITY_INLINES_HIDDEN 1)
 include(CTest)
 set(CMAKE_SHARED_LIBRARY_PREFIX "") # we don't want CMake to prepend "lib" to our libraries, we prefer adding that ourselves
 
-add_compile_definitions(COMMIT_SHA="${COMMIT_SHA}")
+# Use ccache as a compiler launcher when available. This makes clean rebuilds and
+# branch switches dramatically faster by reusing previously compiled objects.
+# Opt out with -DUSE_CCACHE=OFF.
+option(USE_CCACHE "Use ccache to speed up (re)builds when available" ON)
+if(USE_CCACHE AND NOT CMAKE_CXX_COMPILER_LAUNCHER)
+	find_program(CCACHE_PROGRAM ccache)
+	if(CCACHE_PROGRAM)
+		message(STATUS "ccache found, using it as compiler launcher: ${CCACHE_PROGRAM}")
+		set(CMAKE_C_COMPILER_LAUNCHER "${CCACHE_PROGRAM}")
+		set(CMAKE_CXX_COMPILER_LAUNCHER "${CCACHE_PROGRAM}")
+	endif()
+endif()
+
+# COMMIT_SHA changes on every commit. Scope it to the single source file that
+# reads it (Core/src/coreplugin.cpp) instead of defining it globally, otherwise
+# every object's compile command would change on each commit and bust the whole
+# ccache (and force a full rebuild). The definition is applied next to that file.
 
 if(CMAKE_CXX_COMPILER_ID STREQUAL "Clang" OR CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
 	set(CMAKE_CXX_FLAGS "-Wall -Wextra -pedantic ${CMAKE_CXX_FLAGS}")

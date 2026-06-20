@@ -270,6 +270,11 @@ qt6_add_lupdate(quickevent TS_FILES ${TS_FILES})
 
 target_sources(quickevent PRIVATE ${QM_FILES})
 target_include_directories(quickevent PRIVATE ${CMAKE_CURRENT_SOURCE_DIR} ${CMAKE_CURRENT_SOURCE_DIR}/src)
+
+# COMMIT_SHA is only read here; defining it per-source (rather than globally in the
+# top-level CMakeLists) keeps a new commit from invalidating every object/ccache entry.
+set_property(SOURCE plugins/Core/src/coreplugin.cpp
+	APPEND PROPERTY COMPILE_DEFINITIONS "COMMIT_SHA=\"${COMMIT_SHA}\"")
 target_link_libraries(quickevent PUBLIC libquickeventcore libquickeventgui libqfgui libsiut)
 
 # Extract version from appversion.h
